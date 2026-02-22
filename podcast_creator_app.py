@@ -1,384 +1,495 @@
 #!/usr/bin/env python3
 """
-PODCAST CREATOR PRO - Aplicación completa para creación de podcasts
-Sistema todo-en-uno para grabar, editar, publicar y monetizar podcasts
+APLICACIÓN CREADOR DE PODCAST
+Sistema completo para creación, producción y distribución de podcasts
 """
 
 import os
 import json
-from datetime import datetime
-
-def create_podcast_app():
-    """Crear aplicación completa de creación de podcasts"""
-    print("🎙️ CREANDO PODCAST CREATOR PRO")
-    print("="*60)
-    
-    # Directorio principal
-    os.makedirs("podcast_creator_pro", exist_ok=True)
-    
-    # 1. Aplicación principal
-    main_app = '''#!/usr/bin/env python3
-"""
-PODCAST CREATOR PRO - Aplicación Todo-en-Uno para Podcasts
-"""
-
-import json
 import random
 from datetime import datetime, timedelta
+from typing import List, Dict, Any, Optional
 
-class PodcastCreatorPro:
+class PodcastCreatorApp:
     def __init__(self):
+        self.app_dir = "podcast_creator_app"
+        self.projects_dir = os.path.join(self.app_dir, "projects")
+        self.templates_dir = os.path.join(self.app_dir, "templates")
+        self.resources_dir = os.path.join(self.app_dir, "resources")
+        
+        # Crear estructura de directorios
+        os.makedirs(self.app_dir, exist_ok=True)
+        os.makedirs(self.projects_dir, exist_ok=True)
+        os.makedirs(self.templates_dir, exist_ok=True)
+        os.makedirs(self.resources_dir, exist_ok=True)
+        
+        # Categorías de podcasts populares
         self.categories = [
-            "Negocios y Emprendimiento",
-            "Tecnología e Innovación",
-            "Salud y Bienestar",
-            "Educación y Aprendizaje",
-            "Entretenimiento",
-            "Noticias y Actualidad",
-            "Deportes",
-            "Cultura y Sociedad",
-            "Ciencia",
-            "Desarrollo Personal"
+            "Business & Entrepreneurship",
+            "Technology & Innovation",
+            "Health & Wellness",
+            "Personal Development",
+            "True Crime & Mystery",
+            "Comedy & Entertainment",
+            "News & Politics",
+            "Education & Learning",
+            "Arts & Culture",
+            "Sports & Recreation"
         ]
         
+        # Formatos de podcast
         self.formats = [
-            "Entrevistas",
-            "Solo hosting",
-            "Panel de discusión",
-            "Historias narrativas",
-            "Educativo/tutorial",
-            "Noticias resumidas",
-            "Debate",
-            "Q&A (Preguntas y respuestas)"
+            "Interview Style",
+            "Solo Commentary",
+            "Panel Discussion",
+            "Storytelling/Narrative",
+            "Educational/How-To",
+            "News & Updates",
+            "Roundtable Discussion",
+            "Q&A Session"
         ]
         
-        self.equipment_levels = {
-            "básico": {"budget": 200, "items": ["Micrófono USB", "Audífonos", "Software gratis"]},
-            "intermedio": {"budget": 800, "items": ["Micrófono XLR", "Interfaz de audio", "Software profesional", "Pop filter"]},
-            "profesional": {"budget": 2500, "items": ["Estudio casero", "Micrófono de estudio", "Mixer", "Software avanzado", "Tratamiento acústico"]}
+        # Plataformas de distribución
+        self.platforms = [
+            "Spotify",
+            "Apple Podcasts",
+            "Google Podcasts",
+            "Amazon Music",
+            "YouTube",
+            "SoundCloud",
+            "Stitcher",
+            "iHeartRadio"
+        ]
+        
+        # Equipamiento recomendado por nivel
+        self.equipment = {
+            "beginner": {
+                "microphone": "USB Microphone (Blue Yeti, Audio-Technica ATR2100x)",
+                "headphones": "Closed-back headphones (Audio-Technica M20x)",
+                "software": "Audacity (free), GarageBand (Mac)",
+                "accessories": "Pop filter, microphone stand"
+            },
+            "intermediate": {
+                "microphone": "XLR Microphone (Shure SM7B, Rode NT1)",
+                "headphones": "Studio headphones (Beyerdynamic DT 770 Pro)",
+                "software": "Adobe Audition, Hindenburg Journalist",
+                "accessories": "Audio interface (Focusrite Scarlett), shock mount"
+            },
+            "professional": {
+                "microphone": "High-end XLR (Neumann TLM 103, Shure SM7B)",
+                "headphones": "Reference headphones (Sennheiser HD 600)",
+                "software": "Pro Tools, Logic Pro X",
+                "accessories": "Mixer, acoustic treatment, sound booth"
+            }
         }
     
-    def generate_podcast_idea(self):
-        """Generar idea para podcast"""
+    def create_podcast_project(self, project_name: str) -> Dict[str, Any]:
+        """Crear un nuevo proyecto de podcast"""
+        print(f"Creando proyecto de podcast: {project_name}")
+        
+        project_id = datetime.now().strftime("%Y%m%d%H%M%S")
+        project_dir = os.path.join(self.projects_dir, f"{project_name}_{project_id}")
+        os.makedirs(project_dir, exist_ok=True)
+        
+        # Crear estructura del proyecto
+        project_structure = {
+            "project_info": {
+                "name": project_name,
+                "id": project_id,
+                "created": datetime.now().isoformat(),
+                "status": "Planning"
+            },
+            "concept": self._generate_podcast_concept(),
+            "planning": self._create_planning_documents(),
+            "production": self._create_production_plan(),
+            "distribution": self._create_distribution_plan(),
+            "monetization": self._create_monetization_plan(),
+            "files": {
+                "directory": project_dir,
+                "episodes": os.path.join(project_dir, "episodes"),
+                "scripts": os.path.join(project_dir, "scripts"),
+                "artwork": os.path.join(project_dir, "artwork"),
+                "marketing": os.path.join(project_dir, "marketing")
+            }
+        }
+        
+        # Crear subdirectorios
+        for dir_path in project_structure["files"].values():
+            if isinstance(dir_path, str) and "directory" not in dir_path:
+                os.makedirs(dir_path, exist_ok=True)
+        
+        # Guardar proyecto
+        project_file = os.path.join(project_dir, "project.json")
+        with open(project_file, 'w', encoding='utf-8') as f:
+            json.dump(project_structure, f, indent=2, ensure_ascii=False)
+        
+        print(f"✅ Proyecto creado en: {project_dir}")
+        return project_structure
+    
+    def _generate_podcast_concept(self) -> Dict[str, Any]:
+        """Generar concepto de podcast"""
         category = random.choice(self.categories)
         format_type = random.choice(self.formats)
         
-        name_templates = [
-            f"El Podcast de {category}",
-            f"{category} Desglosado",
-            f"Conversaciones sobre {category}",
-            f"{category} en Vivo",
-            f"Inside {category}"
-        ]
-        
-        return {
-            "name": random.choice(name_templates),
+        concept = {
             "category": category,
             "format": format_type,
-            "episode_length": f"{random.randint(20, 90)} minutos",
-            "frequency": random.choice(["Semanal", "Quincenal", "Diario", "Mensual"]),
-            "target_audience": self.get_target_audience(category),
-            "monetization_potential": round(random.uniform(500, 10000), 2)
+            "name": self._generate_podcast_name(category),
+            "tagline": self._generate_tagline(category),
+            "description": self._generate_description(category, format_type),
+            "target_audience": self._define_target_audience(category),
+            "episode_length": self._determine_episode_length(format_type),
+            "release_schedule": self._determine_release_schedule(),
+            "unique_value": self._define_unique_value(category)
         }
+        
+        return concept
     
-    def get_target_audience(self, category):
-        """Obtener audiencia objetivo"""
-        audiences = {
-            "Negocios": ["Emprendedores", "Ejecutivos", "Freelancers", "Estudiantes de negocios"],
-            "Tecnología": ["Desarrolladores", "Tech enthusiasts", "Startups", "Innovadores"],
-            "Salud": ["Personas saludables", "Profesionales de salud", "Deportistas", "Bienestar consciente"],
-            "Educación": ["Estudiantes", "Educadores", "Padres", "Aprendices continuos"]
-        }
-        
-        for key, value in audiences.items():
-            if key.lower() in category.lower():
-                return value
-        
-        return ["General", "Interesados en el tema", "Audiencia específica"]
-    
-    def create_podcast_plan(self, idea):
-        """Crear plan completo del podcast"""
-        print(f"\\n🎧 Creando plan para: {idea['name']}")
-        
-        plan = {
-            "metadata": {
-                "podcast_name": idea["name"],
-                "category": idea["category"],
-                "format": idea["format"],
-                "created": datetime.now().isoformat(),
-                "status": "planning"
-            },
-            "content_strategy": self.create_content_strategy(idea),
-            "production_setup": self.create_production_setup(idea),
-            "distribution_plan": self.create_distribution_plan(),
-            "monetization_strategy": self.create_monetization_strategy(idea),
-            "growth_plan": self.create_growth_plan()
-        }
-        
-        return plan
-    
-    def create_content_strategy(self, idea):
-        """Crear estrategia de contenido"""
-        episode_themes = []
-        for i in range(13):  # 13 semanas (1 trimestre)
-            themes = {
-                "Negocios": [
-                    f"Emprendimiento semana {i+1}",
-                    f"Finanzas para startups",
-                    f"Marketing digital avanzado",
-                    f"Casos de éxito empresarial"
-                ],
-                "Tecnología": [
-                    f"Tecnologías emergentes {i+1}",
-                    f"IA aplicada a negocios",
-                    f"Desarrollo de software",
-                    f"Seguridad digital"
-                ],
-                "Salud": [
-                    f"Nutrición semana {i+1}",
-                    f"Ejercicios en casa",
-                    f"Salud mental",
-                    f"Prevención de enfermedades"
-                ]
-            }
-            
-            category_themes = themes.get(idea["category"].split()[0], [
-                f"Tema {i+1}: Aspectos clave",
-                f"Tema {i+1}: Estrategias prácticas",
-                f"Tema {i+1}: Herramientas útiles",
-                f"Tema {i+1}: Casos de estudio"
-            ])
-            
-            episode_themes.append({
-                "week": i + 1,
-                "theme": random.choice(category_themes),
-                "guests": "Invitado especial" if random.random() > 0.7 else "Solo hosting",
-                "resources": ["Artículos", "Estudios", "Herramientas", "Ejercicios"]
-            })
-        
-        return {
-            "episode_format": idea["format"],
-            "episode_length": idea["episode_length"],
-            "frequency": idea["frequency"],
-            "first_13_weeks": episode_themes,
-            "content_pillars": [
-                "Educación y valor",
-                "Entretenimiento e engagement",
-                "Inspiración y motivación",
-                "Comunidad e interacción"
-            ]
-        }
-    
-    def create_production_setup(self, idea):
-        """Crear setup de producción"""
-        equipment_level = random.choice(list(self.equipment_levels.keys()))
-        equipment = self.equipment_levels[equipment_level]
-        
-        software = {
-            "grabación": ["Audacity (gratis)", "GarageBand", "Adobe Audition", "Hindenburg"],
-            "edición": ["Descript", "Audacity", "Adobe Audition", "Reaper"],
-            "mastering": ["iZotope RX", "Auphonic", "Levelator"]
-        }
-        
-        workflow = [
-            "1. Preparación: Investigación y guión",
-            "2. Grabación: Ambiente controlado",
-            "3. Edición: Limpieza y mejoras",
-            "4. Mastering: Normalización y optimización",
-            "5. Publicación: Metadata y distribución"
-        ]
-        
-        return {
-            "equipment_level": equipment_level,
-            "budget": equipment["budget"],
-            "equipment_list": equipment["items"],
-            "software_recommended": software,
-            "recording_environment": "Estudio casero tratado acústicamente",
-            "workflow": workflow,
-            "time_per_episode": f"{random.randint(3, 8)} horas total"
-        }
-    
-    def create_distribution_plan(self):
-        """Crear plan de distribución"""
-        platforms = [
-            {"name": "Spotify", "priority": "Alta", "features": ["Analytics", "Monetization"]},
-            {"name": "Apple Podcasts", "priority": "Alta", "features": ["Estándar industria"]},
-            {"name": "Google Podcasts", "priority": "Media", "features": ["Integración Android"]},
-            {"name": "Amazon Music", "priority": "Media", "features": ["Audiencia masiva"]},
-            {"name": "YouTube", "priority": "Alta", "features": ["Video, SEO, Monetización"]},
-            {"name": "iVoox", "priority": "Media", "features": ["Mercado español"]}
-        ]
-        
-        return {
-            "hosting": [
-                {"name": "Buzzsprout", "price": 12, "features": ["Analytics", "WordPress integration"]},
-                {"name": "Anchor", "price": 0, "features": ["Gratis", "Spotify integration"]},
-                {"name": "Transistor", "price": 19, "features": ["Multiple shows", "Advanced analytics"]}
+    def _generate_podcast_name(self, category: str) -> str:
+        """Generar nombre de podcast"""
+        name_templates = {
+            "Business & Entrepreneurship": [
+                "The {category} Podcast",
+                "{category} Unlocked",
+                "Mastering {category}",
+                "The {category} Blueprint"
             ],
-            "platforms": platforms,
-            "rss_feed": "Configurar correctamente para distribución universal",
-            "website": "WordPress con plugin de podcasting recomendado",
-            "social_media": ["Twitter", "Instagram", "LinkedIn", "TikTok para clips"]
+            "Technology & Innovation": [
+                "Tech {category} Today",
+                "The {category} Frontier",
+                "Future of {category}",
+                "{category} Explained"
+            ],
+            "Personal Development": [
+                "The {category} Journey",
+                "Master Your {category}",
+                "{category} Transformation",
+                "The {category} Method"
+            ]
         }
+        
+        templates = name_templates.get(category, [
+            "The {category} Show",
+            "{category} Insights",
+            "{category} Conversations",
+            "Exploring {category}"
+        ])
+        
+        template = random.choice(templates)
+        return template.format(category=category.split("&")[0].strip())
     
-    def create_monetization_strategy(self, idea):
-        """Crear estrategia de monetización"""
-        revenue_streams = [
-            {"name": "Publicidad", "timeline": "3-6 meses", "potential": "$$"},
-            {"name": "Patrocinios", "timeline": "6-12 meses", "potential": "$$$"},
-            {"name": "Afiliados", "timeline": "1-3 meses", "potential": "$$"},
-            {"name": "Productos", "timeline": "3-6 meses", "potential": "$$$"},
-            {"name": "Membresías", "timeline": "6-12 meses", "potential": "$$$$"},
-            {"name": "Consultoría", "timeline": "12+ meses", "potential": "$$$$$"}
+    def _generate_tagline(self, category: str) -> str:
+        """Generar tagline"""
+        taglines = {
+            "Business & Entrepreneurship": "Unlocking business success one episode at a time",
+            "Technology & Innovation": "Where technology meets human potential",
+            "Health & Wellness": "Your guide to a healthier, happier life",
+            "Personal Development": "Transform your life through actionable insights",
+            "True Crime & Mystery": "Uncovering the stories behind the headlines",
+            "Comedy & Entertainment": "Laughter is the best medicine",
+            "Education & Learning": "Learn something new every episode"
+        }
+        
+        return taglines.get(category, "Insights and inspiration delivered weekly")
+    
+    def _generate_description(self, category: str, format_type: str) -> str:
+        """Generar descripción del podcast"""
+        descriptions = {
+            "Business & Entrepreneurship": f"""Welcome to the ultimate {category.lower()} podcast! Each episode brings you:
+• Expert interviews with successful entrepreneurs
+• Practical business strategies you can implement today
+• Market trends and investment opportunities
+• Behind-the-scenes stories of business growth
+
+Whether you're a startup founder, small business owner, or aspiring entrepreneur, this podcast provides the insights and inspiration you need to succeed.
+
+Format: {format_type}
+New episodes every week!""",
+            
+            "Technology & Innovation": f"""Explore the cutting edge of {category.lower()} with in-depth discussions on:
+• Latest tech trends and innovations
+• Interviews with industry pioneers
+• Practical applications of new technologies
+• Future predictions and analysis
+
+Perfect for tech enthusiasts, developers, and anyone curious about where technology is heading.
+
+Format: {format_type}
+Join us for thought-provoking conversations!""",
+            
+            "Personal Development": f"""Transform your life with this {category.lower()} podcast featuring:
+• Science-backed strategies for personal growth
+• Interviews with psychologists and coaches
+• Practical exercises and challenges
+• Community success stories
+
+Whether you want to improve relationships, boost productivity, or find more happiness, this podcast has you covered.
+
+Format: {format_type}
+Your journey to a better you starts here!"""
+        }
+        
+        return descriptions.get(category, f"A {format_type.lower()} podcast exploring {category.lower()}.")
+    
+    def _define_target_audience(self, category: str) -> List[str]:
+        """Definir audiencia objetivo"""
+        audiences = {
+            "Business & Entrepreneurship": [
+                "Startup founders and entrepreneurs",
+                "Small business owners",
+                "Corporate professionals seeking advancement",
+                "Business students and recent graduates"
+            ],
+            "Technology & Innovation": [
+                "Software developers and engineers",
+                "Tech enthusiasts and early adopters",
+                "Digital marketers and content creators",
+                "Students studying computer science"
+            ],
+            "Personal Development": [
+                "Individuals seeking self-improvement",
+                "Career professionals wanting advancement",
+                "Students preparing for adulthood",
+                "Anyone feeling stuck in their personal growth"
+            ],
+            "Health & Wellness": [
+                "Fitness enthusiasts",
+                "People seeking better mental health",
+                "Individuals with chronic conditions",
+                "Healthcare professionals"
+            ]
+        }
+        
+        return audiences.get(category, ["General audience interested in the topic"])
+    
+    def _determine_episode_length(self, format_type: str) -> str:
+        """Determinar duración del episodio"""
+        lengths = {
+            "Interview Style": "45-60 minutes",
+            "Solo Commentary": "20-30 minutes",
+            "Panel Discussion": "60-90 minutes",
+            "Storytelling/Narrative": "30-45 minutes",
+            "Educational/How-To": "15-25 minutes",
+            "News & Updates": "10-20 minutes"
+        }
+        
+        return lengths.get(format_type, "30-45 minutes")
+    
+    def _determine_release_schedule(self) -> Dict[str, str]:
+        """Determinar calendario de lanzamiento"""
+        schedules = [
+            {"frequency": "Weekly", "day": "Monday", "time": "6:00 AM EST"},
+            {"frequency": "Bi-weekly", "day": "Tuesday & Thursday", "time": "7:00 AM EST"},
+            {"frequency": "Weekly", "day": "Wednesday", "time": "5:00 PM EST"},
+            {"frequency": "Daily", "day": "Monday-Friday", "time": "8:00 AM EST"}
         ]
         
-        # CPM rates (Costo Por Mil impresiones)
-        cpm_rates = {
-            "small": 15,      # $15 por 1000 descargas
-            "medium": 25,     # $25 por 1000 descargas
-            "large": 40       # $40 por 1000 descargas
-        }
+        return random.choice(schedules)
+    
+    def _define_unique_value(self, category: str) -> str:
+        """Definir valor único"""
+        unique_values = [
+            "Actionable insights you can implement immediately",
+            "Exclusive interviews with industry leaders",
+            "Research-backed strategies and techniques",
+            "Community-driven content and discussions",
+            "Behind-the-scenes access to success stories",
+            "Practical exercises and worksheets included"
+        ]
         
-        downloads_projections = {
-            "month_1": random.randint(100, 500),
-            "month_3": random.randint(500, 2000),
-            "month_6": random.randint(2000, 5000),
-            "year_1": random.randint(5000, 20000)
-        }
-        
-        ad_revenue = {}
-        for month, downloads in downloads_projections.items():
-            cpm = cpm_rates["medium"]
-            ad_revenue[month] = round((downloads / 1000) * cpm, 2)
-        
+        return random.choice(unique_values)
+    
+    def _create_planning_documents(self) -> Dict[str, Any]:
+        """Crear documentos de planificación"""
         return {
-            "revenue_streams": revenue_streams,
-            "downloads_projections": downloads_projections,
-            "ad_revenue_projections": ad_revenue,
-            "sponsorship_rates": {
-                "pre-roll (15s)": "$15-$25 CPM",
-                "mid-roll (60s)": "$25-$40 CPM",
-                "post-roll (15s)": "$10-$20 CPM",
-                "host-read": "+20-50% premium"
+            "episode_calendar": self._create_episode_calendar(),
+            "content_strategy": self._create_content_strategy(),
+            "guest_wishlist": self._create_guest_wishlist(),
+            "script_templates": self._create_script_templates(),
+            "production_checklist": self._create_production_checklist()
+        }
+    
+    def _create_episode_calendar(self) -> List[Dict[str, Any]]:
+        """Crear calendario de episodios"""
+        episodes = []
+        start_date = datetime.now() + timedelta(days=7)
+        
+        for i in range(12):  # 12 episodios
+            episode_date = start_date + timedelta(weeks=i)
+            
+            episode = {
+                "number": i + 1,
+                "title": f"Episode {i+1}: {self._generate_episode_title()}",
+                "release_date": episode_date.strftime("%Y-%m-%d"),
+                "topic": self._generate_episode_topic(),
+                "format": random.choice(self.formats),
+                "guest": random.choice([None, "Industry Expert", "Successful Entrepreneur"]),
+                "status": "Planned",
+                "prep_time": f"{random.randint(3, 8)} hours",
+                "recording_time": f"{random.randint(1, 3)} hours",
+                "editing_time": f"{random.randint(2, 6)} hours"
+            }
+            
+            episodes.append(episode)
+        
+        return episodes
+    
+    def _generate_episode_title(self) -> str:
+        """Generar título de episodio"""
+        templates = [
+            "The Secret to {topic}",
+            "How to Master {topic}",
+            "{topic} Explained: What You Need to Know",
+            "The Future of {topic}",
+            "{topic} Strategies That Actually Work",
+            "Breaking Down {topic}"
+        ]
+        
+        topics = [
+            "Productivity", "Success", "Innovation", "Growth", 
+            "Marketing", "Leadership", "Technology", "Wellness"
+        ]
+        
+        template = random.choice(templates)
+        topic = random.choice(topics)
+        return template.format(topic=topic)
+    
+    def _generate_episode_topic(self) -> str:
+        """Generar tema de episodio"""
+        topics = [
+            "Building a Successful Brand from Scratch",
+            "The Psychology of High Performance",
+            "AI and the Future of Work",
+            "Sustainable Business Practices",
+            "Mental Health in the Digital Age",
+            "The Art of Effective Communication",
+            "Financial Freedom Strategies",
+            "Innovation in Traditional Industries"
+        ]
+        
+        return random.choice(topics)
+    
+    def _create_content_strategy(self) -> Dict[str, Any]:
+        """Crear estrategia de contenido"""
+        return {
+            "content_pillars": [
+                "Educational Content",
+                "Inspirational Stories",
+                "Practical How-Tos",
+                "Industry Insights",
+                "Community Spotlights"
+            ],
+            "content_mix": {
+                "interviews": "40%",
+                "solo_episodes": "30%",
+                "panel_discussions": "20%",
+                "special_series": "10%"
             },
-            "membership_tiers": [
-                {"tier": "Fan", "price": 5, "benefits": ["Episodios tempranos", "Community access"]},
-                {"tier": "Supporter", "price": 10, "benefits": ["Bonus content", "Q&A sessions"]},
-                {"tier": "VIP", "price": 25, "benefits": ["One-on-one calls", "Merchandise"]}
+            "season_structure": {
+                "season_length": "12 episodes",
+                "theme": "Growth and Transformation",
+                "milestones": [
+                    "Episode 3: First guest interview",
+                    "Episode 6: Mid-season special",
+                    "Episode 9: Listener Q&A",
+                    "Episode 12: Season finale & recap"
+                ]
+            },
+            "repurposing_strategy": [
+                "Create YouTube videos from audio",
+                "Extract quotes for social media",
+                "Write blog posts from episodes",
+                "Create email newsletters",
+                "Develop online courses"
             ]
         }
     
-    def create_growth_plan(self):
-        """Crear plan de crecimiento"""
-        return {
-            "phase_1": {
-                "duration": "1-3 meses",
-                "focus": "Calidad y consistencia",
-                "goals": ["10 episodios", "1000 descargas totales", "50 reviews"],
-                "tactics": ["SEO optimizado", "Redes sociales básicas", "Networking inicial"]
-            },
-            "phase_2": {
-                "duration": "4-6 meses",
-                "focus": "Crecimiento de audiencia",
-                "goals": ["1000 descargas/mes", "Colaboraciones", "Primeros ingresos"],
-                "tactics": ["Guest appearances", "Cross-promotion", "Email list building"]
-            },
-            "phase_3": {
-                "duration": "7-12 meses",
-                "focus": "Monetización y escalabilidad",
-                "goals": ["5000 descargas/mes", "Múltiples streams de ingreso", "Equipo pequeño"],
-                "tactics": ["Sponsorships", "Product creation", "Community building"]
-            },
-            "phase_4": {
-                "duration": "13+ meses",
-                "focus": "Empresa de medios",
-                "goals": ["Network de podcasts", "Ingresos pasivos", "Marca establecida"],
-                "tactics": ["Multiple shows", "Agency services", "Licensing content"]
+    def _create_guest_wishlist(self) -> List[Dict[str, str]]:
+        """Crear lista de invitados deseados"""
+        guests = []
+        industries = ["Technology", "Business", "Health", "Entertainment", "Education"]
+        
+        for i in range(10):
+            industry = random.choice(industries)
+            guest = {
+                "name": f"Expert {i+1}",
+                "title": f"{industry} Specialist",
+                "company": f"{industry} Innovations Inc.",
+                "expertise": f"{industry} strategy and development",
+                "reach": f"{random.randint(10, 100)}K followers",
+                "priority": random.choice(["High", "Medium", "Low"]),
+                "pitch": f"Discuss the future of {industry.lower()} and emerging trends"
             }
+            guests.append(guest)
+        
+        return guests
+    
+    def _create_script_templates(self) -> Dict[str, str]:
+        """Crear plantillas de scripts"""
+        return {
+            "interview_template": """EPISODE TITLE: {title}
+GUEST: {guest_name}
+HOST: {host_name}
+DATE: {date}
+
+[INTRO MUSIC - 15 seconds]
+
+HOST: Welcome to {podcast_name}! I'm your host, {host_name}, and today we have an amazing guest with us. {guest_intro}
+
+GUEST: Thanks for having me, {host_name}!
+
+HOST: {first_question}
+
+GUEST: {answer}
+
+[Continue with 5-7 main questions]
+
+HOST: {final_question}
+
+GUEST: {final_answer}
+
+HOST: Thank you so much for joining us today, {guest_name}! Where can our listeners connect with you?
+
+GUEST: {contact_info}
+
+HOST: And that's all for today's episode! Don't forget to subscribe and leave us a review. Until next time!
+
+[OUTRO MUSIC - 15 seconds]""",
+            
+            "solo_template": """EPISODE TITLE: {title}
+HOST: {host_name}
+DATE: {date}
+
+[INTRO MUSIC - 15 seconds]
+
+HOST: Welcome to {podcast_name}! I'm your host, {host_name}, and today we're talking about {topic}.
+
+[Main Content - 3-5 key points]
+
+1. {point_one}
+2. {point_two}
+3. {point_three}
+
+[Practical Application]
+
+Here's what you can do this week:
+• Action 1: {action_one}
+• Action 2: {action_two}
+• Action 3: {action_three}
+
+HOST: I hope you found this episode helpful! If you did, please share it with someone who might benefit. Until next time!
+
+[OUTRO MUSIC - 15 seconds]"""
         }
     
-    def save_plan(self, plan, filename):
-        """Guardar plan en archivo"""
-        with open(filename, 'w', encoding='utf-8') as f:
-            json.dump(plan, f, indent=2, ensure_ascii=False)
-        
-        print(f"✅ Plan guardado: {filename}")
-        
-        # Mostrar resumen
-        monetization = plan["monetization_strategy"]
-        print(f"\\n📊 RESUMEN DEL PLAN:")
-        print(f"   Podcast: {plan['metadata']['podcast_name']}")
-        print(f"   Categoría: {plan['metadata']['category']}")
-        print(f"   Formato: {plan['metadata']['format']}")
-        print(f"   Proyección año 1: {monetization['downloads_projections']['year_1']} descargas")
-        print(f"   Ingreso potencial por ads: ${monetization['ad_revenue_projections']['year_1']}/mes")
-        
-        return filename
-
-def main():
-    """Función principal"""
-    print("🎙️ PODCAST CREATOR PRO - Planificador Completo de Podcasts")
-    print("="*70)
-    
-    creator = PodcastCreatorPro()
-    
-    # Generar 3 ideas de podcast
-    print("\\n💡 GENERANDO IDEAS DE PODCAST:")
-    print("-"*40)
-    
-    plans = []
-    for i in range(3):
-        idea = creator.generate_podcast_idea()
-        print(f"\\n{i+1}. {idea['name']}")
-        print(f"   Categoría: {idea['category']}")
-        print(f"   Formato: {idea['format']}")
-        print(f"   Frecuencia: {idea['frequency']}")
-        print(f"   Potencial monetización: ${idea['monetization_potential']}/año")
-        
-        # Crear plan completo
-        plan = creator.create_podcast_plan(idea)
-        filename = f"podcast_plan_{i+1}_{idea['category'].lower().replace(' ', '_')}.json"
-        creator.save_plan(plan, filename)
-        plans.append(plan)
-    
-    # Calcular totales
-    total_potential = sum(p["monetization_strategy"]["ad_revenue_projections"]["year_1"] for p in plans)
-    
-    print(f"\\n📈 REPORTE GENERAL:")
-    print("="*40)
-    print(f"Total planes creados: {len(plans)}")
-    print(f"Ingreso potencial total (ads año 1): ${total_potential:.2f}/mes")
-    print(f"Ingreso anual proyectado: ${total_potential * 12:.2f}")
-    
-    # Considerando múltiples streams de ingreso
-    total_with_all_streams = total_potential * 3  # Sponsorships, productos, etc.
-    
-    print(f"\\n💰 CON MÚLTIPLES STREAMS DE INGRESO:")
-    print(f"   Ingreso mensual potencial: ${total_with_all_streams:.2f}")
-    print(f"   Ingreso anual potencial: ${total_with_all_streams * 12:.2f}")
-    
-    # Guardar reporte
-    report = {
-        "total_plans": len(plans),
-        "monthly_ad_revenue_potential": total_potential,
-        "annual_ad_revenue_potential": total_potential * 12,
-        "total_monthly_potential": total_with_all_streams,
-        "total_annual_potential": total_with_all_streams * 12,
-        "plans_created": [p["metadata"]["podcast_name"] for p in plans],
-        "generated_date": datetime.now().isoformat()
-    }
-    
-    with open('podcast_plans_report.json', 'w', encoding='utf-8') as f:
-        json.dump(report, f, indent=2)
-    
-    print(f"\\n✅ Reporte guardado en: podcast_plans_report.json")
-    
-    print("\\n🎯 PRÓXIMOS PASOS INMEDIATOS:")
-    print("1. Elegir el plan que más te guste")
-    print("2. Comprar equipo básico (presupuesto ~$200)")
-    print("3. Grabar 3 episodios piloto")
-    print("4. Configurar hosting y distribución")
-    print("5. Lanzar y comenzar a promocionar")
-    
-    print("\\n🛠️ HERRAMIENTAS RECOMENDADAS:")
-    print("  • Grabación: Audacity
+    def _create_production_checklist(self) -> List[str]:
+        """Crear checklist de producción"""
+        return [
+            "Research episode topic",
+            "Prepare interview questions",
+            "Schedule recording session",
+            "Test equipment before recording",
+            "Record episode",
+            "Backup raw audio files",
+            "Edit audio (remove mistakes, add music)",
+            "Create show notes",

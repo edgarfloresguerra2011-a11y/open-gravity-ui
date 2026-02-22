@@ -1,406 +1,459 @@
 #!/usr/bin/env python3
 """
-Programa para Crear Dibujos para KDP (Amazon Kindle Direct Publishing)
-Sistema de generación de ilustraciones para libros y productos
+PROGRAMA PARA HACER DIBUJOS PARA KDP (Kindle Direct Publishing)
+Sistema automatizado de creación de libros para colorear y libros de actividades
 """
 
 import os
 import json
-from datetime import datetime
-
-def create_kdp_drawing_system():
-    """Crear sistema completo para dibujos KDP"""
-    print("🎨 CREANDO PROGRAMA PARA DIBUJOS KDP")
-    print("="*60)
-    
-    # Directorio principal
-    os.makedirs("kdp_drawing_pro", exist_ok=True)
-    
-    # 1. Programa principal
-    main_program = '''#!/usr/bin/env python3
-"""
-KDP DRAWING PRO - Sistema de creación de ilustraciones para Amazon KDP
-"""
-
-import json
 import random
 from datetime import datetime
+from typing import List, Dict, Any
 
-class KDPDrawingGenerator:
+class KDPDrawingCreator:
     def __init__(self):
-        self.categories = [
-            "Libros infantiles",
-            "Libros de colorear para adultos", 
-            "Journaling y planners",
-            "Educativos",
-            "Ficción",
-            "No ficción",
-            "Romance",
-            "Misterio",
-            "Fantasia",
-            "Ciencia ficción"
-        ]
+        self.output_dir = "kdp_drawings"
+        self.templates_dir = os.path.join(self.output_dir, "templates")
+        self.market_research_dir = os.path.join(self.output_dir, "market_research")
         
-        self.styles = [
-            "Minimalista",
-            "Realista",
-            "Acuarela",
-            "Vectorial",
-            "Dibujo a mano",
-            "Digital painting",
-            "Comic/Manga",
-            "Retro/Vintage",
-            "Moderno",
-            "Abstracto"
-        ]
+        os.makedirs(self.output_dir, exist_ok=True)
+        os.makedirs(self.templates_dir, exist_ok=True)
+        os.makedirs(self.market_research_dir, exist_ok=True)
         
-        self.formats = {
-            "paperback": {"dimensions": "6x9 pulgadas", "dpi": 300, "color_mode": "CMYK"},
-            "hardcover": {"dimensions": "7x10 pulgadas", "dpi": 300, "color_mode": "CMYK"},
-            "coloring_book": {"dimensions": "8.5x11 pulgadas", "dpi": 300, "color_mode": "CMYK"},
-            "journal": {"dimensions": "6x9 pulgadas", "dpi": 300, "color_mode": "CMYK"}
-        }
-    
-    def generate_project_idea(self):
-        """Generar idea para proyecto KDP"""
-        category = random.choice(self.categories)
-        style = random.choice(self.styles)
-        format_type = random.choice(list(self.formats.keys()))
-        
-        ideas = {
-            "Libros infantiles": [
-                "Animales del bosque",
-                "Aventuras espaciales",
-                "Criaturas mágicas",
-                "Medios de transporte",
-                "Profesiones"
+        # Categorías populares en KDP
+        self.categories = {
+            "coloring_books": [
+                "Adult Coloring Books",
+                "Children's Coloring Books", 
+                "Mandala Coloring Books",
+                "Animal Coloring Books",
+                "Fantasy Coloring Books",
+                "Floral Coloring Books"
             ],
-            "Libros de colorear para adultos": [
-                "Mandalas complejas",
-                "Patrones geométricos",
-                "Naturaleza detallada",
-                "Arquitectura",
-                "Animales en detalle"
+            "activity_books": [
+                "Dot to Dot Books",
+                "Maze Books",
+                "Word Search Books",
+                "Sudoku Books",
+                "Crossword Books",
+                "Puzzle Books"
             ],
-            "Journaling y planners": [
-                "Páginas decorativas",
-                "Encabezados creativos",
-                "Bordes ornamentales",
-                "Iconos temáticos",
-                "Trackers visuales"
+            "journals": [
+                "Gratitude Journals",
+                "Bullet Journals",
+                "Travel Journals",
+                "Fitness Journals",
+                "Recipe Journals",
+                "Dream Journals"
+            ],
+            "kids_books": [
+                "ABC Learning Books",
+                "Number Tracing Books",
+                "Shape Learning Books",
+                "Story Coloring Books",
+                "Activity Workbooks",
+                "Educational Worksheets"
             ]
         }
         
-        theme = random.choice(ideas.get(category, ["Tema creativo", "Ilustraciones únicas"]))
+        # Tendencias actuales en KDP
+        self.current_trends = [
+            "Mindfulness and Meditation",
+            "Mental Health Awareness",
+            "Sustainable Living",
+            "Digital Detox",
+            "Self-Care and Wellness",
+            "Minimalist Lifestyle"
+        ]
         
-        return {
+        # Palabras clave populares
+        self.popular_keywords = {
+            "coloring": ["stress relief", "relaxation", "art therapy", "creative", "meditative"],
+            "activity": ["brain games", "puzzles", "educational", "learning", "fun activities"],
+            "journal": ["self-reflection", "personal growth", "goal setting", "planning", "organization"]
+        }
+    
+    def generate_book_idea(self, category: str = None) -> Dict[str, Any]:
+        """Generar idea de libro para KDP"""
+        if not category:
+            category = random.choice(list(self.categories.keys()))
+        
+        subcategory = random.choice(self.categories[category])
+        trend = random.choice(self.current_trends)
+        
+        # Generar título atractivo
+        title = self._generate_title(category, subcategory, trend)
+        
+        # Generar descripción
+        description = self._generate_description(category, subcategory, trend)
+        
+        # Calcular potencial de ganancias
+        earnings = self._calculate_earnings(category)
+        
+        idea = {
             "category": category,
-            "style": style,
-            "format": format_type,
-            "theme": theme,
-            "pages": random.randint(50, 150),
-            "illustrations_needed": random.randint(20, 100),
-            "price_suggestion": round(random.uniform(4.99, 24.99), 2),
-            "potential_royalty": round(random.uniform(500, 5000), 2)
-        }
-    
-    def create_project_plan(self, idea):
-        """Crear plan detallado del proyecto"""
-        print(f"\\n📐 Creando proyecto: {idea['theme']} ({idea['category']})")
-        
-        project = {
-            "metadata": {
-                "title": f"{idea['theme']} - {idea['style']} Style",
-                "category": idea["category"],
-                "format": idea["format"],
-                "created": datetime.now().isoformat(),
-                "target_market": "Amazon KDP"
-            },
-            "specifications": self.get_specifications(idea["format"]),
-            "illustration_plan": self.create_illustration_plan(idea),
-            "production_timeline": self.create_timeline(idea),
-            "monetization": self.create_monetization_plan(idea)
+            "subcategory": subcategory,
+            "trend": trend,
+            "title": title,
+            "description": description,
+            "page_count": self._determine_page_count(category),
+            "interior_type": self._determine_interior_type(category),
+            "cover_type": "Matte or Glossy",
+            "size": self._determine_book_size(category),
+            "keywords": self._generate_keywords(category, subcategory, trend),
+            "target_audience": self._determine_target_audience(category),
+            "competition_level": self._assess_competition(category, subcategory),
+            "market_demand": self._assess_market_demand(category),
+            "earnings_potential": earnings,
+            "creation_time": self._estimate_creation_time(category),
+            "tools_needed": self._determine_tools_needed(category)
         }
         
-        return project
+        return idea
     
-    def get_specifications(self, format_type):
-        """Obtener especificaciones técnicas"""
-        specs = self.formats[format_type]
+    def _generate_title(self, category: str, subcategory: str, trend: str) -> str:
+        """Generar título atractivo"""
+        title_patterns = {
+            "coloring_books": [
+                "{trend} Coloring Book: {subcategory}",
+                "{subcategory} Coloring Book for {trend}",
+                "The Ultimate {subcategory} Coloring Book",
+                "{trend} Inspired {subcategory} Coloring Book"
+            ],
+            "activity_books": [
+                "{trend} {subcategory} Book",
+                "{subcategory} Activities for {trend}",
+                "The Big Book of {subcategory} for {trend}",
+                "{trend} Themed {subcategory}"
+            ],
+            "journals": [
+                "{trend} {subcategory}",
+                "{subcategory} for {trend}",
+                "My {trend} {subcategory}",
+                "The {trend} {subcategory} Companion"
+            ],
+            "kids_books": [
+                "{subcategory} for Kids: {trend} Edition",
+                "{trend} {subcategory} for Children",
+                "Fun {subcategory}: {trend} Theme",
+                "{trend} Learning {subcategory}"
+            ]
+        }
+        
+        pattern = random.choice(title_patterns.get(category, title_patterns["coloring_books"]))
+        return pattern.format(subcategory=subcategory, trend=trend)
+    
+    def _generate_description(self, category: str, subcategory: str, trend: str) -> str:
+        """Generar descripción persuasiva"""
+        descriptions = {
+            "coloring_books": f"""Discover the perfect {trend.lower()} escape with this beautiful {subcategory.lower()}!
+
+This coloring book features:
+• {random.randint(50, 100)} unique and intricate designs
+• Single-sided pages to prevent bleed-through
+• A variety of difficulty levels from simple to complex
+• High-quality paper perfect for colored pencils, markers, or gel pens
+• Perforated pages for easy removal and display
+
+Perfect for:
+• {trend} enthusiasts seeking creative expression
+• Stress relief and mindfulness practice
+• Artists looking for inspiration
+• Gift-giving for any occasion
+
+Unleash your creativity and experience the therapeutic benefits of coloring today!""",
+            
+            "activity_books": f"""Challenge your mind with this engaging {subcategory.lower()} focused on {trend.lower()}!
+
+Features include:
+• {random.randint(100, 200)} carefully crafted activities
+• Increasing difficulty levels to keep you engaged
+• Solutions provided at the back of the book
+• Large print for easy reading
+• High-quality paper that prevents bleed-through
+
+Benefits:
+• Improves cognitive function and memory
+• Provides hours of entertainment
+• Perfect for travel or relaxation
+• Suitable for all skill levels
+
+Keep your mind sharp and entertained with this must-have activity book!""",
+            
+            "journals": f"""Embark on your {trend.lower()} journey with this beautifully designed {subcategory.lower()}!
+
+This journal includes:
+• {random.randint(100, 200)} pages for daily entries
+• Prompts and questions to guide your reflection
+• Inspirational quotes throughout
+• High-quality paper that works with most pens
+• Durable cover for daily use
+
+Perfect for:
+• Tracking your {trend.lower()} progress
+• Daily reflection and gratitude practice
+• Goal setting and achievement tracking
+• Creating lasting memories
+
+Start your transformative journey today!"""
+        }
+        
+        return descriptions.get(category, descriptions["coloring_books"])
+    
+    def _calculate_earnings(self, category: str) -> Dict[str, Any]:
+        """Calcular ganancias potenciales"""
+        # Precios típicos en KDP por categoría
+        base_prices = {
+            "coloring_books": 6.99,
+            "activity_books": 7.99,
+            "journals": 8.99,
+            "kids_books": 5.99
+        }
+        
+        base_price = base_prices.get(category, 6.99)
+        royalty_rate = 0.60  # 60% royalty para libros de impresión bajo demanda
         
         return {
-            **specs,
-            "bleed": "0.125 pulgadas",
-            "margins": "0.5 pulgadas mínimo",
-            "file_format": "PDF/X-1a recomendado",
-            "color_profile": "US Web Coated (SWOP) v2",
-            "fonts": "Embedded or outlined",
-            "image_quality": "High resolution, no compression"
+            "suggested_price": f"${base_price:.2f}",
+            "production_cost": f"${base_price * 0.4:.2f}",
+            "profit_per_book": f"${base_price * royalty_rate:.2f}",
+            "monthly_sales_low": 100,
+            "monthly_sales_high": 1000,
+            "monthly_earnings_low": f"${100 * base_price * royalty_rate:.2f}",
+            "monthly_earnings_high": f"${1000 * base_price * royalty_rate:.2f}",
+            "yearly_earnings_low": f"${100 * 12 * base_price * royalty_rate:.2f}",
+            "yearly_earnings_high": f"${1000 * 12 * base_price * royalty_rate:.2f}"
         }
     
-    def create_illustration_plan(self, idea):
-        """Crear plan de ilustraciones"""
-        illustration_types = {
-            "Libros infantiles": ["Portada", "Personajes", "Escenarios", "Objetos", "Acciones"],
-            "Libros de colorear": ["Portada", "Páginas complejas", "Páginas simples", "Patrones", "Bordes"],
-            "Journaling": ["Portada", "Páginas mensuales", "Páginas semanales", "Trackers", "Decoraciones"]
+    def _determine_page_count(self, category: str) -> int:
+        """Determinar número de páginas"""
+        page_ranges = {
+            "coloring_books": (50, 100),
+            "activity_books": (100, 200),
+            "journals": (150, 250),
+            "kids_books": (30, 80)
         }
         
-        types = illustration_types.get(idea["category"], ["Portada", "Interior", "Detalles"])
-        
-        illustrations = []
-        for i in range(idea["illustrations_needed"]):
-            ill_type = random.choice(types)
-            illustrations.append({
-                "id": i + 1,
-                "type": ill_type,
-                "complexity": random.choice(["simple", "medium", "complex"]),
-                "estimated_time": random.randint(30, 180),  # minutos
-                "description": f"{ill_type} en estilo {idea['style']}",
-                "tools_recommended": self.get_tools_for_style(idea["style"])
-            })
-        
-        return {
-            "total_illustrations": idea["illustrations_needed"],
-            "types": list(set(types)),
-            "list": illustrations[:10],  # Mostrar solo primeros 10
-            "total_time_hours": sum(ill["estimated_time"] for ill in illustrations) / 60
-        }
+        low, high = page_ranges.get(category, (50, 100))
+        return random.randint(low, high)
     
-    def get_tools_for_style(self, style):
-        """Recomendar herramientas según estilo"""
-        tools = {
-            "Minimalista": ["Adobe Illustrator", "Figma", "Inkscape"],
-            "Realista": ["Adobe Photoshop", "Procreate", "Clip Studio Paint"],
-            "Acuarela": ["Watercolor brushes", "Procreate", "Rebelle"],
-            "Vectorial": ["Adobe Illustrator", "Affinity Designer", "CorelDRAW"],
-            "Dibujo a mano": ["iPad + Apple Pencil", "Wacom Tablet", "Traditional media"]
+    def _determine_interior_type(self, category: str) -> str:
+        """Determinar tipo de interior"""
+        interiors = {
+            "coloring_books": "Black & White Interior with White Paper",
+            "activity_books": "Black & White Interior with White Paper",
+            "journals": "Black & White Interior with Cream Paper",
+            "kids_books": "Color Interior with White Paper"
         }
         
-        return tools.get(style, ["Adobe Creative Suite", "Procreate", "Affinity"])
+        return interiors.get(category, "Black & White Interior with White Paper")
     
-    def create_timeline(self, idea):
-        """Crear línea de tiempo de producción"""
-        total_hours = idea["illustrations_needed"] * 1.5  # Estimación
-        
-        return {
-            "research": "2-3 días",
-            "sketching": "3-5 días",
-            "illustration": f"{int(total_hours/8)} días laborables",
-            "formatting": "2-3 días",
-            "review": "1-2 días",
-            "publishing": "1 día",
-            "total_estimated": f"{int(total_hours/8 + 10)} días"
+    def _determine_book_size(self, category: str) -> str:
+        """Determinar tamaño del libro"""
+        sizes = {
+            "coloring_books": ["8.5\" x 11\"", "8.5\" x 8.5\"", "7\" x 10\""],
+            "activity_books": ["8.5\" x 11\"", "6\" x 9\"", "7\" x 10\""],
+            "journals": ["6\" x 9\"", "5.5\" x 8.5\"", "7\" x 10\""],
+            "kids_books": ["8.5\" x 11\"", "8.5\" x 8.5\"", "7\" x 10\""]
         }
+        
+        return random.choice(sizes.get(category, ["8.5\" x 11\""]))
     
-    def create_monetization_plan(self, idea):
-        """Crear plan de monetización"""
-        # Cálculos de Amazon KDP
-        price = idea["price_suggestion"]
-        pages = idea["pages"]
+    def _generate_keywords(self, category: str, subcategory: str, trend: str) -> List[str]:
+        """Generar palabras clave para KDP"""
+        base_keywords = [
+            subcategory.lower(),
+            trend.lower(),
+            f"{subcategory.lower()} book",
+            f"{trend.lower()} activities",
+            "Amazon KDP",
+            "print on demand"
+        ]
         
-        # Costos de impresión de Amazon (estimado)
-        printing_cost = 0.85 + (pages * 0.012)  # Fórmula simplificada
+        # Agregar keywords específicas por categoría
+        category_keywords = self.popular_keywords.get(category.split("_")[0], [])
         
-        # Regalías (60% para precios $2.99-$9.99, 35% fuera de ese rango)
-        if 2.99 <= price <= 9.99:
-            royalty_rate = 0.60
+        # Agregar palabras clave de moda
+        trending_keywords = [
+            "bestseller",
+            "gift idea",
+            "new release",
+            "hot seller",
+            "trending now"
+        ]
+        
+        all_keywords = base_keywords + category_keywords + trending_keywords
+        return random.sample(all_keywords, min(7, len(all_keywords)))
+    
+    def _determine_target_audience(self, category: str) -> List[str]:
+        """Determinar audiencia objetivo"""
+        audiences = {
+            "coloring_books": [
+                "Adults seeking stress relief",
+                "Art therapy patients",
+                "Seniors looking for hobbies",
+                "Teens interested in art",
+                "Gift buyers for special occasions"
+            ],
+            "activity_books": [
+                "Puzzle enthusiasts",
+                "Parents seeking educational activities",
+                "Teachers for classroom use",
+                "Travelers needing entertainment",
+                "Seniors maintaining cognitive health"
+            ],
+            "journals": [
+                "People practicing mindfulness",
+                "Students and professionals",
+                "Goal-oriented individuals",
+                "Therapy patients",
+                "Memory keepers and writers"
+            ],
+            "kids_books": [
+                "Parents of young children",
+                "Preschool teachers",
+                "Homeschooling families",
+                "Grandparents buying gifts",
+                "Childcare centers"
+            ]
+        }
+        
+        return random.sample(audiences.get(category, ["General audience"]), 3)
+    
+    def _assess_competition(self, category: str, subcategory: str) -> str:
+        """Evaluar nivel de competencia"""
+        # Categorías con alta competencia
+        high_competition = ["Adult Coloring Books", "Gratitude Journals", "Word Search Books"]
+        
+        if subcategory in high_competition:
+            return "High"
+        elif "Kids" in subcategory or "Children" in subcategory:
+            return "Medium"
         else:
-            royalty_rate = 0.35
+            return random.choice(["Low", "Medium"])
+    
+    def _assess_market_demand(self, category: str) -> str:
+        """Evaluar demanda del mercado"""
+        high_demand_categories = ["coloring_books", "journals"]
+        medium_demand_categories = ["activity_books", "kids_books"]
         
-        royalty_per_book = (price - printing_cost) * royalty_rate
-        
-        return {
-            "suggested_price": price,
-            "printing_cost": round(printing_cost, 2),
-            "royalty_rate": f"{royalty_rate*100}%",
-            "royalty_per_book": round(royalty_per_book, 2),
-            "break_even_sales": max(1, int(100 / royalty_per_book)),  # Asumiendo $100 de inversión
-            "monthly_sales_projections": {
-                "conservative": random.randint(50, 200),
-                "realistic": random.randint(200, 500),
-                "optimistic": random.randint(500, 1000)
-            },
-            "monthly_income_projections": {
-                "conservative": round(royalty_per_book * 100, 2),
-                "realistic": round(royalty_per_book * 300, 2),
-                "optimistic": round(royalty_per_book * 750, 2)
-            }
+        if category in high_demand_categories:
+            return "Very High"
+        elif category in medium_demand_categories:
+            return "High"
+        else:
+            return "Medium"
+    
+    def _estimate_creation_time(self, category: str) -> str:
+        """Estimar tiempo de creación"""
+        time_estimates = {
+            "coloring_books": "2-4 weeks",
+            "activity_books": "1-2 weeks",
+            "journals": "1-3 weeks",
+            "kids_books": "2-3 weeks"
         }
-    
-    def save_project(self, project, filename):
-        """Guardar proyecto en archivo"""
-        with open(filename, 'w', encoding='utf-8') as f:
-            json.dump(project, f, indent=2, ensure_ascii=False)
         
-        print(f"✅ Proyecto guardado: {filename}")
+        return time_estimates.get(category, "2-3 weeks")
+    
+    def _determine_tools_needed(self, category: str) -> List[str]:
+        """Determinar herramientas necesarias"""
+        tools = {
+            "coloring_books": [
+                "Adobe Illustrator or Procreate",
+                "Drawing tablet (optional)",
+                "KDP template for chosen size",
+                "Color palette generator",
+                "Pattern creation tools"
+            ],
+            "activity_books": [
+                "Microsoft Word or Google Docs",
+                "Puzzle generation software",
+                "KDP template",
+                "Font libraries",
+                "Layout design software"
+            ],
+            "journals": [
+                "Canva or Adobe InDesign",
+                "Journal template collection",
+                "Font pairing tools",
+                "Cover design software",
+                "Interior layout tools"
+            ],
+            "kids_books": [
+                "Children's illustration software",
+                "Educational content templates",
+                "Colorful font libraries",
+                "Character design tools",
+                "Age-appropriate content guides"
+            ]
+        }
         
-        # Mostrar resumen
-        print(f"\\n📊 RESUMEN DEL PROYECTO:")
-        print(f"   Título: {project['metadata']['title']}")
-        print(f"   Ilustraciones: {project['illustration_plan']['total_illustrations']}")
-        print(f"   Tiempo estimado: {project['illustration_plan']['total_time_hours']:.1f} horas")
-        print(f"   Regalía por libro: ${project['monetization']['royalty_per_book']}")
+        return tools.get(category, ["Design software", "KDP templates", "Creative tools"])
+    
+    def create_design_brief(self, idea: Dict[str, Any]) -> Dict[str, Any]:
+        """Crear brief de diseño detallado"""
+        design_brief = {
+            "project_overview": {
+                "title": idea["title"],
+                "category": idea["category"],
+                "subcategory": idea["subcategory"],
+                "trend": idea["trend"],
+                "target_audience": idea["target_audience"]
+            },
+            "specifications": {
+                "page_count": idea["page_count"],
+                "book_size": idea["size"],
+                "interior_type": idea["interior_type"],
+                "cover_type": idea["cover_type"],
+                "bleed_settings": "0.125 inches on all sides",
+                "margin_requirements": "0.5 inches minimum"
+            },
+            "design_requirements": {
+                "cover_design": {
+                    "style": self._determine_cover_style(idea["category"]),
+                    "colors": self._generate_color_palette(idea["category"], idea["trend"]),
+                    "fonts": self._recommend_fonts(idea["category"]),
+                    "elements": ["Title", "Subtitle", "Author Name", "Eye-catching imagery"]
+                },
+                "interior_design": {
+                    "layout": self._determine_layout(idea["category"]),
+                    "page_templates": self._create_page_templates(idea["category"]),
+                    "difficulty_progression": "Easy to Hard",
+                    "variety_requirements": "Mix of simple and complex designs"
+                }
+            },
+            "content_plan": {
+                "themes": self._generate_themes(idea["subcategory"], idea["trend"]),
+                "variations": self._determine_variations(idea["category"]),
+                "bonus_content": self._suggest_bonus_content(idea["category"]),
+                "page_sequence": self._plan_page_sequence(idea["page_count"])
+            },
+            "production_checklist": [
+                "Create cover design in CMYK color mode",
+                "Design interior pages with proper margins",
+                "Export as PDF with embedded fonts",
+                "Test print sample",
+                "Create 3D mockup for marketing",
+                "Write compelling book description",
+                "Research and select keywords",
+                "Set up pricing and distribution"
+            ]
+        }
         
-        return filename
-
-def main():
-    """Función principal"""
-    print("🎨 KDP DRAWING PRO - Generador de Proyectos de Ilustración")
-    print("="*60)
+        return design_brief
     
-    generator = KDPDrawingGenerator()
-    
-    # Generar 3 proyectos
-    print("\\n💡 GENERANDO PROYECTOS PARA KDP:")
-    print("-"*40)
-    
-    projects = []
-    for i in range(3):
-        idea = generator.generate_project_idea()
-        print(f"\\n{i+1}. {idea['theme']}")
-        print(f"   Categoría: {idea['category']}")
-        print(f"   Estilo: {idea['style']}")
-        print(f"   Formato: {idea['format']}")
-        print(f"   Ilustraciones: {idea['illustrations_needed']}")
-        print(f"   Precio sugerido: ${idea['price_suggestion']}")
+    def _determine_cover_style(self, category: str) -> str:
+        """Determinar estilo de portada"""
+        styles = {
+            "coloring_books": "Minimalist with one prominent colored illustration",
+            "activity_books": "Bright and engaging with puzzle elements",
+            "journals": "Elegant and sophisticated with subtle textures",
+            "kids_books": "Colorful and playful with cartoon characters"
+        }
         
-        # Crear proyecto completo
-        project = generator.create_project_plan(idea)
-        filename = f"kdp_project_{i+1}_{idea['category'].lower().replace(' ', '_')}.json"
-        generator.save_project(project, filename)
-        projects.append(project)
+        return styles.get(category, "Professional and eye-catching")
     
-    # Calcular totales
-    total_illustrations = sum(p["illustration_plan"]["total_illustrations"] for p in projects)
-    total_hours = sum(p["illustration_plan"]["total_time_hours"] for p in projects)
-    avg_royalty = sum(p["monetization"]["royalty_per_book"] for p in projects) / len(projects)
-    
-    print(f"\\n📈 REPORTE GENERAL:")
-    print("="*40)
-    print(f"Total proyectos: {len(projects)}")
-    print(f"Total ilustraciones: {total_illustrations}")
-    print(f"Total horas estimadas: {total_hours:.1f}")
-    print(f"Regalía promedio por libro: ${avg_royalty:.2f}")
-    
-    # Proyección de ingresos
-    monthly_sales = 300  # Estimación conservadora
-    monthly_income = avg_royalty * monthly_sales
-    
-    print(f"\\n💰 PROYECCIÓN DE INGRESOS (mensual):")
-    print(f"   Ventas estimadas: {monthly_sales} libros/mes")
-    print(f"   Ingreso estimado: ${monthly_income:.2f}/mes")
-    print(f"   Ingreso anual: ${monthly_income * 12:.2f}/año")
-    
-    # Guardar reporte
-    report = {
-        "total_projects": len(projects),
-        "total_illustrations": total_illustrations,
-        "total_hours": total_hours,
-        "average_royalty": avg_royalty,
-        "monthly_projection": {
-            "sales": monthly_sales,
-            "income": monthly_income,
-            "annual_income": monthly_income * 12
-        },
-        "generated_date": datetime.now().isoformat()
-    }
-    
-    with open('kdp_projects_report.json', 'w', encoding='utf-8') as f:
-        json.dump(report, f, indent=2)
-    
-    print(f"\\n✅ Reporte guardado en: kdp_projects_report.json")
-    
-    print("\\n🎯 PRÓXIMOS PASOS:")
-    print("1. Desarrollar ilustraciones según plan")
-    print("2. Formatear según especificaciones KDP")
-    print("3. Crear portada atractiva")
-    print("4. Publicar en Amazon KDP")
-    print("5. Promocionar el libro")
-
-if __name__ == "__main__":
-    main()'''
-    
-    with open("kdp_drawing_pro/main.py", 'w', encoding='utf-8') as f:
-        f.write(main_program)
-    
-    # 2. Guía de especificaciones KDP
-    kdp_guide = '''# GUÍA COMPLETA DE ESPECIFICACIONES KDP
-
-## Formatos de Libro
-
-### 1. Tapa Blanda (Paperback)
-- **Tamaños estándar:**
-  - 5" x 8" (12.7 x 20.32 cm)
-  - 6" x 9" (15.24 x 22.86 cm) ← Más popular
-  - 8.5" x 11" (21.59 x 27.94 cm)
-- **Resolución:** 300 DPI mínimo
-- **Modo color:** CMYK
-- **Sangrado:** 0.125" (3.175 mm)
-- **Márgenes:** 0.5" mínimo
-
-### 2. Tapa Dura (Hardcover)
-- **Tamaños disponibles:**
-  - 6" x 9" (15.24 x 22.86 cm)
-  - 7" x 10" (17.78 x 25.4 cm)
-  - 8.5" x 11" (21.59 x 27.94 cm)
-- **Resolución:** 300 DPI
-- **Cubierta:** Incluye lomo y solapas
-
-### 3. Libros para Colorear
-- **Tamaño recomendado:** 8.5" x 11"
-- **Papel:** Blanco premium (90 gsm)
-- **Impresión:** Una cara (single-sided)
-- **Encuadernación:** Perfecta (sin espiral)
-
-## Especificaciones Técnicas
-
-### Archivos de Interior
-- **Formato:** PDF
-- **Versión PDF:** 1.3, 1.4 o 1.6
-- **Compresión:** Sin compresión JPEG
-- **Fuentes:** Incrustadas o convertidas a curvas
-- **Perfil color:** US Web Coated (SWOP) v2
-
-### Portadas
-- **Resolución:** 300 DPI
-- **Modo color:** CMYK
-- **Plantilla:** Usar generador de KDP
-- **Espacio para código de barras:** 2" x 1.2"
-
-## Ilustraciones para KDP
-
-### Estilos Populares
-1. **Minimalista:** Líneas limpias, colores planos
-2. **Acuarela:** Efectos de pintura, texturas
-3. **Vectorial:** Formas geométricas, escalable
-4. **Realista:** Detallado, sombreado profesional
-5. **Dibujo a mano:** Orgánico, personal
-
-### Herramientas Recomendadas
-- **Adobe Illustrator:** Vectorial, portadas
-- **Adobe Photoshop:** Ilustraciones, retoque
-- **Procreate:** Dibujo digital, texturas
-- **Affinity Designer/Photo:** Alternativa económica
-- **Canva:** Plantillas rápidas
-
-### Flujo de Trabajo
-1. **Investigación:** Nicho, competencia, tendencias
-2. **Sketching:** Bocetos en baja resolución
-3. **Lineart:** Líneas limpias y definidas
-4. **Color:** Paletas coherentes
-5. **Sombreado:** Profundidad y volumen
-6. **Detalles:** Texturas, efectos finales
-7. **Exportación:** Formatos correctos
-
-## Monetización en KDP
-
-### Estructura de Precios
-- **Libros infantiles:** $4.99 - $12.99
-- **Libros para colorear:** $6.99 - $9.99
-- **Journaling:** $8.99 - $14.99
-- **Ficción:** $2.99 - $9.99
-- **No ficción:** $9.99 - $19.99
-
-### Regalías
-- **60%:** Para precios $2.99-$9.99 (ciertos países
+    def _generate_color_palette(self, category: str, trend: str) -> List[str]:
+        """Generar paleta de colores"""
+        palettes = {
+            "coloring_books": ["#2E294E", "#1B998B", "#F46036", "#C5D86D", "#FFFFFF"],
