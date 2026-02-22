@@ -1,438 +1,516 @@
-# Continuación de crear_5_apps_mas.py
-
-        Button(
-            onClick = {{ /* Navegar o realizar acción */ }},
-            modifier = Modifier.fillMaxWidth()
-        ) {{
-            Text("Comenzar")
-        }}
-    }}
-}}
+#!/usr/bin/env python3
 """
-            
-            screen_dir = os.path.join(app_dir, "app", "src", "main", "java", paquete_path, "screens")
-            os.makedirs(screen_dir, exist_ok=True)
-            
-            screen_path = os.path.join(screen_dir, f"{screen}.kt")
-            with open(screen_path, 'w', encoding='utf-8') as f:
-                f.write(contenido)
-    
-    def crear_layouts(self, app_dir, app_info):
-        """Crear layouts XML básicos"""
-        # activity_main.xml
-        contenido = """<?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout 
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity">
-
-    <com.google.android.material.card.MaterialCardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        app:cardCornerRadius="12dp"
-        app:cardElevation="8dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="24dp">
-
-            <ImageView
-                android:id="@+id/logo"
-                android:layout_width="120dp"
-                android:layout_height="120dp"
-                android:layout_gravity="center_horizontal"
-                android:src="@drawable/ic_launcher_foreground"
-                android:contentDescription="@string/app_logo" />
-
-            <TextView
-                android:id="@+id/title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="16dp"
-                android:text="@string/app_name"
-                android:textSize="28sp"
-                android:textStyle="bold"
-                android:textColor="@color/purple_700" />
-
-            <TextView
-                android:id="@+id/subtitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="8dp"
-                android:text="@string/app_description"
-                android:textSize="16sp"
-                android:textColor="@color/gray_600" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_start"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:layout_marginTop="32dp"
-                android:text="@string/start"
-                android:textSize="18sp"
-                app:cornerRadius="28dp" />
-
-        </LinearLayout>
-
-    </com.google.android.material.card.MaterialCardView>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/features_list"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintTop_toBottomOf="@id/card_view"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        tools:listitem="@layout/item_feature" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+CONTINUACIÓN - CREAR 5 APPS MÁS PARA ANDROID
 """
-        
-        layout_path = os.path.join(app_dir, "app", "src", "main", "res", "layout", "activity_main.xml")
-        with open(layout_path, 'w', encoding='utf-8') as f:
-            f.write(contenido)
-        
-        # item_feature.xml
-        item_content = """<?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView 
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginBottom="8dp"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="2dp">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="16dp">
+import os
+import json
 
-        <ImageView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/ic_check"
-            android:layout_marginEnd="12dp"
-            android:contentDescription="@string/feature_icon" />
-
-        <TextView
-            android:id="@+id/feature_text"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textSize="16sp"
-            android:textColor="@color/black" />
-
-    </LinearLayout>
-
-</com.google.android.material.card.MaterialCardView>
-"""
-        
-        item_path = os.path.join(app_dir, "app", "src", "main", "res", "layout", "item_feature.xml")
-        with open(item_path, 'w', encoding='utf-8') as f:
-            f.write(item_content)
+def crear_app_3_aprendizaje_idiomas():
+    """App 3: Aprendizaje de Idiomas"""
+    print("\nCreando App 3: LinguaLearn - Aprende Idiomas...")
     
-    def crear_strings_xml(self, app_dir, app_info):
-        """Crear strings.xml"""
-        contenido = f"""<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="app_name">{app_info['nombre']}</string>
-    <string name="app_description">{app_info['descripcion']}</string>
-    <string name="app_logo">Logo de la aplicación</string>
-    <string name="start">Comenzar</string>
-    <string name="feature_icon">Icono de característica</string>
+    app_dir = "apps/android/lingualearn"
+    os.makedirs(app_dir, exist_ok=True)
     
-    <!-- Características -->
-    <string-array name="features">
-{self.crear_array_caracteristicas(app_info['caracteristicas'])}
-    </string-array>
-    
-    <!-- Navegación -->
-    <string name="home">Inicio</string>
-    <string name="dashboard">Panel</string>
-    <string name="profile">Perfil</string>
-    <string name="settings">Ajustes</string>
-    <string name="analytics">Analíticas</string>
-    
-    <!-- Mensajes -->
-    <string name="welcome">¡Bienvenido a {app_info['nombre']}!</string>
-    <string name="loading">Cargando...</string>
-    <string name="error">Ha ocurrido un error</string>
-    <string name="retry">Reintentar</string>
-    <string name="success">¡Éxito!</string>
-    
-    <!-- Botones -->
-    <string name="save">Guardar</string>
-    <string name="cancel">Cancelar</string>
-    <string name="delete">Eliminar</string>
-    <string name="edit">Editar</string>
-    <string name="share">Compartir</string>
-    
-    <!-- Monetización -->
-    <string name="premium">Premium</string>
-    <string name="subscribe">Suscribirse</string>
-    <string name="free_trial">Prueba gratuita</string>
-</resources>
-"""
-        
-        strings_path = os.path.join(app_dir, "app", "src", "main", "res", "values", "strings.xml")
-        with open(strings_path, 'w', encoding='utf-8') as f:
-            f.write(contenido)
-    
-    def crear_array_caracteristicas(self, caracteristicas):
-        """Crear array de características"""
-        array_content = ""
-        for i, caracteristica in enumerate(caracteristicas):
-            array_content += f'        <item>{caracteristica}</item>\n'
-        return array_content
-    
-    def crear_colors_xml(self, app_dir, app_info):
-        """Crear colors.xml moderno"""
-        contenido = """<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <!-- Colores primarios -->
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
-    
-    <!-- Colores de acento -->
-    <color name="blue_500">#FF2196F3</color>
-    <color name="green_500">#FF4CAF50</color>
-    <color name="orange_500">#FFFF9800</color>
-    <color name="red_500">#FFF44336</color>
-    
-    <!-- Colores neutros -->
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
-    <color name="gray_50">#FFFAFAFA</color>
-    <color name="gray_100">#FFF5F5F5</color>
-    <color name="gray_200">#FFEEEEEE</color>
-    <color name="gray_300">#FFE0E0E0</color>
-    <color name="gray_400">#FFBDBDBD</color>
-    <color name="gray_500">#FF9E9E9E</color>
-    <color name="gray_600">#FF757575</color>
-    <color name="gray_700">#FF616161</color>
-    <color name="gray_800">#FF424242</color>
-    <color name="gray_900">#FF212121</color>
-    
-    <!-- Colores semánticos -->
-    <color name="success">#FF4CAF50</color>
-    <color name="warning">#FFFF9800</color>
-    <color name="error">#FFF44336</color>
-    <color name="info">#FF2196F3</color>
-    
-    <!-- Colores de fondo -->
-    <color name="background">@color/gray_50</color>
-    <color name="surface">@color/white</color>
-    <color name="on_background">@color/gray_900</color>
-    <color name="on_surface">@color/gray_900</color>
-</resources>
-"""
-        
-        colors_path = os.path.join(app_dir, "app", "src", "main", "res", "values", "colors.xml")
-        with open(colors_path, 'w', encoding='utf-8') as f:
-            f.write(contenido)
-    
-    def crear_gradle_wrapper(self, app_dir):
-        """Crear archivos Gradle wrapper"""
-        # gradle/wrapper/gradle-wrapper.properties
-        wrapper_content = """distributionBase=GRADLE_USER_HOME
-distributionPath=wrapper/dists
-distributionUrl=https\://services.gradle.org/distributions/gradle-8.4-bin.zip
-networkTimeout=10000
-zipStoreBase=GRADLE_USER_HOME
-zipStorePath=wrapper/dists
-"""
-        
-        wrapper_path = os.path.join(app_dir, "gradle", "wrapper", "gradle-wrapper.properties")
-        with open(wrapper_path, 'w', encoding='utf-8') as f:
-            f.write(wrapper_content)
-        
-        # settings.gradle
-        settings_content = """pluginManagement {
-    repositories {
-        google()
-        mavenCentral()
-        gradlePluginPortal()
+    estructura = {
+        "nombre": "LinguaLearn - Aprende Idiomas",
+        "paquete": "com.lingualearn.languages",
+        "version": "1.0.0",
+        "min_sdk": 21,
+        "target_sdk": 34,
+        "caracteristicas": [
+            "Cursos interactivos de idiomas",
+            "Reconocimiento de voz para pronunciación",
+            "Juegos de aprendizaje",
+            "Chat con IA para práctica",
+            "Flashcards inteligentes",
+            "Seguimiento de progreso",
+            "Modo offline",
+            "Certificados de progreso"
+        ],
+        "tecnologias": [
+            "Kotlin",
+            "Jetpack Compose",
+            "Room Database",
+            "Speech Recognition API",
+            "OpenAI API",
+            "ExoPlayer (audio/video)",
+            "WorkManager",
+            "Firebase ML Kit"
+        ],
+        "pantallas": [
+            "Selección de idioma",
+            "Dashboard de aprendizaje",
+            "Lecciones interactivas",
+            "Práctica de pronunciación",
+            "Juegos educativos",
+            "Chat con IA",
+            "Progreso y estadísticas",
+            "Perfil y logros"
+        ]
     }
+    
+    archivos = {
+        "build.gradle": """plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
 }
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
-        google()
-        mavenCentral()
-        maven { url 'https://jitpack.io' }
+
+android {
+    namespace 'com.lingualearn.languages'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "com.lingualearn.languages"
+        minSdk 21
+        targetSdk 34
+        versionCode 1
+        versionName "1.0.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        vectorDrawables {
+            useSupportLibrary true
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+    buildFeatures {
+        compose true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion '1.5.3'
     }
 }
 
-rootProject.name = "AppName"
-include ':app'
-"""
-        
-        settings_path = os.path.join(app_dir, "settings.gradle")
-        with open(settings_path, 'w', encoding='utf-8') as f:
-            f.write(settings_content)
-        
-        # build.gradle (project level)
-        build_content = """plugins {
-    id 'com.android.application' version '8.1.2' apply false
-    id 'org.jetbrains.kotlin.android' version '1.9.10' apply false
-    id 'com.google.gms.google-services' version '4.4.0' apply false
-}
-"""
-        
-        build_path = os.path.join(app_dir, "build.gradle")
-        with open(build_path, 'w', encoding='utf-8') as f:
-            f.write(build_content)
+dependencies {
+    implementation 'androidx.core:core-ktx:1.12.0'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.7.0'
+    implementation 'androidx.activity:activity-compose:1.8.0'
+    implementation "androidx.compose.ui:ui:$compose_version"
+    implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
+    implementation 'androidx.compose.material3:material3:1.1.2'
     
-    def crear_readme(self, app_dir, app_info):
-        """Crear README.md detallado"""
-        contenido = f"""# {app_info['nombre']}
+    // Navigation
+    implementation "androidx.navigation:navigation-compose:2.7.5"
+    
+    // Room Database
+    implementation "androidx.room:room-runtime:2.6.0"
+    implementation "androidx.room:room-ktx:2.6.0"
+    kapt "androidx.room:room-compiler:2.6.0"
+    
+    // Speech Recognition
+    implementation 'androidx.speech:speech-recognition:1.0.0'
+    
+    // OpenAI API
+    implementation 'com.aallam.openai:openai-client:3.5.0'
+    
+    // Audio/Video
+    implementation 'com.google.android.exoplayer:exoplayer:2.19.1'
+    
+    // Firebase ML Kit
+    implementation 'com.google.firebase:firebase-ml-natural-language:22.0.1'
+    implementation 'com.google.firebase:firebase-ml-natural-language-translate-model:20.0.9'
+    
+    // WorkManager
+    implementation "androidx.work:work-runtime-ktx:2.9.0"
+    
+    // Lottie Animations
+    implementation 'com.airbnb.android:lottie-compose:6.1.0'
+    
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+    androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
+    debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
+    debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_version"
+}""",
+        
+        "README.md": """# LinguaLearn - Aprende Idiomas
 
-{app_info['descripcion']}
+Aplicación Android para aprendizaje interactivo de idiomas.
 
-## 🚀 Características Principales
+## Características
 
-{self.crear_lista_caracteristicas(app_info['caracteristicas'])}
+- 🌍 Múltiples idiomas
+- 🎤 Reconocimiento de voz
+- 🎮 Juegos educativos
+- 🤖 Chat con IA
+- 📚 Flashcards inteligentes
+- 📊 Seguimiento de progreso
+- 📱 Modo offline
+- 🏆 Certificados
 
-## 🛠️ Tecnologías Utilizadas
+## Idiomas Disponibles
 
-{self.crear_lista_tecnologias(app_info['tecnologias'])}
+- Inglés
+- Español
+- Francés
+- Alemán
+- Italiano
+- Portugués
+- Japonés
+- Chino
 
-## 💰 Modelo de Monetización
+## Tecnologías
 
-{self.crear_lista_monetizacion(app_info['monetizacion'])}
+- Kotlin + Jetpack Compose
+- Room Database
+- Speech Recognition API
+- OpenAI API
+- ExoPlayer
+- Firebase ML Kit
 
-## 📱 Requisitos del Sistema
-
-- **Android:** 8.0 (API 24) o superior
-- **RAM:** 2GB mínimo recomendado
-- **Almacenamiento:** 50MB libre
-- **Conexión a Internet:** Requerida para funciones principales
-
-## 🏗️ Estructura del Proyecto
+## Estructura
 
 ```
-{app_info['nombre'].replace(' ', '_').lower()}/
+lingualearn/
 ├── app/
 │   ├── src/main/
-│   │   ├── java/{app_info['paquete'].replace('.', '/')}/
-│   │   │   ├── {app_info['nombre'].replace(' ', '')}MainActivity.kt
-│   │   │   ├── AppNavigation.kt
-│   │   │   └── screens/
-│   │   │       ├── HomeScreen.kt
-│   │   │       ├── DashboardScreen.kt
-│   │   │       ├── ProfileScreen.kt
-│   │   │       ├── SettingsScreen.kt
-│   │   │       └── AnalyticsScreen.kt
-│   │   ├── res/
-│   │   │   ├── layout/
-│   │   │   │   ├── activity_main.xml
-│   │   │   │   └── item_feature.xml
-│   │   │   ├── values/
-│   │   │   │   ├── strings.xml
-│   │   │   │   └── colors.xml
-│   │   │   └── drawable/
-│   │   └── AndroidManifest.xml
+│   │   ├── java/com/lingualearn/languages/
+│   │   │   ├── data/
+│   │   │   │   ├── local/
+│   │   │   │   ├── remote/
+│   │   │   │   └── repository/
+│   │   │   ├── domain/
+│   │   │   │   ├── model/
+│   │   │   │   └── usecase/
+│   │   │   ├── presentation/
+│   │   │   │   ├── screen/
+│   │   │   │   │   ├── lessons/
+│   │   │   │   │   ├── practice/
+│   │   │   │   │   ├── games/
+│   │   │   │   │   └── chat/
+│   │   │   │   ├── component/
+│   │   │   │   └── viewmodel/
+│   │   │   ├── feature/
+│   │   │   │   ├── speech/
+│   │   │   │   ├── translation/
+│   │   │   │   └── ai/
+│   │   │   └── navigation/
+│   │   └── res/
 │   └── build.gradle
-├── build.gradle
-├── settings.gradle
 └── README.md
 ```
 
-## 🔧 Configuración del Entorno
+## Configuración API
 
-1. **Requisitos previos:**
-   - Android Studio Flamingo o superior
-   - JDK 17 o superior
-   - Android SDK 34
+1. OpenAI API Key
+2. Firebase Configuration
+3. Speech Recognition permissions
 
-2. **Clonar y abrir:**
-   ```bash
-   git clone [repo-url]
-   cd {app_info['nombre'].replace(' ', '_').lower()}
-   ```
+## Licencia
 
-3. **Sincronizar proyecto:**
-   - Abrir en Android Studio
-   - File → Sync Project with Gradle Files
+MIT License"""
+    }
+    
+    for nombre, contenido in archivos.items():
+        ruta = os.path.join(app_dir, nombre)
+        with open(ruta, 'w', encoding='utf-8') as f:
+            f.write(contenido)
+    
+    with open(os.path.join(app_dir, "app_structure.json"), 'w', encoding='utf-8') as f:
+        json.dump(estructura, f, indent=2, ensure_ascii=False)
+    
+    print(f"App 3 creada en: {app_dir}")
+    return estructura
 
-4. **Ejecutar en emulador/dispositivo:**
-   - Seleccionar dispositivo
-   - Click en Run (▶️)
+def crear_app_4_meditacion_sueno():
+    """App 4: Meditación y Sueño"""
+    print("\nCreando App 4: ZenSpace - Meditación y Sueño...")
+    
+    app_dir = "apps/android/zenspace"
+    os.makedirs(app_dir, exist_ok=True)
+    
+    estructura = {
+        "nombre": "ZenSpace - Meditación y Sueño",
+        "paquete": "com.zenspace.meditation",
+        "version": "1.0.0",
+        "min_sdk": 21,
+        "target_sdk": 34,
+        "caracteristicas": [
+            "Sesiones de meditación guiada",
+            "Sonidos relajantes para dormir",
+            "Seguimiento del sueño",
+            "Respiración guiada",
+            "Estadísticas de bienestar",
+            "Recordatorios diarios",
+            "Modo sin distracciones",
+            "Integración con wearables"
+        ],
+        "tecnologias": [
+            "Kotlin",
+            "Jetpack Compose",
+            "Room Database",
+            "ExoPlayer (audio)",
+            "Health Connect API",
+            "WorkManager",
+            "Firebase Analytics",
+            "Lottie Animations"
+        ],
+        "pantallas": [
+            "Onboarding de bienestar",
+            "Dashboard principal",
+            "Meditaciones guiadas",
+            "Sonidos para dormir",
+            "Seguimiento de sueño",
+            "Ejercicios de respiración",
+            "Estadísticas",
+            "Configuración y perfil"
+        ]
+    }
+    
+    archivos = {
+        "build.gradle": """plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
+}
 
-## 📊 Métricas de Proyecto
+android {
+    namespace 'com.zenspace.meditation'
+    compileSdk 34
 
-- **Tamaño APK estimado:** 15-25MB
-- **Tiempo de compilación:** 2-3 minutos
-- **Líneas de código:** ~2,500
-- **Dependencias:** 25+ librerías modernas
+    defaultConfig {
+        applicationId "com.zenspace.meditation"
+        minSdk 21
+        targetSdk 34
+        versionCode 1
+        versionName "1.0.0"
 
-## 🎯 Roadmap de Desarrollo
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        vectorDrawables {
+            useSupportLibrary true
+        }
+    }
 
-### Fase 1 (Mes 1)
-- [ ] MVP funcional
-- [ ] Integración con APIs principales
-- [ ] Diseño UI/UX completo
-- [ ] Pruebas unitarias básicas
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+    buildFeatures {
+        compose true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion '1.5.3'
+    }
+}
 
-### Fase 2 (Mes 2-3)
-- [ ] Monetización implementada
-- [ ] Analytics y tracking
-- [ ] Optimización de rendimiento
-- [ ] Internacionalización
+dependencies {
+    implementation 'androidx.core:core-ktx:1.12.0'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.7.0'
+    implementation 'androidx.activity:activity-compose:1.8.0'
+    implementation "androidx.compose.ui:ui:$compose_version"
+    implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
+    implementation 'androidx.compose.material3:material3:1.1.2'
+    
+    // Navigation
+    implementation "androidx.navigation:navigation-compose:2.7.5"
+    
+    // Room Database
+    implementation "androidx.room:room-runtime:2.6.0"
+    implementation "androidx.room:room-ktx:2.6.0"
+    kapt "androidx.room:room-compiler:2.6.0"
+    
+    // Audio Player
+    implementation 'com.google.android.exoplayer:exoplayer:2.19.1'
+    
+    // Health Connect
+    implementation "androidx.health.connect:connect-client:1.1.0"
+    
+    // WorkManager
+    implementation "androidx.work:work-runtime-ktx:2.9.0"
+    
+    // Firebase
+    implementation platform('com.google.firebase:firebase-bom:32.5.0')
+    implementation 'com.google.firebase:firebase-analytics'
+    
+    // Lottie Animations
+    implementation 'com.airbnb.android:lottie-compose:6.1.0'
+    
+    // Charts
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+    
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+    androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
+    debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
+    debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_version"
+}""",
+        
+        "README.md": """# ZenSpace - Meditación y Sueño
 
-### Fase 3 (Mes 4-6)
-- [ ] Machine Learning features
-- [ ] Comunidad de usuarios
-- [ ] Escalabilidad backend
-- [ ] Expansión a iOS/Web
+Aplicación Android para meditación, relajación y seguimiento del sueño.
 
-## 📈 Proyección de Ingresos
+## Características
 
-| Mes | Usuarios | Ingresos | Notas |
-|-----|----------|----------|-------|
-| 1   | 1,000    | $500     | Lanzamiento |
-| 3   | 5,000    | $2,500   | Crecimiento |
-| 6   | 15,000   | $7,500   | Escalado |
-| 12  | 50,000   | $25,000  | Madurez |
+- 🧘‍♀️ Meditaciones guiadas
+- 🌙 Sonidos para dormir
+- 📊 Seguimiento de sueño
+- 🌬️ Respiración guiada
+- 📈 Estadísticas de bienestar
+- ⏰ Recordatorios
+- 🔕 Modo sin distracciones
+- ⌚ Integración con wearables
 
-## 🤝 Contribuir
+## Contenido
 
-1. Fork el proyecto
-2. Crear rama de feature (`git checkout -b feature/AmazingFeature`)
-3. Commit cambios (`git commit -m 'Add AmazingFeature'`)
-4. Push a la rama (`git push origin feature/AmazingFeature`)
-5. Abrir Pull Request
+### Meditaciones
+- Mindfulness
+- Reducción de estrés
+- Enfoque y concentración
+- Autocompasión
+- Meditaciones cortas (5 min)
 
-## 📄 Licencia
+### Sonidos
+- Lluvia
+- Olas del mar
+- Bosque
+- Blanco/rosa/marrón
+- Frecuencias binaurales
 
-Distribuido bajo la licencia MIT. Ver `LICENSE` para más información.
+### Sueño
+- Seguimiento de patrones
+- Calidad del sueño
+- Recomendaciones
+- Rutinas pre-sueño
 
-## 📞 Contacto
+## Tecnologías
 
-Proyecto: {app_info['nombre']}
-Paquete: {app_info['paquete']}
-Creado: {datetime.now().strftime('%Y-%m-%d')}
+- Kotlin + Jetpack Compose
+- Room Database
+- ExoPlayer (audio)
+- Health Connect API
+- Firebase Analytics
 
----
-*Este proyecto fue
+## Estructura
+
+```
+zenspace/
+├── app/
+│   ├── src/main/
+│   │   ├── java/com/zenspace/meditation/
+│   │   │   ├── data/
+│   │   │   │   ├── local/
+│   │   │   │   ├── repository/
+│   │   │   │   └── model/
+│   │   │   ├── domain/
+│   │   │   │   ├── model/
+│   │   │   │   └── usecase/
+│   │   │   ├── presentation/
+│   │   │   │   ├── screen/
+│   │   │   │   │   ├── meditation/
+│   │   │   │   │   ├── sleep/
+│   │   │   │   │   ├── breathing/
+│   │   │   │   │   └── stats/
+│   │   │   │   ├── component/
+│   │   │   │   └── viewmodel/
+│   │   │   ├── feature/
+│   │   │   │   ├── audio/
+│   │   │   │   ├── health/
+│   │   │   │   └── notification/
+│   │   │   └── navigation/
+│   │   └── res/
+│   └── build.gradle
+└── README.md
+```
+
+## Permisos Necesarios
+
+- Health Connect (sueño)
+- Notificaciones
+- Almacenamiento (audio offline)
+
+## Licencia
+
+MIT License"""
+    }
+    
+    for nombre, contenido in archivos.items():
+        ruta = os.path.join(app_dir, nombre)
+        with open(ruta, 'w', encoding='utf-8') as f:
+            f.write(contenido)
+    
+    with open(os.path.join(app_dir, "app_structure.json"), 'w', encoding='utf-8') as f:
+        json.dump(estructura, f, indent=2, ensure_ascii=False)
+    
+    print(f"App 4 creada en: {app_dir}")
+    return estructura
+
+def crear_app_5_productividad_tareas():
+    """App 5: Productividad y Gestión de Tareas"""
+    print("\nCreando App 5: TaskFlow - Gestión de Productividad...")
+    
+    app_dir = "apps/android/taskflow"
+    os.makedirs(app_dir, exist_ok=True)
+    
+    estructura = {
+        "nombre": "TaskFlow - Gestión de Productividad",
+        "paquete": "com.taskflow.productivity",
+        "version": "1.0.0",
+        "min_sdk": 21,
+        "target_sdk": 34,
+        "caracteristicas": [
+            "Gestión de tareas con Kanban",
+            "Pomodoro timer integrado",
+            "Sincronización multiplataforma",
+            "Recordatorios inteligentes",
+            "Estadísticas de productividad",
+            "Colaboración en equipo",
+            "Integración con calendario",
+            "Modo enfoque"
+        ],
+        "tecnologias": [
+            "Kotlin",
+            "Jetpack Compose",
+            "Room Database",
+            "Firebase Firestore",
+            "WorkManager",
+            "Calendar API",
+            "Retrofit",
+            "Hilt DI"
+        ],
+        "pantallas": [
+            "Dashboard de productividad",
+            "Tablero Kanban",
+            "Timer Pomodoro",
+            "Calendario de tareas",
+            "Estadísticas y reportes",
+            "Colaboración en equipo",
+            "Configuración",
+            "Perfil de usuario"
+        ]
+    }
+    
+    archivos = {
+        "build.gradle": """plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
+    id 'dagger.hilt.android.plugin'
+}
+
+android {

@@ -1,541 +1,557 @@
-# Continuación de crear_10_automations_b8n.py
+#!/usr/bin/env python3
+"""
+CONTINUACIÓN - CREAR 10 AUTOMATIZACIONES B8N
+"""
 
-# Descripción: {automation_info['descripcion']}
-# Creado: {datetime.now().strftime('%Y-%m-%d')}
+import os
+import json
+import yaml
 
-version: '3.0'
-name: {automation_info['id']}
-description: {automation_info['descripcion']}
-
-workflow:
-  triggers:
-    - name: manual_trigger
-      type: manual
-      description: Ejecución manual
-      
-    - name: scheduled_trigger
-      type: cron
-      schedule: "0 * * * *"  # Cada hora
-      description: Ejecución programada
-      
-    - name: webhook_trigger
-      type: webhook
-      endpoint: /webhook/{automation_info['id']}
-      description: Trigger por webhook
-
-  steps:
-    # Paso 1: Inicialización
-    - id: initialize
-      name: Inicializar sistema
-      type: script
-      script: src/initialize.py
-      timeout: 30s
-      
-    # Paso 2: Procesamiento de entrada
-    - id: process_input
-      name: Procesar datos de entrada
-      type: ai_processing
-      model: gpt-4
-      parameters:
-        temperature: 0.7
-        max_tokens: 1000
-      depends_on: initialize
-      
-    # Paso 3: Análisis con IA
-    - id: ai_analysis
-      name: Análisis avanzado con IA
-      type: ai_analysis
-      technologies: {automation_info['tecnologias']}
-      depends_on: process_input
-      
-    # Paso 4: Ejecutar acciones
-    - id: execute_actions
-      name: Ejecutar acciones automatizadas
-      type: actions
-      actions:
-        - send_notification
-        - update_database
-        - call_api
-      depends_on: ai_analysis
-      
-    # Paso 5: Manejar integraciones
-    - id: handle_integrations
-      name: Manejar integraciones externas
-      type: integrations
-      platforms: {automation_info['integraciones']}
-      depends_on: execute_actions
-      
-    # Paso 6: Generar reportes
-    - id: generate_reports
-      name: Generar reportes y analytics
-      type: reporting
-      outputs:
-        - dashboard
-        - email_report
-        - slack_notification
-      depends_on: handle_integrations
-      
-    # Paso 7: Monitoreo
-    - id: monitor_execution
-      name: Monitorear ejecución
-      type: monitoring
-      metrics:
-        - execution_time
-        - success_rate
-        - error_rate
-      depends_on: generate_reports
-
-  error_handling:
-    - condition: any_step_fails
-      action: retry
-      max_retries: 3
-      retry_delay: 5s
-      
-    - condition: critical_failure
-      action: notify
-      channels:
-        - email: admin@example.com
-        - slack: #alerts
-      message: "Critical failure in {automation_info['id']}"
-
-  outputs:
-    - name: execution_results
-      type: json
-      path: outputs/results.json
-      
-    - name: performance_metrics
-      type: metrics
-      path: outputs/metrics.json
-      
-    - name: audit_log
-      type: log
-      path: logs/audit.log
-
-scaling:
-  min_instances: 1
-  max_instances: 10
-  auto_scaling: true
-  metrics:
-    - cpu_utilization > 70%
-    - memory_utilization > 80%
-    - queue_length > 100
-
-monitoring:
-  enabled: true
-  metrics:
-    - execution_time
-    - success_rate
-    - error_rate
-    - queue_size
-  alerts:
-    - type: slack
-      channel: #automation-alerts
-    - type: email
-      recipients: ["team@example.com"]
-    - type: sms
-      numbers: ["+1234567890"]
-
-integrations:
-{self.crear_integraciones_yaml(automation_info['integraciones'])}
-
-security:
-  authentication: required
-  api_keys: encrypted
-  data_encryption: enabled
-  audit_logging: enabled
-
-version_control:
-  git:
-    enabled: true
-    branch: main
-    auto_deploy: true
-
-deployment:
-  platform: kubernetes
-  replicas: 2
-  resources:
-    requests:
-      cpu: "100m"
-      memory: "256Mi"
-    limits:
-      cpu: "500m"
-      memory: "512Mi"
-'''
-        
-        workflow_path = os.path.join(automation_dir, "workflows", "main_workflow.yaml")
-        with open(workflow_path, 'w', encoding='utf-8') as f:
-            f.write(contenido)
+def crear_automation_3_seo_optimizer():
+    """Automation 3: Optimizador SEO Automatizado"""
+    print("\nCreando Automation 3: SEO Optimization Engine...")
     
-    def crear_integraciones_yaml(self, integraciones):
-        """Crear sección YAML de integraciones"""
-        yaml_content = ""
-        for integracion in integraciones:
-            yaml_content += f"  - name: {integracion}\n"
-            yaml_content += f"    type: api\n"
-            yaml_content += f"    authentication: oauth2\n"
-            yaml_content += f"    rate_limit: 1000/hour\n"
-            yaml_content += f"    enabled: true\n"
-        return yaml_content
+    automation_dir = "automations/b8n/seo_optimizer"
+    os.makedirs(automation_dir, exist_ok=True)
     
-    def crear_dockerfile(self, automation_dir, automation_info):
-        """Crear Dockerfile para containerización"""
-        contenido = f'''# Dockerfile for {automation_info['nombre']}
-# {automation_info['descripcion']}
-
-FROM python:3.11-slim
-
-WORKDIR /app
-
-# Instalar dependencias del sistema
-RUN apt-get update && apt-get install -y \
-    gcc \
-    g++ \
-    && rm -rf /var/lib/apt/lists/*
-
-# Copiar requirements primero para cache de Docker
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Copiar código de la aplicación
-COPY src/ ./src/
-COPY config/ ./config/
-COPY workflows/ ./workflows/
-
-# Crear usuario no-root
-RUN useradd -m -u 1000 automation && \
-    chown -R automation:automation /app
-USER automation
-
-# Variables de entorno
-ENV PYTHONPATH=/app
-ENV PYTHONUNBUFFERED=1
-ENV LOG_LEVEL=INFO
-
-# Puerto de la aplicación
-EXPOSE 8000
-
-# Comando de inicio
-CMD ["python", "src/main.py"]
-'''
-        
-        docker_path = os.path.join(automation_dir, "Dockerfile")
-        with open(docker_path, 'w', encoding='utf-8') as f:
-            f.write(contenido)
+    automation = {
+        "name": "AI SEO Optimization Suite",
+        "version": "1.0.0",
+        "description": "Sistema automatizado de optimización SEO y análisis de competencia",
+        "triggers": [
+            {
+                "type": "schedule",
+                "config": {
+                    "cron": "0 6 * * 1",
+                    "timezone": "UTC"
+                }
+            },
+            {
+                "type": "webhook",
+                "config": {
+                    "path": "/seo/webhook",
+                    "method": "POST"
+                }
+            }
+        ],
+        "actions": [
+            {
+                "name": "keyword_research",
+                "type": "semrush",
+                "config": {
+                    "tool": "keyword_magic",
+                    "database": "us",
+                    "volume_min": 100,
+                    "difficulty_max": 70
+                }
+            },
+            {
+                "name": "competitor_analysis",
+                "type": "ahrefs",
+                "config": {
+                    "metrics": ["dr", "backlinks", "traffic", "keywords"],
+                    "competitors": 5,
+                    "depth": "comprehensive"
+                }
+            },
+            {
+                "name": "content_optimization",
+                "type": "openai",
+                "config": {
+                    "model": "gpt-4",
+                    "task": "seo_content_rewrite",
+                    "optimization": ["keywords", "readability", "structure"]
+                }
+            },
+            {
+                "name": "technical_seo_audit",
+                "type": "screaming_frog",
+                "config": {
+                    "crawl_limit": 500,
+                    "checks": ["broken_links", "duplicate_content", "page_speed", "mobile_friendly"]
+                }
+            },
+            {
+                "name": "rank_tracking",
+                "type": "serpapi",
+                "config": {
+                    "keywords": 100,
+                    "locations": ["us", "uk", "ca", "au"],
+                    "frequency": "daily",
+                    "search_engine": "google"
+                }
+            }
+        ],
+        "integrations": [
+            {
+                "name": "SEMrush",
+                "type": "api",
+                "config": {
+                    "api_key": "${SEMRUSH_API_KEY}",
+                    "tools": ["keyword_analytics", "site_audit", "backlink_analytics"]
+                }
+            },
+            {
+                "name": "Ahrefs",
+                "type": "api",
+                "config": {
+                    "api_key": "${AHREFS_API_KEY}",
+                    "endpoints": ["site_explorer", "content_explorer", "keywords_explorer"]
+                }
+            },
+            {
+                "name": "Google Search Console",
+                "type": "api",
+                "config": {
+                    "credentials": "${GSC_CREDENTIALS}",
+                    "property": "${GSC_PROPERTY}"
+                }
+            },
+            {
+                "name": "Google Analytics 4",
+                "type": "api",
+                "config": {
+                    "property_id": "${GA4_PROPERTY_ID}",
+                    "metrics": ["sessions", "organic_traffic", "conversions"]
+                }
+            }
+        ],
+        "features": [
+            "AI-powered keyword research",
+            "Competitor intelligence",
+            "Content optimization suggestions",
+            "Technical SEO audits",
+            "Rank tracking and reporting",
+            "Backlink monitoring",
+            "Site speed optimization",
+            "Local SEO optimization"
+        ],
+        "reports": [
+            "Weekly SEO performance",
+            "Competitor analysis",
+            "Keyword opportunity",
+            "Technical issues",
+            "Content gap analysis",
+            "ROI calculation"
+        ]
+    }
     
-    def crear_requirements(self, automation_dir, automation_info):
-        """Crear requirements.txt"""
-        contenido = f'''# Requirements for {automation_info['nombre']}
-# Tecnologías: {', '.join(automation_info['tecnologias'])}
-
-# Core
-fastapi==0.104.1
-uvicorn[standard]==0.24.0
-pydantic==2.5.0
-python-dotenv==1.0.0
-
-# Async
-asyncio==3.4.3
-aiohttp==3.9.1
-httpx==0.25.1
-
-# AI/ML
-openai==1.3.0
-langchain==0.0.340
-transformers==4.36.0
-torch==2.1.0
-scikit-learn==1.3.2
-
-# Data Processing
-pandas==2.1.3
-numpy==1.26.2
-polars==0.19.19
-
-# APIs & Integrations
-requests==2.31.0
-google-api-python-client==2.108.0
-boto3==1.34.0
-twilio==8.9.0
-
-# Database
-sqlalchemy==2.0.23
-psycopg2-binary==2.9.9
-redis==5.0.1
-
-# Monitoring & Logging
-prometheus-client==0.19.0
-structlog==23.2.0
-sentry-sdk==1.38.0
-
-# Testing
-pytest==7.4.3
-pytest-asyncio==0.21.1
-pytest-cov==4.1.0
-
-# Development
-black==23.11.0
-flake8==6.1.0
-mypy==1.7.1
-pre-commit==3.5.0
-'''
-        
-        requirements_path = os.path.join(automation_dir, "requirements.txt")
-        with open(requirements_path, 'w', encoding='utf-8') as f:
-            f.write(contenido)
+    b8n_config = {
+        "version": "1.0",
+        "name": "seo_optimizer",
+        "description": "Automated SEO optimization and analysis workflow",
+        "on": {
+            "schedule": "0 6 * * 1",
+            "webhook": {
+                "path": "/seo",
+                "methods": ["POST"]
+            }
+        },
+        "jobs": {
+            "keyword_analysis": {
+                "runs-on": "ubuntu-latest",
+                "steps": [
+                    {
+                        "name": "Get keyword ideas",
+                        "uses": "semrush/keyword-research@v1",
+                        "with": {
+                            "database": "us",
+                            "volume_min": 100
+                        }
+                    },
+                    {
+                        "name": "Analyze competition",
+                        "uses": "ahrefs/competitor-analysis@v1",
+                        "with": {
+                            "competitors": 5,
+                            "metrics": "dr,backlinks,traffic"
+                        }
+                    }
+                ]
+            },
+            "site_audit": {
+                "runs-on": "ubuntu-latest",
+                "steps": [
+                    {
+                        "name": "Crawl website",
+                        "uses": "screaming-frog/crawl@v1",
+                        "with": {
+                            "url": "${{ vars.WEBSITE_URL }}",
+                            "limit": 500
+                        }
+                    },
+                    {
+                        "name": "Check technical SEO",
+                        "uses": "seo/technical-audit@v1",
+                        "with": {
+                            "checks": "broken_links,page_speed,mobile"
+                        }
+                    }
+                ]
+            },
+            "content_optimization": {
+                "runs-on": "ubuntu-latest",
+                "needs": ["keyword_analysis"],
+                "steps": [
+                    {
+                        "name": "Optimize content",
+                        "uses": "openai/seo-rewrite@v1",
+                        "with": {
+                            "model": "gpt-4",
+                            "optimization": "keywords,readability,structure"
+                        }
+                    },
+                    {
+                        "name": "Generate meta tags",
+                        "uses": "seo/meta-generator@v1"
+                    }
+                ]
+            },
+            "reporting": {
+                "runs-on": "ubuntu-latest",
+                "needs": ["keyword_analysis", "site_audit", "content_optimization"],
+                "steps": [
+                    {
+                        "name": "Track rankings",
+                        "uses": "serpapi/rank-tracking@v1",
+                        "with": {
+                            "keywords": "${{ jobs.keyword_analysis.outputs.keywords }}",
+                            "locations": "us,uk,ca,au"
+                        }
+                    },
+                    {
+                        "name": "Generate report",
+                        "run": "python generate_seo_report.py"
+                    }
+                ]
+            }
+        }
+    }
     
-    def crear_readme(self, automation_dir, automation_info):
-        """Crear README.md detallado"""
-        contenido = f'''# {automation_info['nombre']}
-
-{automation_info['descripcion']}
-
-## 🚀 Características Principales
-
-- **IA Avanzada:** Utiliza {', '.join(automation_info['tecnologias'][:2])} para análisis inteligente
-- **Automatización Completa:** Flujo de {len(automation_info['flujo'])} pasos automatizados
-- **Integraciones:** Conecta con {len(automation_info['integraciones'])} plataformas externas
-- **Escalabilidad:** Diseñado para manejar miles de ejecuciones simultáneas
-- **Monitoreo:** Métricas en tiempo real y alertas proactivas
-
-## 🛠️ Stack Tecnológico
-
-{self.crear_lista_tecnologias(automation_info['tecnologias'])}
-
-## 🔄 Flujo de Trabajo
-
-{self.crear_lista_flujo(automation_info['flujo'])}
-
-## 🔌 Integraciones
-
-{self.crear_lista_integraciones(automation_info['integraciones'])}
-
-## 💰 Modelo de Monetización
-
-**{automation_info['monetizacion']}**
-
-- Implementación completa
-- Soporte 24/7
-- Actualizaciones continuas
-- Escalado automático
-
-## 🏗️ Arquitectura
-
-```
-{automation_info['id']}/
-├── src/
-│   ├── main.py              # Punto de entrada principal
-│   ├── ai_engine.py         # Motor de IA
-│   ├── data_processor.py    # Procesamiento de datos
-│   └── integrations/        # Módulos de integración
-├── config/
-│   └── automation_config.json  # Configuración principal
-├── workflows/
-│   └── main_workflow.yaml   # Definición del workflow
-├── tests/                   # Pruebas automatizadas
-├── docs/                    # Documentación
-├── deployment/              # Configuración de despliegue
-├── Dockerfile              # Containerización
-├── requirements.txt        # Dependencias
-└── README.md              # Este archivo
-```
-
-## 🚀 Despliegue Rápido
-
-### Opción 1: Docker
-```bash
-# Construir imagen
-docker build -t {automation_info['id']} .
-
-# Ejecutar contenedor
-docker run -p 8000:8000 {automation_info['id']}
-```
-
-### Opción 2: Kubernetes
-```bash
-# Aplicar configuración
-kubectl apply -f deployment/kubernetes.yaml
-
-# Verificar estado
-kubectl get pods -l app={automation_info['id']}
-```
-
-### Opción 3: Serverless (AWS Lambda)
-```bash
-# Desplegar con Serverless Framework
-sls deploy --stage prod
-```
-
-## ⚙️ Configuración
-
-1. **Variables de entorno:**
-```bash
-export API_KEY=your_key
-export DATABASE_URL=postgresql://user:pass@host/db
-export LOG_LEVEL=INFO
-```
-
-2. **Configuración de integraciones:**
-   - Editar `config/automation_config.json`
-   - Agregar API keys y endpoints
-
-3. **Configuración de monitoreo:**
-   - Configurar alertas en `config/monitoring.yaml`
-   - Conectar con Slack/Email/SMS
-
-## 📊 Métricas y Monitoreo
-
-- **Tasa de éxito:** > 99.5%
-- **Tiempo de ejecución:** < 1 segundo promedio
-- **Disponibilidad:** 99.9% SLA
-- **Escalado automático:** Basado en carga
-
-### Dashboard de Métricas:
-- Ejecuciones por hora
-- Tasa de éxito/error
-- Tiempos de respuesta
-- Uso de recursos
-
-## 🔧 Desarrollo
-
-### Estructura del Código
-```python
-# Ejemplo de módulo principal
-from src.ai_engine import AIEngine
-from src.data_processor import DataProcessor
-
-class {automation_info['id'].title().replace('_', '')}Automation:
-    def __init__(self):
-        self.ai = AIEngine()
-        self.processor = DataProcessor()
+    with open(os.path.join(automation_dir, "automation.json"), 'w', encoding='utf-8') as f:
+        json.dump(automation, f, indent=2, ensure_ascii=False)
     
-    async def execute(self, input_data):
-        # Procesamiento con IA
-        analysis = await self.ai.analyze(input_data)
-        # Ejecutar acciones
-        results = await self.processor.execute(analysis)
-        return results
-```
-
-### Pruebas
-```bash
-# Ejecutar pruebas unitarias
-pytest tests/ -v
-
-# Pruebas de integración
-pytest tests/integration/ -v
-
-# Coverage
-pytest --cov=src tests/
-```
-
-## 📈 Escalabilidad
-
-### Niveles de Escalado:
-1. **Básico:** Hasta 1,000 ejecuciones/día
-2. **Profesional:** Hasta 10,000 ejecuciones/día  
-3. **Enterprise:** Hasta 100,000+ ejecuciones/día
-
-### Recursos por Nivel:
-| Nivel | CPU | Memoria | Almacenamiento | Precio |
-|-------|-----|---------|----------------|--------|
-| Básico | 1 core | 2GB | 10GB | ${automation_info['monetizacion'].split()[-1].replace('/mes', '')}/mes |
-| Pro | 2 cores | 4GB | 50GB | $499/mes |
-| Enterprise | 4+ cores | 8+GB | 100+GB | Personalizado |
-
-## 🤝 Soporte
-
-- **Documentación:** Completa con ejemplos
-- **Comunidad:** Foro y Discord
-- **Soporte técnico:** 24/7 por chat y email
-- **Actualizaciones:** Mensuales con nuevas features
-
-## 📄 Licencia
-
-Licencia MIT. Ver `LICENSE` para detalles.
-
-## 📞 Contacto
-
-- **Nombre:** {automation_info['nombre']}
-- **ID:** {automation_info['id']}
-- **Creado:** {datetime.now().strftime('%Y-%m-%d')}
-- **Versión:** 1.0.0
-
----
-*Esta automatización fue generada automáticamente como parte de un sprint de desarrollo masivo.*
-'''
-        
-        readme_path = os.path.join(automation_dir, "README.md")
-        with open(readme_path, 'w', encoding='utf-8') as f:
-            f.write(contenido)
+    with open(os.path.join(automation_dir, "b8n.yaml"), 'w', encoding='utf-8') as f:
+        yaml.dump(b8n_config, f, default_flow_style=False)
     
-    def crear_lista_tecnologias(self, tecnologias):
-        """Crear lista markdown de tecnologías"""
-        lista = ""
-        for tecnologia in tecnologias:
-            lista += f"- 🚀 {tecnologia}\n"
-        return lista
-    
-    def crear_lista_flujo(self, flujo):
-        """Crear lista markdown del flujo"""
-        lista = ""
-        for i, paso in enumerate(flujo, 1):
-            lista += f"{i}. **{paso}**\n"
-        return lista
-    
-    def crear_lista_integraciones(self, integraciones):
-        """Crear lista markdown de integraciones"""
-        lista = ""
-        for integracion in integraciones:
-            lista += f"- 🔗 {integracion}\n"
-        return lista
-    
-    def crear_integration_files(self, automation_dir, automation_info):
-        """Crear archivos de integración específicos"""
-        integrations_dir = os.path.join(automation_dir, "integrations")
-        
-        for integracion in automation_info["integraciones"][:3]:  # Crear para primeras 3
-            integration_file = os.path.join(integrations_dir, f"{integracion.lower().replace(' ', '_')}.py")
-            
-            contenido = f'''# Integración con {integracion}
-# Para {automation_info['nombre']}
+    print(f"Automation 3 creada en: {automation_dir}")
+    return automation
 
-import logging
-from typing import Dict, Any
-import aiohttp
-
-logger = logging.getLogger(__name__)
-
-class {integracion.replace(' ', '').replace('-', '')}Integration:
-    """Integración con {integracion}"""
+def crear_automation_4_customer_support():
+    """Automation 4: Soporte al Cliente con IA"""
+    print("\nCreando Automation 4: AI Customer Support...")
     
-    def __init__(self, api_key: str = None, base_url: str = None):
-        self.api_key = api_key or os.getenv('{integracion.upper()}_API_KEY')
-        self.base_url = base_url or 'https://api.{integracion.lower().replace(" ", "")}.com'
-        self.session = None
-        
-    async def connect(self):
-        """Establecer conexión"""
-        self.session = aiohttp.ClientSession(
-            headers={{
-                'Authorization': f'Bearer {{self.api_key}}',
-                'Content-Type': 'application/json'
-            }}
-        )
-        logger.info(f"Conectado a {integracion}")
-        
-    async def send_data(self, data: Dict[str, Any]) -> Dict[str, Any]:
-        """Enviar datos a {integracion}"""
-        if not self.session:
-            await self.connect()
-            
-        try:
-            async with self.session.post(
-                f'{{self.base_url}}/api/v1/data',
-                json=data
-            ) as response:
-                if response.status == 200:
-                    result = await response.json()
-                    logger.info(f"Datos enviados a {integracion}: {{result}}")
-                    return result
-                else:
-                    error = await response.text()
-                    logger.error(f"Error enviando a {integ
+    automation_dir = "automations/b8n/customer_support"
+    os.makedirs(automation_dir, exist_ok=True)
+    
+    automation = {
+        "name": "AI-Powered Customer Support Suite",
+        "version": "1.0.0",
+        "description": "Sistema automatizado de soporte al cliente con IA y chatbots",
+        "triggers": [
+            {
+                "type": "real_time",
+                "config": {
+                    "sources": ["email", "chat", "social_media", "phone"],
+                    "priority": "high"
+                }
+            },
+            {
+                "type": "schedule",
+                "config": {
+                    "cron": "0 */2 * * *",
+                    "timezone": "UTC"
+                }
+            }
+        ],
+        "actions": [
+            {
+                "name": "ticket_routing",
+                "type": "ai_classification",
+                "config": {
+                    "model": "support_ticket_classifier",
+                    "categories": ["billing", "technical", "sales", "general"],
+                    "priority": "auto_detect"
+                }
+            },
+            {
+                "name": "response_generation",
+                "type": "openai",
+                "config": {
+                    "model": "gpt-4",
+                    "context": "customer_support",
+                    "tone": "professional_friendly",
+                    "language": "auto_detect"
+                }
+            },
+            {
+                "name": "sentiment_analysis",
+                "type": "nlp",
+                "config": {
+                    "model": "sentiment_vader",
+                    "metrics": ["sentiment_score", "urgency_level", "customer_mood"]
+                }
+            },
+            {
+                "name": "knowledge_base_search",
+                "type": "vector_search",
+                "config": {
+                    "database": "support_knowledge_base",
+                    "similarity_threshold": 0.8,
+                    "top_k": 3
+                }
+            },
+            {
+                "name": "escalation_handling",
+                "type": "workflow",
+                "config": {
+                    "conditions": ["high_urgency", "complex_issue", "escalation_request"],
+                    "actions": ["assign_to_agent", "notify_manager", "create_follow_up"]
+                }
+            }
+        ],
+        "integrations": [
+            {
+                "name": "Zendesk",
+                "type": "api",
+                "config": {
+                    "subdomain": "${ZENDESK_SUBDOMAIN}",
+                    "api_token": "${ZENDESK_API_TOKEN}",
+                    "sync": "real_time"
+                }
+            },
+            {
+                "name": "Intercom",
+                "type": "api",
+                "config": {
+                    "app_id": "${INTERCOM_APP_ID}",
+                    "access_token": "${INTERCOM_ACCESS_TOKEN}"
+                }
+            },
+            {
+                "name": "Slack",
+                "type": "api",
+                "config": {
+                    "bot_token": "${SLACK_BOT_TOKEN}",
+                    "channels": ["#support", "#urgent"]
+                }
+            },
+            {
+                "name": "Twilio",
+                "type": "api",
+                "config": {
+                    "account_sid": "${TWILIO_ACCOUNT_SID}",
+                    "auth_token": "${TWILIO_AUTH_TOKEN}",
+                    "phone_number": "${TWILIO_PHONE}"
+                }
+            }
+        ],
+        "features": [
+            "AI-powered ticket classification",
+            "Automated response generation",
+            "Sentiment analysis and mood detection",
+            "Knowledge base integration",
+            "Multi-channel support",
+            "Escalation workflows",
+            "Performance analytics",
+            "Customer satisfaction tracking"
+        ],
+        "metrics": {
+            "response_time": "< 5 minutes",
+            "resolution_rate": "85%+",
+            "customer_satisfaction": "90%+",
+            "agent_productivity": "40% increase",
+            "cost_reduction": "60%+"
+        }
+    }
+    
+    b8n_config = {
+        "version": "1.0",
+        "name": "customer_support",
+        "description": "AI-powered customer support automation",
+        "on": {
+            "webhook": {
+                "path": "/support/webhook",
+                "methods": ["POST"]
+            },
+            "schedule": "0 */2 * * *"
+        },
+        "jobs": {
+            "process_ticket": {
+                "runs-on": "ubuntu-latest",
+                "steps": [
+                    {
+                        "name": "Classify ticket",
+                        "uses": "ai/ticket-classifier@v1",
+                        "with": {
+                            "model": "support_classifier_v2",
+                            "categories": "billing,technical,sales,general"
+                        }
+                    },
+                    {
+                        "name": "Analyze sentiment",
+                        "uses": "nlp/sentiment-analysis@v1",
+                        "with": {
+                            "model": "vader",
+                            "metrics": "sentiment,urgency,mood"
+                        }
+                    }
+                ]
+            },
+            "generate_response": {
+                "runs-on": "ubuntu-latest",
+                "needs": ["process_ticket"],
+                "steps": [
+                    {
+                        "name": "Search knowledge base",
+                        "uses": "vector/search-kb@v1",
+                        "with": {
+                            "query": "${{ jobs.process_ticket.outputs.ticket_text }}",
+                            "threshold": 0.8
+                        }
+                    },
+                    {
+                        "name": "Generate AI response",
+                        "uses": "openai/support-response@v1",
+                        "with": {
+                            "model": "gpt-4",
+                            "tone": "professional_friendly",
+                            "context": "${{ jobs.process_ticket.outputs.context }}"
+                        }
+                    }
+                ]
+            },
+            "handle_escalation": {
+                "runs-on": "ubuntu-latest",
+                "needs": ["process_ticket"],
+                "if": "${{ jobs.process_ticket.outputs.requires_escalation }}",
+                "steps": [
+                    {
+                        "name": "Assign to agent",
+                        "uses": "zendesk/assign-ticket@v1",
+                        "with": {
+                            "ticket_id": "${{ jobs.process_ticket.outputs.ticket_id }}",
+                            "agent_id": "${{ vars.SUPPORT_AGENT }}"
+                        }
+                    },
+                    {
+                        "name": "Notify team",
+                        "uses": "slack/send-notification@v1",
+                        "with": {
+                            "channel": "#urgent-support",
+                            "message": "New escalated ticket"
+                        }
+                    }
+                ]
+            }
+        }
+    }
+    
+    with open(os.path.join(automation_dir, "automation.json"), 'w', encoding='utf-8') as f:
+        json.dump(automation, f, indent=2, ensure_ascii=False)
+    
+    with open(os.path.join(automation_dir, "b8n.yaml"), 'w', encoding='utf-8') as f:
+        yaml.dump(b8n_config, f, default_flow_style=False)
+    
+    print(f"Automation 4 creada en: {automation_dir}")
+    return automation
+
+def crear_automation_5_ecommerce_optimizer():
+    """Automation 5: Optimizador de E-commerce"""
+    print("\nCreando Automation 5: E-commerce Optimization...")
+    
+    automation_dir = "automations/b8n/ecommerce_optimizer"
+    os.makedirs(automation_dir, exist_ok=True)
+    
+    automation = {
+        "name": "AI E-commerce Optimization Platform",
+        "version": "1.0.0",
+        "description": "Sistema automatizado para optimización de tiendas online y conversiones",
+        "triggers": [
+            {
+                "type": "schedule",
+                "config": {
+                    "cron": "0 4 * * *",
+                    "timezone": "UTC"
+                }
+            },
+            {
+                "type": "event",
+                "config": {
+                    "events": ["purchase", "abandoned_cart", "product_view", "checkout_start"]
+                }
+            }
+        ],
+        "actions": [
+            {
+                "name": "price_optimization",
+                "type": "ai_pricing",
+                "config": {
+                    "model": "dynamic_pricing_v2",
+                    "factors": ["demand", "competition", "inventory", "seasonality"],
+                    "frequency": "hourly"
+                }
+            },
+            {
+                "name": "product_recommendations",
+                "type": "ml_recommendation",
+                "config": {
+                    "algorithm": "collaborative_filtering",
+                    "based_on": ["purchase_history", "browsing_behavior", "similar_users"],
+                    "personalization": "high"
+                }
+            },
+            {
+                "name": "abandoned_cart_recovery",
+                "type": "email_sequence",
+                "config": {
+                    "sequence": "3_email_recovery",
+                    "timing": ["1_hour", "24_hours", "72_hours"],
+                    "discount": "personalized"
+                }
+            },
+            {
+                "name": "inventory_management",
+                "type": "predictive_analytics",
+                "config": {
+                    "model": "inventory_forecasting",
+                    "lead_time": "auto_calculate",
+                    "reorder_point": "dynamic"
+                }
+            },
+            {
+                "name": "customer_segmentation",
+                "type": "clustering",
+                "config": {
+                    "algorithm": "kmeans",
+                    "segments": ["high_value", "at_risk", "new", "loyal"],
+                    "actions": "personalized_marketing"
+                }
+            }
+        ],
+        "integrations": [
+            {
+                "name": "Shopify",
+                "type": "api",
+                "config": {
+                    "shop": "${SHOPIFY_SHOP}",
+                    "access_token": "${SHOPIFY_ACCESS_TOKEN}",
+                    "webhooks": ["orders", "products", "customers"]
+                }
+            },
+            {
+                "name": "WooCommerce",
+                "type": "api",
+                "config": {
+                    "url": "${WOOCOMMERCE_URL}",
+                    "consumer_key": "${WOOCOMMERCE_KEY}",
+                    "consumer_secret": "${WOOCOMMERCE_SECRET}"
+                }
+            },
+            {
+                "name": "Klaviyo",
+                "type": "api",
+                "config": {
+                    "api_key": "${KLAVIYO_API_KEY}",
+                    "lists": ["customers", "subscribers", "abandoned_cart"]
+                }
