@@ -1,0 +1,421 @@
+[debug] [2026-04-11T16:38:51.253Z] ----------------------------------------------------------------------
+[debug] [2026-04-11T16:38:51.258Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\Usuario\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js deploy
+[debug] [2026-04-11T16:38:51.258Z] CLI Version:   15.9.0
+[debug] [2026-04-11T16:38:51.259Z] Platform:      win32
+[debug] [2026-04-11T16:38:51.259Z] Node Version:  v24.11.0
+[debug] [2026-04-11T16:38:51.259Z] Time:          Sat Apr 11 2026 11:38:51 GMT-0500 (hora de Ecuador)
+[debug] [2026-04-11T16:38:51.259Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-04-11T16:38:56.263Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-04-11T16:38:56.263Z] > authorizing via signed-in user (edgar.flores.guerra.2011@gmail.com)
+[debug] [2026-04-11T16:38:56.264Z] [iam] checking project opengravity-ai-edgar for permissions ["datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2026-04-11T16:38:56.266Z] Checked if tokens are valid: false, expires at: 1775851317984
+[debug] [2026-04-11T16:38:56.266Z] Checked if tokens are valid: false, expires at: 1775851317984
+[debug] [2026-04-11T16:38:56.266Z] > refreshing access token with scopes: []
+[debug] [2026-04-11T16:38:56.269Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2026-04-11T16:38:56.269Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-04-11T16:38:56.522Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2026-04-11T16:38:56.522Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-04-11T16:38:56.540Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/opengravity-ai-edgar:testIamPermissions [none]
+[debug] [2026-04-11T16:38:56.540Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/opengravity-ai-edgar:testIamPermissions  x-goog-user-project=opengravity-ai-edgar
+[debug] [2026-04-11T16:38:56.540Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/opengravity-ai-edgar:testIamPermissions {"permissions":["datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2026-04-11T16:38:57.088Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/opengravity-ai-edgar:testIamPermissions 200
+[debug] [2026-04-11T16:38:57.089Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/opengravity-ai-edgar:testIamPermissions {"permissions":["datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2026-04-11T16:38:57.090Z] Checked if tokens are valid: true, expires at: 1775929135523
+[debug] [2026-04-11T16:38:57.090Z] Checked if tokens are valid: true, expires at: 1775929135523
+[debug] [2026-04-11T16:38:57.091Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/opengravity-ai-edgar [none]
+[debug] [2026-04-11T16:38:57.506Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/opengravity-ai-edgar 200
+[debug] [2026-04-11T16:38:57.507Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/opengravity-ai-edgar {"projectId":"opengravity-ai-edgar","projectNumber":"820538848076","displayName":"OpenGravity AI Edgar","name":"projects/opengravity-ai-edgar","resources":{"hostingSite":"opengravity-ai-edgar"},"state":"ACTIVE","etag":"1_71de38d8-db8d-4766-b410-d2193b01bc1c"}
+[debug] [2026-04-11T16:39:03.603Z] defaultcredentials: writing to file C:\Users\Usuario\AppData\Roaming\firebase\edgar_flores.guerra.2011_gmail.com_application_default_credentials.json
+[debug] [2026-04-11T16:39:03.608Z] Checked if tokens are valid: true, expires at: 1775929135523
+[debug] [2026-04-11T16:39:03.609Z] Checked if tokens are valid: true, expires at: 1775929135523
+[debug] [2026-04-11T16:39:03.611Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/opengravity-ai-edgar/sites pageToken=&pageSize=10
+[debug] [2026-04-11T16:39:05.169Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/opengravity-ai-edgar/sites 200
+[debug] [2026-04-11T16:39:05.170Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/opengravity-ai-edgar/sites {"sites":[{"name":"projects/opengravity-ai-edgar/sites/opengravity-ai-edgar","defaultUrl":"https://opengravity-ai-edgar.web.app","type":"DEFAULT_SITE"}]}
+[debug] [2026-04-11T16:39:05.170Z] Checked if tokens are valid: true, expires at: 1775929135523
+[debug] [2026-04-11T16:39:05.171Z] Checked if tokens are valid: true, expires at: 1775929135523
+[debug] [2026-04-11T16:39:05.171Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/opengravity-ai-edgar/sites 
+[debug] [2026-04-11T16:39:05.730Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/opengravity-ai-edgar/sites 200
+[debug] [2026-04-11T16:39:05.730Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/opengravity-ai-edgar/sites {"sites":[{"name":"projects/opengravity-ai-edgar/sites/opengravity-ai-edgar","defaultUrl":"https://opengravity-ai-edgar.web.app","type":"DEFAULT_SITE"}]}
+[debug] [2026-04-11T16:39:05.731Z] Checked if tokens are valid: true, expires at: 1775929135523
+[debug] [2026-04-11T16:39:05.731Z] Checked if tokens are valid: true, expires at: 1775929135523
+[debug] [2026-04-11T16:39:05.731Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/opengravity-ai-edgar/webApps/-/config [none]
+[debug] [2026-04-11T16:39:06.286Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/opengravity-ai-edgar/webApps/-/config 200
+[debug] [2026-04-11T16:39:06.286Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/opengravity-ai-edgar/webApps/-/config {"projectId":"opengravity-ai-edgar","appId":"1:820538848076:web:38b91d1d4ba382a3ee55e9","storageBucket":"opengravity-ai-edgar.firebasestorage.app","apiKey":"AIzaSyDvIkk6eQCZRG-3lgXoHGtGayHCX_qtyZ8","authDomain":"opengravity-ai-edgar.firebaseapp.com","messagingSenderId":"820538848076","projectNumber":"820538848076","version":"2"}
+[info] 
+   Thank you for trying our early preview of Next.js support on Firebase Hosting.
+   During the preview, support is best-effort and breaking changes can be expected. Proceed with caution.
+   The integration is known to work with Next.js version 12 - 15.0. You may encounter errors.
+
+   Documentation: https://firebase.google.com/docs/hosting/frameworks/nextjs
+   File a bug: https://github.com/firebase/firebase-tools/issues/new?template=bug_report.md
+   Submit a feature request: https://github.com/firebase/firebase-tools/issues/new?template=feature_request.md
+
+   We'd love to learn from you. Express your interest in helping us shape the future of Firebase Hosting: https://goo.gle/41enW5X
+
+[debug] [2026-04-11T16:39:23.196Z] Checked if tokens are valid: true, expires at: 1775929135523
+[debug] [2026-04-11T16:39:23.196Z] Checked if tokens are valid: true, expires at: 1775929135523
+[debug] [2026-04-11T16:39:23.196Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/opengravity-ai-edgar/sites/opengravity-ai-edgar [none]
+[debug] [2026-04-11T16:39:24.123Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/opengravity-ai-edgar/sites/opengravity-ai-edgar 200
+[debug] [2026-04-11T16:39:24.124Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/opengravity-ai-edgar/sites/opengravity-ai-edgar {"name":"projects/opengravity-ai-edgar/sites/opengravity-ai-edgar","defaultUrl":"https://opengravity-ai-edgar.web.app","type":"DEFAULT_SITE"}
+[info] ⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of C:\Users\Usuario\package-lock.json as the root directory.
+ To silence this warning, set `turbopack.root` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/turbopack#root-directory for more information.
+ Detected additional lockfiles: 
+   * C:\Users\Usuario\.gemini\antigravity\scratch\opengravity\open-gravity-ui\package-lock.json
+   * C:\Users\Usuario\.gemini\antigravity\scratch\opengravity\package-lock.json
+   * C:\Users\Usuario\.gemini\antigravity\scratch\package-lock.json
+
+
+[info] ▲ Next.js 16.1.6 (Turbopack)
+
+[info] - Environments: .env.local, .env
+
+
+[info]   Creating an optimized production build ...
+
+[info] ✓ Compiled successfully in 15.9s
+
+[info]   Running TypeScript ...
+
+[info]   Collecting page data using 11 workers ...
+
+[info] [Upstash Redis] The 'url' property is missing or undefined in your Redis config.
+
+[info] [Upstash Redis] The 'token' property is missing or undefined in your Redis config.
+
+[info] [Upstash Redis] The 'url' property is missing or undefined in your Redis config.
+
+[info] [Upstash Redis] The 'token' property is missing or undefined in your Redis config.
+
+[info] [Upstash Redis] The 'url' property is missing or undefined in your Redis config.
+
+[info] [Upstash Redis] The 'token' property is missing or undefined in your Redis config.
+
+[info] [Upstash Redis] The 'url' property is missing or undefined in your Redis config.
+[Upstash Redis] The 'token' property is missing or undefined in your Redis config.
+
+[info] [Upstash Redis] The 'url' property is missing or undefined in your Redis config.
+
+[info] [Upstash Redis] The 'token' property is missing or undefined in your Redis config.
+
+[info] [Upstash Redis] The 'url' property is missing or undefined in your Redis config.
+
+[info] [Upstash Redis] The 'token' property is missing or undefined in your Redis config.
+
+[info] [Upstash Redis] The 'url' property is missing or undefined in your Redis config.
+
+[info] [Upstash Redis] The 'token' property is missing or undefined in your Redis config.
+
+[info] [Upstash Redis] The 'url' property is missing or undefined in your Redis config.
+
+[info] [Upstash Redis] The 'token' property is missing or undefined in your Redis config.
+
+[info] [Upstash Redis] The 'url' property is missing or undefined in your Redis config.
+
+[info] [Upstash Redis] The 'token' property is missing or undefined in your Redis config.
+
+[info] [Upstash Redis] The 'url' property is missing or undefined in your Redis config.
+
+[info] [Upstash Redis] The 'token' property is missing or undefined in your Redis config.
+
+[info]   Generating static pages using 11 workers (0/16) ...
+
+[info]   Generating static pages using 11 workers (4/16) 
+
+[info]   Generating static pages using 11 workers (8/16) 
+
+[info] [Upstash Redis] The 'url' property is missing or undefined in your Redis config.
+
+[info] [Upstash Redis] The 'token' property is missing or undefined in your Redis config.
+
+[info] [Upstash Redis] The 'url' property is missing or undefined in your Redis config.
+
+[info] [Upstash Redis] The 'token' property is missing or undefined in your Redis config.
+
+[info]   Generating static pages using 11 workers (12/16) 
+
+[info] ✓ Generating static pages using 11 workers (16/16) in 532.9ms
+
+[info]   Finalizing page optimization ...
+
+[info] 
+
+[info] Route (app)
+┌ ƒ /
+├ ƒ /_not-found
+├ ƒ /api/chat
+├ ƒ /api/cron
+├ ƒ /api/cron/facebook-poster
+├ ƒ /api/cron/lead-sniper
+├ ƒ /api/diag
+├ ƒ /api/files
+├ ƒ /api/health
+├ ƒ /api/ingest
+├ ƒ /api/knowledge
+├ ƒ /api/predict
+├ ƒ /api/predict/status
+├ ƒ /api/research
+├ ƒ /api/skills
+├ ƒ /api/stats
+├ ƒ /api/tts
+├ ƒ /api/webhook/telegram
+└ ƒ /predict
+
+
+[info] 
+ƒ  (Dynamic)  server-rendered on demand
+
+
+[info] Building a Cloud Function to run this application. This is needed due to:
+[info]  • non-static component /_not-found/page
+[info]  • non-static component /api/chat/route
+[info]  • non-static component /api/cron/facebook-poster/route
+[info]  • non-static component /api/cron/lead-sniper/route
+[info]  • non-static component /api/cron/route
+[debug] [2026-04-11T16:40:03.632Z]  • non-static component /api/diag/route
+[debug] [2026-04-11T16:40:03.632Z]  • non-static component /api/files/route
+[debug] [2026-04-11T16:40:03.633Z]  • non-static component /api/health/route
+[debug] [2026-04-11T16:40:03.633Z]  • non-static component /api/ingest/route
+[debug] [2026-04-11T16:40:03.633Z]  • non-static component /api/knowledge/route
+[debug] [2026-04-11T16:40:03.633Z]  • non-static component /api/predict/route
+[debug] [2026-04-11T16:40:03.633Z]  • non-static component /api/predict/status/route
+[debug] [2026-04-11T16:40:03.633Z]  • non-static component /api/research/route
+[debug] [2026-04-11T16:40:03.633Z]  • non-static component /api/skills/route
+[debug] [2026-04-11T16:40:03.633Z]  • non-static component /api/stats/route
+[debug] [2026-04-11T16:40:03.633Z]  • non-static component /api/tts/route
+[debug] [2026-04-11T16:40:03.633Z]  • non-static component /api/webhook/telegram/route
+[debug] [2026-04-11T16:40:03.633Z]  • non-static component /page
+[debug] [2026-04-11T16:40:03.633Z]  • non-static component /predict/page
+[info]  • and 14 other reasons, use --debug to see more
+[info] 
+[debug] [2026-04-11T16:40:04.293Z] Checked if tokens are valid: true, expires at: 1775929135523
+[debug] [2026-04-11T16:40:04.293Z] Checked if tokens are valid: true, expires at: 1775929135523
+[debug] [2026-04-11T16:40:04.293Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/opengravity-ai-edgar/sites/opengravity-ai-edgar [none]
+[debug] [2026-04-11T16:40:05.261Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/opengravity-ai-edgar/sites/opengravity-ai-edgar 200
+[debug] [2026-04-11T16:40:05.261Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/opengravity-ai-edgar/sites/opengravity-ai-edgar {"name":"projects/opengravity-ai-edgar/sites/opengravity-ai-edgar","defaultUrl":"https://opengravity-ai-edgar.web.app","type":"DEFAULT_SITE"}
+[debug] [2026-04-11T16:40:08.036Z] Error: EPERM: operation not permitted, symlink 'C:\Users\Usuario\.gemini\antigravity\scratch\opengravity\open-gravity-ui\node_modules\firebase-admin' -> 'C:\Users\Usuario\.gemini\antigravity\scratch\opengravity\open-gravity-ui\.firebase\opengravity-ai-edgar\functions\.next\dev\node_modules\firebase-admin-fc6228f5a0779d52'
+[debug] [2026-04-11T16:40:38.424Z] ----------------------------------------------------------------------
+[debug] [2026-04-11T16:40:38.428Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\Usuario\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js deploy --debug
+[debug] [2026-04-11T16:40:38.429Z] CLI Version:   15.9.0
+[debug] [2026-04-11T16:40:38.429Z] Platform:      win32
+[debug] [2026-04-11T16:40:38.429Z] Node Version:  v24.11.0
+[debug] [2026-04-11T16:40:38.430Z] Time:          Sat Apr 11 2026 11:40:38 GMT-0500 (hora de Ecuador)
+[debug] [2026-04-11T16:40:38.430Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-04-11T16:40:41.810Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-04-11T16:40:41.812Z] > authorizing via signed-in user (edgar.flores.guerra.2011@gmail.com)
+[debug] [2026-04-11T16:40:41.813Z] [iam] checking project opengravity-ai-edgar for permissions ["datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2026-04-11T16:40:41.815Z] Checked if tokens are valid: true, expires at: 1775929135523
+[debug] [2026-04-11T16:40:41.816Z] Checked if tokens are valid: true, expires at: 1775929135523
+[debug] [2026-04-11T16:40:41.817Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/opengravity-ai-edgar:testIamPermissions [none]
+[debug] [2026-04-11T16:40:41.818Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/opengravity-ai-edgar:testIamPermissions  x-goog-user-project=opengravity-ai-edgar
+[debug] [2026-04-11T16:40:41.818Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/opengravity-ai-edgar:testIamPermissions {"permissions":["datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2026-04-11T16:40:42.064Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/opengravity-ai-edgar:testIamPermissions 200
+[debug] [2026-04-11T16:40:42.065Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/opengravity-ai-edgar:testIamPermissions {"permissions":["datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2026-04-11T16:40:42.066Z] Checked if tokens are valid: true, expires at: 1775929135523
+[debug] [2026-04-11T16:40:42.066Z] Checked if tokens are valid: true, expires at: 1775929135523
+[debug] [2026-04-11T16:40:42.067Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/opengravity-ai-edgar [none]
+[debug] [2026-04-11T16:40:42.379Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/opengravity-ai-edgar 200
+[debug] [2026-04-11T16:40:42.379Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/opengravity-ai-edgar {"projectId":"opengravity-ai-edgar","projectNumber":"820538848076","displayName":"OpenGravity AI Edgar","name":"projects/opengravity-ai-edgar","resources":{"hostingSite":"opengravity-ai-edgar"},"state":"ACTIVE","etag":"1_71de38d8-db8d-4766-b410-d2193b01bc1c"}
+[debug] [2026-04-11T16:40:47.352Z] defaultcredentials: writing to file C:\Users\Usuario\AppData\Roaming\firebase\edgar_flores.guerra.2011_gmail.com_application_default_credentials.json
+[debug] [2026-04-11T16:40:47.356Z] Checked if tokens are valid: true, expires at: 1775929135523
+[debug] [2026-04-11T16:40:47.357Z] Checked if tokens are valid: true, expires at: 1775929135523
+[debug] [2026-04-11T16:40:47.357Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/opengravity-ai-edgar/sites pageToken=&pageSize=10
+[debug] [2026-04-11T16:40:48.432Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/opengravity-ai-edgar/sites 200
+[debug] [2026-04-11T16:40:48.432Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/opengravity-ai-edgar/sites {"sites":[{"name":"projects/opengravity-ai-edgar/sites/opengravity-ai-edgar","defaultUrl":"https://opengravity-ai-edgar.web.app","type":"DEFAULT_SITE"}]}
+[debug] [2026-04-11T16:40:48.434Z] Checked if tokens are valid: true, expires at: 1775929135523
+[debug] [2026-04-11T16:40:48.434Z] Checked if tokens are valid: true, expires at: 1775929135523
+[debug] [2026-04-11T16:40:48.434Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/opengravity-ai-edgar/sites 
+[debug] [2026-04-11T16:40:48.991Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/opengravity-ai-edgar/sites 200
+[debug] [2026-04-11T16:40:48.991Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/opengravity-ai-edgar/sites {"sites":[{"name":"projects/opengravity-ai-edgar/sites/opengravity-ai-edgar","defaultUrl":"https://opengravity-ai-edgar.web.app","type":"DEFAULT_SITE"}]}
+[debug] [2026-04-11T16:40:48.992Z] Checked if tokens are valid: true, expires at: 1775929135523
+[debug] [2026-04-11T16:40:48.992Z] Checked if tokens are valid: true, expires at: 1775929135523
+[debug] [2026-04-11T16:40:48.993Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/opengravity-ai-edgar/webApps/-/config [none]
+[debug] [2026-04-11T16:40:49.407Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/opengravity-ai-edgar/webApps/-/config 200
+[debug] [2026-04-11T16:40:49.407Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/opengravity-ai-edgar/webApps/-/config {"projectId":"opengravity-ai-edgar","appId":"1:820538848076:web:38b91d1d4ba382a3ee55e9","storageBucket":"opengravity-ai-edgar.firebasestorage.app","apiKey":"AIzaSyDvIkk6eQCZRG-3lgXoHGtGayHCX_qtyZ8","authDomain":"opengravity-ai-edgar.firebaseapp.com","messagingSenderId":"820538848076","projectNumber":"820538848076","version":"2"}
+[info] 
+   Thank you for trying our early preview of Next.js support on Firebase Hosting.
+   During the preview, support is best-effort and breaking changes can be expected. Proceed with caution.
+   The integration is known to work with Next.js version 12 - 15.0. You may encounter errors.
+
+   Documentation: https://firebase.google.com/docs/hosting/frameworks/nextjs
+   File a bug: https://github.com/firebase/firebase-tools/issues/new?template=bug_report.md
+   Submit a feature request: https://github.com/firebase/firebase-tools/issues/new?template=feature_request.md
+
+   We'd love to learn from you. Express your interest in helping us shape the future of Firebase Hosting: https://goo.gle/41enW5X
+
+[debug] [2026-04-11T16:41:06.036Z] Checked if tokens are valid: true, expires at: 1775929135523
+[debug] [2026-04-11T16:41:06.036Z] Checked if tokens are valid: true, expires at: 1775929135523
+[debug] [2026-04-11T16:41:06.037Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/opengravity-ai-edgar/sites/opengravity-ai-edgar [none]
+[debug] [2026-04-11T16:41:06.962Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/opengravity-ai-edgar/sites/opengravity-ai-edgar 200
+[debug] [2026-04-11T16:41:06.962Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/opengravity-ai-edgar/sites/opengravity-ai-edgar {"name":"projects/opengravity-ai-edgar/sites/opengravity-ai-edgar","defaultUrl":"https://opengravity-ai-edgar.web.app","type":"DEFAULT_SITE"}
+[info] ⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of C:\Users\Usuario\package-lock.json as the root directory.
+ To silence this warning, set `turbopack.root` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/turbopack#root-directory for more information.
+ Detected additional lockfiles: 
+   * C:\Users\Usuario\.gemini\antigravity\scratch\opengravity\open-gravity-ui\package-lock.json
+   * C:\Users\Usuario\.gemini\antigravity\scratch\opengravity\package-lock.json
+   * C:\Users\Usuario\.gemini\antigravity\scratch\package-lock.json
+
+
+[info] ▲ Next.js 16.1.6 (Turbopack)
+
+[info] - Environments: .env.local, .env
+
+
+[info]   Creating an optimized production build ...
+
+[info] 
+
+
+[info] Source path: ./src/app/globals.css
+
+[info] Setting up new context...
+
+[info] Finding changed files: 27.199ms
+
+[info] Reading changed files: 105.41ms
+
+[info] Sorting candidates: 5.129ms
+
+[info] Generate rules: 325.619ms
+
+[info] Build stylesheet: 7.692ms
+
+[info] Potential classes:  3362
+
+[info] Active contexts:  1
+
+[info] JIT TOTAL: 824.113ms
+
+[info] 
+
+
+[info] ✓ Compiled successfully in 13.9s
+
+[info]   Running TypeScript ...
+
+[info]   Collecting page data using 11 workers ...
+
+[info] [Upstash Redis] The 'url' property is missing or undefined in your Redis config.
+
+[info] [Upstash Redis] The 'token' property is missing or undefined in your Redis config.
+
+[info] [Upstash Redis] The 'url' property is missing or undefined in your Redis config.
+
+[info] [Upstash Redis] The 'token' property is missing or undefined in your Redis config.
+
+[info] [Upstash Redis] The 'url' property is missing or undefined in your Redis config.
+
+[info] [Upstash Redis] The 'token' property is missing or undefined in your Redis config.
+
+[info] [Upstash Redis] The 'url' property is missing or undefined in your Redis config.
+
+[info] [Upstash Redis] The 'token' property is missing or undefined in your Redis config.
+
+[info] [Upstash Redis] The 'url' property is missing or undefined in your Redis config.
+
+[info] [Upstash Redis] The 'token' property is missing or undefined in your Redis config.
+
+[info] [Upstash Redis] The 'url' property is missing or undefined in your Redis config.
+
+[info] [Upstash Redis] The 'token' property is missing or undefined in your Redis config.
+
+[info] [Upstash Redis] The 'url' property is missing or undefined in your Redis config.
+
+[info] [Upstash Redis] The 'token' property is missing or undefined in your Redis config.
+
+[info] [Upstash Redis] The 'url' property is missing or undefined in your Redis config.
+
+[info] [Upstash Redis] The 'token' property is missing or undefined in your Redis config.
+
+[info] [Upstash Redis] The 'url' property is missing or undefined in your Redis config.
+
+[info] [Upstash Redis] The 'token' property is missing or undefined in your Redis config.
+
+[info] [Upstash Redis] The 'url' property is missing or undefined in your Redis config.
+
+[info] [Upstash Redis] The 'token' property is missing or undefined in your Redis config.
+
+[info] [Upstash Redis] The 'url' property is missing or undefined in your Redis config.
+
+[info] [Upstash Redis] The 'token' property is missing or undefined in your Redis config.
+
+[info]   Generating static pages using 11 workers (0/16) ...
+
+[info]   Generating static pages using 11 workers (4/16) 
+
+[info]   Generating static pages using 11 workers (8/16) 
+
+[info] [Upstash Redis] The 'url' property is missing or undefined in your Redis config.
+
+[info] [Upstash Redis] The 'token' property is missing or undefined in your Redis config.
+
+[info] [Upstash Redis] The 'url' property is missing or undefined in your Redis config.
+
+[info] [Upstash Redis] The 'token' property is missing or undefined in your Redis config.
+
+[info]   Generating static pages using 11 workers (12/16) 
+
+[info] ✓ Generating static pages using 11 workers (16/16) in 375.2ms
+
+[info]   Finalizing page optimization ...
+
+[info] 
+
+[info] Route (app)
+┌ ƒ /
+├ ƒ /_not-found
+├ ƒ /api/chat
+├ ƒ /api/cron
+├ ƒ /api/cron/facebook-poster
+├ ƒ /api/cron/lead-sniper
+├ ƒ /api/diag
+├ ƒ /api/files
+├ ƒ /api/health
+├ ƒ /api/ingest
+├ ƒ /api/knowledge
+├ ƒ /api/predict
+├ ƒ /api/predict/status
+├ ƒ /api/research
+├ ƒ /api/skills
+├ ƒ /api/stats
+├ ƒ /api/tts
+├ ƒ /api/webhook/telegram
+└ ƒ /predict
+
+
+[info] 
+ƒ  (Dynamic)  server-rendered on demand
+
+
+[info] Building a Cloud Function to run this application. This is needed due to:
+[info]  • non-static component /_not-found/page
+[info]  • non-static component /api/chat/route
+[info]  • non-static component /api/cron/facebook-poster/route
+[info]  • non-static component /api/cron/lead-sniper/route
+[info]  • non-static component /api/cron/route
+[debug] [2026-04-11T16:41:39.338Z]  • non-static component /api/diag/route
+[debug] [2026-04-11T16:41:39.338Z]  • non-static component /api/files/route
+[debug] [2026-04-11T16:41:39.338Z]  • non-static component /api/health/route
+[debug] [2026-04-11T16:41:39.338Z]  • non-static component /api/ingest/route
+[debug] [2026-04-11T16:41:39.338Z]  • non-static component /api/knowledge/route
+[debug] [2026-04-11T16:41:39.338Z]  • non-static component /api/predict/route
+[debug] [2026-04-11T16:41:39.338Z]  • non-static component /api/predict/status/route
+[debug] [2026-04-11T16:41:39.338Z]  • non-static component /api/research/route
+[debug] [2026-04-11T16:41:39.338Z]  • non-static component /api/skills/route
+[debug] [2026-04-11T16:41:39.338Z]  • non-static component /api/stats/route
+[debug] [2026-04-11T16:41:39.338Z]  • non-static component /api/tts/route
+[debug] [2026-04-11T16:41:39.338Z]  • non-static component /api/webhook/telegram/route
+[debug] [2026-04-11T16:41:39.338Z]  • non-static component /page
+[debug] [2026-04-11T16:41:39.338Z]  • non-static component /predict/page
+[info] 
+[debug] [2026-04-11T16:41:40.079Z] Checked if tokens are valid: true, expires at: 1775929135523
+[debug] [2026-04-11T16:41:40.079Z] Checked if tokens are valid: true, expires at: 1775929135523
+[debug] [2026-04-11T16:41:40.079Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/opengravity-ai-edgar/sites/opengravity-ai-edgar [none]
+[debug] [2026-04-11T16:41:41.015Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/opengravity-ai-edgar/sites/opengravity-ai-edgar 200
+[debug] [2026-04-11T16:41:41.015Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/opengravity-ai-edgar/sites/opengravity-ai-edgar {"name":"projects/opengravity-ai-edgar/sites/opengravity-ai-edgar","defaultUrl":"https://opengravity-ai-edgar.web.app","type":"DEFAULT_SITE"}
+[debug] [2026-04-11T16:41:43.024Z] Error: EPERM: operation not permitted, symlink 'C:\Users\Usuario\.gemini\antigravity\scratch\opengravity\open-gravity-ui\node_modules\firebase-admin' -> 'C:\Users\Usuario\.gemini\antigravity\scratch\opengravity\open-gravity-ui\.firebase\opengravity-ai-edgar\functions\.next\dev\node_modules\firebase-admin-fc6228f5a0779d52'

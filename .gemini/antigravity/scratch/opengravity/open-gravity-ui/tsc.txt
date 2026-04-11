@@ -1,0 +1,10 @@
+﻿src/lib/ai_logic.ts(128,26): error TS2339: Property 'candidates' does not exist on type '{}'.
+src/lib/ai_logic.ts(128,45): error TS2339: Property 'candidates' does not exist on type '{}'.
+src/lib/ai_logic.ts(129,36): error TS2339: Property 'candidates' does not exist on type '{}'.
+src/lib/ai_logic.ts(130,33): error TS2339: Property 'error' does not exist on type '{}'.
+src/lib/ai_logic.ts(131,59): error TS2339: Property 'error' does not exist on type '{}'.
+src/lib/ai_logic.ts(134,26): error TS2339: Property 'choices' does not exist on type '{}'.
+src/lib/ai_logic.ts(134,42): error TS2339: Property 'choices' does not exist on type '{}'.
+src/lib/ai_logic.ts(135,36): error TS2339: Property 'choices' does not exist on type '{}'.
+src/lib/ai_logic.ts(136,33): error TS2339: Property 'error' does not exist on type '{}'.
+src/lib/ai_logic.ts(137,66): error TS2339: Property 'error' does not exist on type '{}'.

@@ -1,0 +1,3 @@
+{
+  "/api/cron/facebook-poster/route": "app/api/cron/facebook-poster/route.js"
+}

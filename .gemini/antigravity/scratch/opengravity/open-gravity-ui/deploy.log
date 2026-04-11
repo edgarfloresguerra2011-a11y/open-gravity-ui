@@ -1,0 +1,70 @@
+﻿
+   Thank you for trying our [3mearly preview[23m of Next.js support on Firebase Hosting.
+   [31mDuring the preview, support is best-effort and breaking changes can be expected. Proceed with caution.[39m[33m
+   The integration is known to work with Next.js version [3m12 - 15.0[23m. You may encounter errors.[39m
+
+   [1mDocumentation:[22m https://firebase.google.com/docs/hosting/frameworks/nextjs
+   [1mFile a bug:[22m https://github.com/firebase/firebase-tools/issues/new?template=bug_report.md
+   [1mSubmit a feature request:[22m https://github.com/firebase/firebase-tools/issues/new?template=feature_request.md
+
+   We'd love to learn from you. Express your interest in helping us shape the future of Firebase Hosting: https://goo.gle/41enW5X
+
+ÔÜá Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of C:\Users\Usuario\.gemini\antigravity\scratch\package-lock.json as the root directory.
+ To silence this warning, set `turbopack.root` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/turbopack#root-directory for more information.
+ Detected additional lockfiles: 
+   * C:\Users\Usuario\.gemini\antigravity\scratch\opengravity\open-gravity-ui\package-lock.json
+   * C:\Users\Usuario\.gemini\antigravity\scratch\opengravity\package-lock.json
+
+
+Ôû▓ Next.js 16.1.6 (Turbopack)
+
+
+
+  Creating an optimized production build ...
+
+Ô£ô Compiled successfully in 7.9s
+
+  Running TypeScript ...
+
+  Collecting page data using 11 workers ...
+
+Firebase Admin Initialized for project: opengravity-ai-edgar
+
+Firebase Admin Initialized for project: opengravity-ai-edgar
+
+  Generating static pages using 11 workers (0/6) ...
+
+Firebase Admin Initialized for project: opengravity-ai-edgar
+
+  Generating static pages using 11 workers (1/6) 
+
+  Generating static pages using 11 workers (2/6) 
+
+  Generating static pages using 11 workers (4/6) 
+
+Ô£ô Generating static pages using 11 workers (6/6) in 1511.8ms
+
+  Finalizing page optimization ...
+
+
+
+Route (app)
+Ôöî Ôùï /
+Ôö£ Ôùï /_not-found
+Ôö£ ãÆ /api/chat
+Ôöö ãÆ /api/webhook/telegram
+
+
+
+Ôùï  (Static)   prerendered as static content
+ãÆ  (Dynamic)  server-rendered on demand
+
+
+Building a Cloud Function to run this application. This is needed due to:
+ ÔÇó non-static component /api/chat/route
+ ÔÇó non-static component /api/webhook/telegram/route
+
+
+[1m[31mError:[39m[22m An unexpected error has occurred.

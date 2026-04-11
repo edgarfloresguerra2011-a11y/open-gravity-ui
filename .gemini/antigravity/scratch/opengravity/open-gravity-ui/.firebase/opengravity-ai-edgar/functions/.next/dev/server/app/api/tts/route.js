@@ -1,0 +1,11 @@
+var R=require("../../../chunks/[turbopack]_runtime.js")("server/app/api/tts/route.js")
+R.c("server/chunks/b3e45_next_074f536f._.js")
+R.c("server/chunks/b3e45_@opentelemetry_api_build_esm_a7b058d2._.js")
+R.c("server/chunks/b3e45_mime-db_19621ccc._.js")
+R.c("server/chunks/b3e45_axios_dist_node_axios_cjs_310c740f._.js")
+R.c("server/chunks/b3e45_ws_ceb3f078._.js")
+R.c("server/chunks/b3e45_3fe023cb._.js")
+R.c("server/chunks/[root-of-the-server]__eb993024._.js")
+R.c("server/chunks/2c3e5_open-gravity-ui__next-internal_server_app_api_tts_route_actions_a73b2554.js")
+R.m("[project]/opengravity/open-gravity-ui/node_modules/next/dist/esm/build/templates/app-route.js { INNER_APP_ROUTE => \"[project]/opengravity/open-gravity-ui/src/app/api/tts/route.ts [app-route] (ecmascript)\" } [app-route] (ecmascript)")
+module.exports=R.m("[project]/opengravity/open-gravity-ui/node_modules/next/dist/esm/build/templates/app-route.js { INNER_APP_ROUTE => \"[project]/opengravity/open-gravity-ui/src/app/api/tts/route.ts [app-route] (ecmascript)\" } [app-route] (ecmascript)").exports

@@ -1,0 +1,3 @@
+module.exports=[7436,(a,b,c)=>{let{createClientModuleProxy:d}=a.r(31169);a.n(d("[project]/.gemini/antigravity/scratch/opengravity/open-gravity-ui/node_modules/next/dist/client/components/builtin/global-error.js <module evaluation>"))},23327,(a,b,c)=>{let{createClientModuleProxy:d}=a.r(31169);a.n(d("[project]/.gemini/antigravity/scratch/opengravity/open-gravity-ui/node_modules/next/dist/client/components/builtin/global-error.js"))},2539,a=>{"use strict";a.i(7436);var b=a.i(23327);a.n(b)}];
+
+//# sourceMappingURL=c0ebd_next_dist_client_components_builtin_global-error_6bd05ffd.js.map

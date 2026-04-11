@@ -1,0 +1,3 @@
+{
+  "/api/predict/status/route": "app/api/predict/status/route.js"
+}
