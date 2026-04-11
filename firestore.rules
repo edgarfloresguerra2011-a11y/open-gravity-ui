@@ -1,0 +1,10 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Bloqueo total por defecto - OpenGravity usa Redis para persistencia de trabajos.
+    // Solo permitir acceso si en el futuro se activan colecciones específicas.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
