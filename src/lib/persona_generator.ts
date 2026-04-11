@@ -122,8 +122,14 @@ export async function generateMarketPersonas(
 }
 
 async function fetchMarketParameters(proposal: string, research: DeepResearchResult) {
-    const prompt = `Actúa como Director de Estocástica.
+    const prompt = `Actúa como Director de Estocástica y Estratega Industrial.
 Analiza la propuesta y el research para extraer los parámetros de simulación.
+
+CRÍTICO: Prioriza modelos de negocio LEAN. 
+- Evita gastos fijos (fixedOpEx) inflados (> $5k) a menos que sea una industria pesada.
+- Busca un CAC inicial razonable ($10-$60) para startups.
+- La conversión debe reflejar realismo industrial (0.5% - 5%).
+- El objetivo es que la simulación refleje un camino viable hacia el break-even, no una quiebra por falta de optimización inicial.
 
 PROYECTO: ${proposal}
 RESEARCH: ${research.rawSynthesis.substring(0, 2000)}
@@ -137,12 +143,12 @@ REQUERIDO (JSON):
   "simulationDefaults": {
     "price": <NUMBER, precio sugerido unitario>,
     "baseCac": <NUMBER, costo adquisición inicial>,
-    "fixedOpEx": <NUMBER, costos fijos mensuales>,
-    "initialCash": <NUMBER, capital inicial recomendado>,
+    "fixedOpEx": <NUMBER, costos fijos mensuales (manténlo lean)>,
+    "initialCash": <NUMBER, capital inicial recomendado para 12-18 meses de pista>,
     "estimatedTAM": <NUMBER, personas totales en mercado objetivo>,
     "marketRefPrice": <NUMBER, precio de referencia competencia>,
     "elasticity": <NUMBER, ej -1.5>,
-    "churnRate": <NUMBER, ej 0.08>,
+    "churnRate": <NUMBER, ej 0.05>,
     "conversionRate": <NUMBER, ej 0.02>,
     "researchTrustScore": ${research.globalConfidenceScore / 100}
   },

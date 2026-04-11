@@ -108,10 +108,10 @@ function generateResearchFallback(q: string): DeepResearchResult {
 
 function generatePersonaFallback(): MarketPersonas {
     return {
-        clients: [], competitors: [], environment: { description: "Std", inflationRate: 0, consumerConfidence: 5 },
+        clients: [], competitors: [], environment: { description: "Mercado Emergente Optimizada", inflationRate: 0.02, consumerConfidence: 7 },
         simulationDefaults: {
-            price: 100, baseCac: 50, fixedOpEx: 2000, initialCash: 10000, estimatedTAM: 50000,
-            marketRefPrice: 100, elasticity: -1.2, churnRate: 0.1, conversionRate: 0.05, researchTrustScore: 0.2
+            price: 79, baseCac: 35, fixedOpEx: 1200, initialCash: 25000, estimatedTAM: 150000,
+            marketRefPrice: 85, elasticity: -1.3, churnRate: 0.04, conversionRate: 0.045, researchTrustScore: 0.7
         }
     };
 }
