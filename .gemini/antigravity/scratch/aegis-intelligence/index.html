@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AEGIS | OpenGravity V10.7.0 Sovereign Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:wght@300;400;500;600;700&family=Outfit:wght@100;200;300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        :root {
+            --color-1: #060606; /* Deep Obsidian */
+            --color-2: #c9a96e; /* Institutional Gold */
+            --color-3: #121212; /* Mid-ground */
+            --color-4: #ffffff; /* Text */
+            --color-5: #1e1e1e; /* Glass */
+            --neon-blue: #00d4ff;
+            --font-heading: 'Cormorant Garamond', serif;
+            --font-body: 'Outfit', sans-serif;
+            --font-display: 'Bebas Neue', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            cursor: crosshair;
+        }
+
+        body {
+            background-color: var(--color-1);
+            color: var(--color-4);
+            font-family: var(--font-body);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Loading Screen */
+        #loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--color-1);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 1s ease;
+        }
+
+        .loader-logo {
+            font-family: var(--font-display);
+            font-size: 4rem;
+            color: var(--color-2);
+            letter-spacing: 15px;
+            margin-bottom: 20px;
+            animation: pulse-glow 2s infinite;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { opacity: 0.5; filter: blur(2px); }
+            50% { opacity: 1; filter: blur(0px); }
+        }
+
+        /* Background Canvas */
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.4;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 30px 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            background: linear-gradient(to bottom, rgba(6,6,6,0.9), transparent);
+            backdrop-filter: blur(5px);
+        }
+
+        .logo {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            color: var(--color-2);
+            letter-spacing: 4px;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 40px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--color-4);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 300;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--color-2);
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 0 10%;
+            position: relative;
+        }
+
+        .version-badge {
+            font-size: 0.8rem;
+            color: var(--color-2);
+            border: 1px solid var(--color-2);
+            padding: 5px 15px;
+            width: fit-content;
+            margin-bottom: 20px;
+            letter-spacing: 3px;
+            font-family: var(--font-display);
+            background: rgba(201, 169, 110, 0.1);
+        }
+
+        .hero h1 {
+            font-family: var(--font-heading);
+            font-size: 8rem;
+            font-weight: 300;
+            line-height: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .hero h1 span {
+            display: block;
+            color: var(--color-2);
+            font-style: italic;
+        }
+
+        .hero p {
+            max-width: 600px;
+            font-size: 1.2rem;
+            font-weight: 200;
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 40px;
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 50px;
+            margin-top: 20px;
+        }
+
+        .stat-item h3 {
+            font-size: 2rem;
+            font-family: var(--font-display);
+            color: var(--color-2);
+        }
+
+        .stat-item p {
+            font-size: 0.7rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* Sections */
+        section {
+            padding: 15vh 10%;
+        }
+
+        .section-title {
+            font-family: var(--font-heading);
+            font-size: 4rem;
+            margin-bottom: 60px;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 0;
+            width: 100px;
+            height: 1px;
+            background: var(--color-2);
+        }
+
+        /* Grid Layouts */
+        .specs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 50px;
+            border-radius: 4px;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-card:hover {
+            background: rgba(255, 255, 255, 0.07);
+            border-color: var(--color-2);
+            transform: translateY(-10px);
+        }
+
+        .glass-card h3 {
+            font-family: var(--font-display);
+            font-size: 1.8rem;
+            color: var(--color-2);
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+        }
+
+        .glass-card p {
+            font-size: 1rem;
+            font-weight: 300;
+            color: rgba(255,255,255,0.6);
+        }
+
+        .card-icon {
+            font-size: 2.5rem;
+            margin-bottom: 25px;
+            display: block;
+        }
+
+        /* technical Table Styles */
+        .tech-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 40px;
+            font-family: var(--font-body);
+        }
+
+        .tech-table th, .tech-table td {
+            text-align: left;
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .tech-table th {
+            color: var(--color-2);
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+        }
+
+        .tech-table td {
+            font-weight: 200;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Business Units Area */
+        .plans-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .plan-card {
+            border: 1px solid rgba(255,255,255,0.05);
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            transition: 0.3s;
+            background: rgba(255, 255, 255, 0.01);
+        }
+
+        .plan-card:hover { border-color: var(--color-2); background: rgba(201,169,110,0.05); }
+
+        .plan-price { font-family: var(--font-display); font-size: 3rem; color: var(--color-2); margin: 20px 0; }
+
+        .plan-features { list-style: none; margin-bottom: 30px; flex-grow: 1; }
+
+        .plan-features li { margin-bottom: 10px; font-weight: 200; font-size: 0.9rem; color: #aaa; border-bottom: 1px solid rgba(255,255,255,0.03); padding-bottom: 5px; }
+
+        /* Contact Form */
+        .contact-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 100px;
+        }
+
+        input, textarea {
+            width: 100%;
+            background: rgba(255,255,255,0.02);
+            border: none;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding: 20px 0;
+            color: white;
+            font-family: var(--font-body);
+            font-size: 1rem;
+            margin-bottom: 30px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, textarea:focus { border-color: var(--color-2); }
+
+        .submit-btn {
+            background: var(--color-2);
+            color: var(--color-1);
+            border: none;
+            padding: 20px 60px;
+            font-family: var(--font-display);
+            font-size: 1.2rem;
+            letter-spacing: 3px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .submit-btn:hover { letter-spacing: 5px; transform: scale(1.05); }
+
+        /* Footer */
+        footer {
+            padding: 100px 10%;
+            background: #000;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 100px;
+            margin-bottom: 60px;
+        }
+
+        .footer-logo {
+            font-family: var(--font-display);
+            font-size: 2.5rem;
+            color: var(--color-2);
+            margin-bottom: 20px;
+        }
+
+        .footer-links h4 {
+            font-family: var(--font-display);
+            margin-bottom: 25px;
+            letter-spacing: 2px;
+            color: #555;
+        }
+
+        .footer-links ul { list-style: none; }
+        .footer-links li { margin-bottom: 15px; }
+        .footer-links a { color: #888; text-decoration: none; transition: color 0.3s; font-weight: 200; }
+        .footer-links a:hover { color: var(--color-2); }
+
+        .copyright {
+            padding-top: 40px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            justify-content: space-between;
+            color: #444;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 4rem; }
+            .contact-container { grid-template-columns: 1fr; }
+            .footer-grid { grid-template-columns: 1fr; gap: 50px; }
+            nav { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="loader">
+        <div class="loader-logo">AEGIS</div>
+        <p style="letter-spacing: 5px; font-size: 0.7rem; color: #555;">SYNCHRONIZING WITH OPENGRAVITY V10.7.0</p>
+    </div>
+
+    <div id="canvas-container"></div>
+
+    <nav>
+        <a href="#" class="logo">AEGIS</a>
+        <div class="nav-links">
+            <a href="#about">Metrología</a>
+            <a href="#specs">V10 Engine</a>
+            <a href="#plans">Planes</a>
+            <a href="#contact">Contact</a>
+        </div>
+    </nav>
+
+    <main>
+        <section class="hero">
+            <div class="version-badge">ORÁCULO FINANCIERO V10.7.0 · SOVEREIGN EDITION</div>
+            <h1>Aesthetes of <span>Truth.</span></h1>
+            <p>
+                AEGIS es el hub oficial para la infraestructura <strong>OpenGravity V10</strong>. Un oráculo diseñado para la metrología de la verdad, calculando probabilidades de supervivencia institucional mediante bayesianismo logit y forensia recursiva.
+            </p>
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <h3>0.1499</h3>
+                    <p>Brier Score (Calibración)</p>
+                </div>
+                <div class="stat-item">
+                    <h3>1.2K+</h3>
+                    <p>Ground Truth Cases</p>
+                </div>
+                <div class="stat-item">
+                    <h3>DeepSeek-V3</h3>
+                    <p>Truth Synthesis core</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="about">
+            <h2 class="section-title">Metrología Bayesiana</h2>
+            <div class="specs-grid">
+                <div class="glass-card">
+                    <span class="card-icon">Σ</span>
+                    <h3>Bayesian Logit Engine</h3>
+                    <p>
+                        Cálculo puro de probabilidad mediante modelos parametrizados con factores macroestructurales (ZIRP, Región, Sector). 
+                        Prior institucional endurecido al 20% para máximo escepticismo técnico.
+                    </p>
+                </div>
+                <div class="glass-card">
+                    <span class="card-icon">⚖️</span>
+                    <h3>Isotonic PAVA Calibration</h3>
+                    <p>
+                        Transformación de probabilidades teóricas a realidades empíricas mediante Regresión Isotónica (Pool-Adjacent-Violators Algorithm). 
+                        Eliminación total del colapso binario 0/1.
+                    </p>
+                </div>
+                <div class="glass-card">
+                    <span class="card-icon">🧠</span>
+                    <h3>Monte Carlo Module</h3>
+                    <p>
+                        Ejecución de 1,000 perturbaciones por auditoría para cuantificación de incertidumbre. Identificación 
+                        automática de varianza crítica para disparo de agentes recursivos.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section id="specs">
+            <h2 class="section-title">Arquitectura OpenGravity</h2>
+            <p style="color: rgba(255,255,255,0.5); max-width: 800px; margin-bottom: 30px;">
+                V10.7.0 opera como un "Digital Dragnet" institucional, integrando señales multi-vectoriales en una tesis de inversión bruta.
+            </p>
+            <table class="tech-table">
+                <thead>
+                    <tr>
+                        <th>Capa</th>
+                        <th>Componente</th>
+                        <th>Función Crítica</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>L1: Math Engine</td>
+                        <td><code>scoring.py</code></td>
+                        <td>Bayesian logit → sigmoid → isotonic map (Brier 0.1499).</td>
+                    </tr>
+                    <tr>
+                        <td>L2: Truth Dispatcher</td>
+                        <td><code>v10_orchestrator.py</code></td>
+                        <td>Orquestación multi-agente (Tavily + Firecrawl + DeepSeek).</td>
+                    </tr>
+                    <tr>
+                        <td>L3: Policy Engine</td>
+                        <td><code>models.py</code></td>
+                        <td>Veto automático por Unit Economics y Fatal Finding Detection.</td>
+                    </tr>
+                    <tr>
+                        <td>L4: Forensic Dashboard</td>
+                        <td>War Room (Streamlit)</td>
+                        <td>Terminal visual de evidencias, Moats técnicos y lealtad de fundadores.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section id="plans">
+            <h2 class="section-title">Modelos de Inversión</h2>
+            <div class="plans-container">
+                <div class="plan-card">
+                    <h3>SENTINEL</h3>
+                    <p>Compliance Base</p>
+                    <div class="plan-price">$2,500<span>/mes</span></div>
+                    <ul class="plan-features">
+                        <li>5 Auditorías Mensuales</li>
+                        <li>Motor Logit Estándar</li>
+                        <li>Reportes PDF Estructurados</li>
+                        <li>Soporte vía Ticket</li>
+                    </ul>
+                    <a href="#contact" style="color: var(--color-2); text-decoration: none; font-family: var(--font-display);">ADQUIRIR SENTINEL</a>
+                </div>
+                <div class="plan-card" style="border-color: var(--color-2); background: rgba(201,169,110,0.05);">
+                    <h3>TITAN</h3>
+                    <p>Truth Synthesis Full</p>
+                    <div class="plan-price">$8,500<span>/mes</span></div>
+                    <ul class="plan-features">
+                        <li>25 Auditorías Mensuales</li>
+                        <li>Forensia AI DeepSeek-V3</li>
+                        <li>Acceso a War Room Live</li>
+                        <li>Certificados Hash Inmutables</li>
+                        <li>Soporte 24/7 Premium</li>
+                    </ul>
+                    <a href="#contact" style="background: var(--color-2); color: #000; padding: 12px; text-align: center; text-decoration: none; font-family: var(--font-display);">MÁS POPULAR</a>
+                </div>
+                <div class="plan-card">
+                    <h3>HYDRA</h3>
+                    <p>Soberanía On-Premise</p>
+                    <div class="plan-price">UNDER QUOTE</div>
+                    <ul class="plan-features">
+                        <li>Auditorías Ilimitadas</li>
+                        <li>Despliegue en Nube Privada</li>
+                        <li>Integración de Datos Propios</li>
+                        <li>Custom Policy Weights</li>
+                        <li>SLA Industrial 99.9%</li>
+                    </ul>
+                    <a href="#contact" style="color: var(--color-2); text-decoration: none; font-family: var(--font-display);">CONTACTAR VENTAS</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="war-room">
+            <h2 class="section-title">War Room Live</h2>
+            <div class="contact-container">
+                <div>
+                    <img src="https://images.unsplash.com/photo-1551288049-bbda38a5f452?auto=format&fit=crop&q=80&w=1000" alt="War Room visual" style="width: 100%; opacity: 0.4; border-radius: 4px; filter: grayscale(1);">
+                </div>
+                <div style="display: flex; flex-direction: column; justify-content: center;">
+                    <h3 style="font-family: var(--font-display); font-size: 2.5rem; color: var(--color-2); margin-bottom: 20px;">Auditoría Forense 2026</h3>
+                    <p style="font-weight: 200; color: rgba(255,255,255,0.7); margin-bottom: 30px;">
+                        Visualice el flujo de "Truth Synthesis". OpenGravity V10 desmantela narrativas de marketing mediante scraping profundo de Firecrawl, 
+                        analizando desde el código en GitHub hasta rumores en foros técnicos.
+                    </p>
+                    <ul style="list-style: none; font-weight: 300; font-size: 0.9rem; color: var(--color-2);">
+                        <li style="margin-bottom: 10px;">⚡ Extracción de "Brutal Facts" automatizada.</li>
+                        <li style="margin-bottom: 10px;">⚡ Análisis de lealtad de fundadores (Edison Flores & Core team).</li>
+                        <li style="margin-bottom: 10px;">⚡ Verificación de moats técnicos reales.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact">
+            <div class="contact-container">
+                <div>
+                    <h2 class="section-title">Solicitar Auditoría</h2>
+                    <p style="font-weight: 200; font-size: 1.1rem; color: rgba(255,255,255,0.7); margin-bottom: 40px;">
+                        AEGIS es la interfaz institucional de AliceLabs. Para despliegues soberanos o acceso a la v10.7.0, complete el formulario.
+                    </p>
+                </div>
+                <form id="contact-form">
+                    <input type="text" placeholder="ENTIDAD / FONDO" required>
+                    <input type="email" placeholder="EMAIL DE AUDITOR" required>
+                    <textarea placeholder="PROYECTO O VOLUMEN DE AUDITORIAS" rows="5" required></textarea>
+                    <button type="submit" class="submit-btn" id="submit-btn">ENVIAR CREDENCIALES</button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-grid">
+            <div>
+                <div class="footer-logo">ALICELABS</div>
+                <p style="color: #666; font-weight: 200; font-size: 0.9rem; max-width: 400px;">
+                    Sovereign Infrastructure Division. <br>
+                    Liderando la metrología del riesgo para un futuro veraz e inmutable.
+                </p>
+            </div>
+            <div class="footer-links">
+                <h4>PRODUCTO</h4>
+                <ul>
+                    <li><a href="#">OpenGravity V10.7.0</a></li>
+                    <li><a href="#">Sovereign Hub</a></li>
+                    <li><a href="#">War Room Access</a></li>
+                    <li><a href="#">Audit API</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>POLÍTICAS</h4>
+                <ul>
+                    <li><a href="#">Privacidad de Datos</a></li>
+                    <li><a href="#">Confidencialidad Audit</a></li>
+                    <li><a href="#">Términos Legales</a></li>
+                    <li><a href="#">SLA de Oracle</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>&copy; 2026 ALICELABS. TODOS LOS DERECHOS RESERVADOS.</p>
+            <p>ELABORADO POR ALICELABS SOVEREIGN DIVISION</p>
+        </div>
+    </footer>
+
+    <script>
+        // Three.js Background Animation
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+        const geometry = new THREE.BufferGeometry();
+        const vertices = [];
+        for (let i = 0; i < 8000; i++) {
+            vertices.push(THREE.MathUtils.randFloatSpread(2000));
+            vertices.push(THREE.MathUtils.randFloatSpread(2000));
+            vertices.push(THREE.MathUtils.randFloatSpread(2000));
+        }
+        geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+        
+        const material = new THREE.PointsMaterial({ color: 0xc9a96e, size: 2, transparent: true, opacity: 0.8 });
+        const points = new THREE.Points(geometry, material);
+        scene.add(points);
+
+        camera.position.z = 1000;
+
+        function animate() {
+            requestAnimationFrame(animate);
+            points.rotation.x += 0.0005;
+            points.rotation.y += 0.0007;
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // Loader
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('loader').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('loader').style.display = 'none';
+                }, 1000);
+            }, 1200);
+        });
+
+        // Form Animation
+        document.getElementById('contact-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('submit-btn');
+            btn.innerHTML = "PROCESANDO HASH...";
+            btn.style.background = "#444";
+            setTimeout(() => {
+                btn.innerHTML = "ACCESO ENVIADO";
+                btn.style.background = "#c9a96e";
+                alert("Protocolo de acceso iniciado. AliceLabs Sovereign Division validará su entidad.");
+            }, 1500);
+        });
+    </script>
+</body>
+</html>
