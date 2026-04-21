@@ -8,7 +8,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:wght@300;400;500;600;700&family=Outfit:wght@100;200;300;400;500;600&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <style>
+        html {
+            font-size: 18px;
+        }
+
         :root {
             --color-1: #060606; /* Deep Obsidian */
             --color-2: #c9a96e; /* Institutional Gold */
@@ -93,7 +96,7 @@
 
         .logo {
             font-family: var(--font-display);
-            font-size: 2rem;
+            font-size: 2.5rem;
             color: var(--color-2);
             letter-spacing: 4px;
             text-decoration: none;
@@ -107,7 +110,7 @@
         .nav-links a {
             text-decoration: none;
             color: var(--color-4);
-            font-size: 0.9rem;
+            font-size: 1.1rem;
             text-transform: uppercase;
             letter-spacing: 2px;
             font-weight: 300;
@@ -129,12 +132,12 @@
         }
 
         .version-badge {
-            font-size: 0.8rem;
+            font-size: 1rem;
             color: var(--color-2);
             border: 1px solid var(--color-2);
-            padding: 5px 15px;
+            padding: 8px 20px;
             width: fit-content;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             letter-spacing: 3px;
             font-family: var(--font-display);
             background: rgba(201, 169, 110, 0.1);
@@ -149,10 +152,10 @@
 
         .hero h1 {
             font-family: var(--font-heading);
-            font-size: 8rem;
+            font-size: 9rem;
             font-weight: 300;
             line-height: 0.9;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
 
         .hero h1 span {
@@ -162,11 +165,11 @@
         }
 
         .hero p {
-            max-width: 600px;
-            font-size: 1.35rem;
+            max-width: 800px;
+            font-size: 1.6rem;
             font-weight: 200;
             color: rgba(255,255,255,0.7);
-            margin-bottom: 40px;
+            margin-bottom: 45px;
         }
 
         .hero-stats {
@@ -176,13 +179,13 @@
         }
 
         .stat-item h3 {
-            font-size: 2rem;
+            font-size: 3rem;
             font-family: var(--font-display);
             color: var(--color-2);
         }
 
         .stat-item p {
-            font-size: 0.9rem;
+            font-size: 1.1rem;
             letter-spacing: 2px;
             text-transform: uppercase;
             color: rgba(255,255,255,0.5);
@@ -195,8 +198,8 @@
 
         .section-title {
             font-family: var(--font-heading);
-            font-size: 4rem;
-            margin-bottom: 60px;
+            font-size: 5rem;
+            margin-bottom: 70px;
             position: relative;
         }
 
@@ -235,21 +238,21 @@
 
         .glass-card h3 {
             font-family: var(--font-display);
-            font-size: 1.8rem;
+            font-size: 2.2rem;
             color: var(--color-2);
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             letter-spacing: 2px;
         }
 
         .glass-card p {
-            font-size: 1.1rem;
+            font-size: 1.3rem;
             font-weight: 300;
-            color: rgba(255,255,255,0.6);
+            color: rgba(255,255,255,0.7);
         }
 
         .card-icon {
-            font-size: 2.5rem;
-            margin-bottom: 25px;
+            font-size: 3.5rem;
+            margin-bottom: 30px;
             display: block;
         }
 
@@ -270,14 +273,14 @@
         .tech-table th {
             color: var(--color-2);
             text-transform: uppercase;
-            font-size: 0.95rem;
+            font-size: 1.2rem;
             letter-spacing: 2px;
         }
 
         .tech-table td {
-            font-weight: 200;
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 1.05rem;
+            font-weight: 300;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.25rem;
         }
 
         /* Business Units Area */
@@ -298,11 +301,11 @@
 
         .plan-card:hover { border-color: var(--color-2); background: rgba(201,169,110,0.05); }
 
-        .plan-price { font-family: var(--font-display); font-size: 3rem; color: var(--color-2); margin: 20px 0; }
+        .plan-price { font-family: var(--font-display); font-size: 4rem; color: var(--color-2); margin: 25px 0; }
 
         .plan-features { list-style: none; margin-bottom: 30px; flex-grow: 1; }
 
-        .plan-features li { margin-bottom: 12px; font-weight: 300; font-size: 1rem; color: #bbb; border-bottom: 1px solid rgba(255,255,255,0.03); padding-bottom: 8px; }
+        .plan-features li { margin-bottom: 15px; font-weight: 300; font-size: 1.2rem; color: #ddd; border-bottom: 1px solid rgba(255,255,255,0.03); padding-bottom: 10px; }
 
         /* Contact Form */
         .contact-container {
@@ -319,8 +322,8 @@
             padding: 20px 0;
             color: white;
             font-family: var(--font-body);
-            font-size: 1.1rem;
-            margin-bottom: 30px;
+            font-size: 1.3rem;
+            margin-bottom: 35px;
             outline: none;
             transition: border-color 0.3s;
         }
@@ -333,7 +336,7 @@
             border: none;
             padding: 20px 60px;
             font-family: var(--font-display);
-            font-size: 1.2rem;
+            font-size: 1.5rem;
             letter-spacing: 3px;
             cursor: pointer;
             transition: all 0.3s;
@@ -370,17 +373,22 @@
         }
 
         .footer-links ul { list-style: none; }
-        .footer-links li { margin-bottom: 15px; }
-        .footer-links a { color: #888; text-decoration: none; transition: color 0.3s; font-weight: 200; }
+        .footer-links li { margin-bottom: 12px; }
+        .footer-links a {
+            text-decoration: none;
+            color: #888;
+            font-size: 1.2rem;
+            transition: color 0.3s;
+        }
         .footer-links a:hover { color: var(--color-2); }
 
         .copyright {
-            padding-top: 40px;
+            padding-top: 50px;
             border-top: 1px solid rgba(255,255,255,0.05);
             display: flex;
             justify-content: space-between;
-            color: #666;
-            font-size: 0.95rem;
+            color: #888;
+            font-size: 1.1rem;
             letter-spacing: 1px;
         }
 
@@ -396,7 +404,7 @@
 
     <div id="loader">
         <div class="loader-logo">AEGIS</div>
-        <p style="letter-spacing: 5px; font-size: 0.7rem; color: #555;">SYNCHRONIZING WITH OPENGRAVITY V10.7.0</p>
+        <p style="letter-spacing: 5px; font-size: 1rem; color: #888;">SYNCHRONIZING WITH OPENGRAVITY V10.7.0</p>
     </div>
 
     <div id="canvas-container"></div>
@@ -619,10 +627,10 @@
                         Visualize the "Truth Synthesis" flow. OpenGravity V10 dismantles marketing narratives through deep multi-source scraping, 
                         analyzing everything from GitHub commits to technical forum sentiment in real-time.
                     </p>
-                    <ul style="list-style: none; font-weight: 300; font-size: 1.05rem; color: var(--color-2);">
-                        <li style="margin-bottom: 12px;">⚡ Automated "Brutal Facts" extraction engine.</li>
-                        <li style="margin-bottom: 12px;">⚡ Founder integrity analysis (Edison Flores & Core team).</li>
-                        <li style="margin-bottom: 12px;">⚡ Real-time technical moat verification protocol.</li>
+                    <ul style="list-style: none; font-weight: 300; font-size: 1.3rem; color: var(--color-2);">
+                        <li style="margin-bottom: 15px;">⚡ Automated "Brutal Facts" extraction engine.</li>
+                        <li style="margin-bottom: 15px;">⚡ Founder integrity analysis (Edison Flores & Core team).</li>
+                        <li style="margin-bottom: 15px;">⚡ Real-time technical moat verification protocol.</li>
                     </ul>
                 </div>
             </div>
@@ -650,7 +658,7 @@
         <div class="footer-grid">
             <div>
                 <div class="footer-logo">ALICELABS</div>
-                <p style="color: #888; font-weight: 300; font-size: 1.1rem; max-width: 400px;">
+                <p style="color: #aaa; font-weight: 300; font-size: 1.3rem; max-width: 500px;">
                     Sovereign Infrastructure Division. <br>
                     Leading risk metrology for a truthful and immutable financial future.
                 </p>
