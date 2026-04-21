@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -138,6 +138,13 @@
             letter-spacing: 3px;
             font-family: var(--font-display);
             background: rgba(201, 169, 110, 0.1);
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero h1, .hero p, .hero-stats, .version-badge {
+            position: relative;
+            z-index: 2;
         }
 
         .hero h1 {
@@ -395,77 +402,138 @@
     <nav>
         <a href="#" class="logo">AEGIS</a>
         <div class="nav-links">
-            <a href="#about">Metrología</a>
+            <a href="#about">Metrology</a>
             <a href="#specs">V10 Engine</a>
-            <a href="#plans">Planes</a>
+            <a href="#plans">Investment Models</a>
             <a href="#contact">Contact</a>
         </div>
     </nav>
 
     <main>
         <section class="hero">
-            <div class="version-badge">ORÁCULO FINANCIERO V10.7.0 · SOVEREIGN EDITION</div>
+            <div class="version-badge">FINANCIAL ORACLE V10.7.0 · SOVEREIGN EDITION</div>
             <h1>Aesthetes of <span>Truth.</span></h1>
+            <div class="hero-diagram" style="position: absolute; left: 0; top: 0; width: 100%; height: 100%; opacity: 0.15; pointer-events: none; z-index: 0; overflow: hidden;">
+                <svg width="100%" height="100%" viewBox="0 0 1400 900" preserveAspectRatio="xMidYMid slice" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Technical Grid -->
+                    <defs>
+                        <pattern id="gridLarge" width="100" height="100" patternUnits="userSpaceOnUse">
+                            <path d="M 100 0 L 0 0 0 100" fill="none" stroke="var(--color-2)" stroke-width="1" opacity="0.2"/>
+                        </pattern>
+                        <pattern id="gridSmall" width="20" height="20" patternUnits="userSpaceOnUse">
+                            <path d="M 20 0 L 0 0 0 20" fill="none" stroke="var(--color-2)" stroke-width="0.5" opacity="0.1"/>
+                        </pattern>
+                    </defs>
+                    <rect width="100%" height="100%" fill="url(#gridLarge)" />
+                    <rect width="100%" height="100%" fill="url(#gridSmall)" />
+                    
+                    <!-- Bayesian Architecture -->
+                    <g opacity="0.8">
+                        <!-- Main Probability Manifold -->
+                        <path d="M100 700 Q 350 700 450 400 T 800 100 T 1150 400 T 1400 700" stroke="var(--color-2)" stroke-width="1" stroke-dasharray="20 10" />
+                        
+                        <!-- Sigma Bands -->
+                        <path d="M100 750 Q 350 750 450 450 T 800 150 T 1150 450 T 1400 750" stroke="var(--color-2)" stroke-width="0.5" opacity="0.3" />
+                        <path d="M100 650 Q 350 650 450 350 T 800 50 T 1150 350 T 1400 650" stroke="var(--color-2)" stroke-width="0.5" opacity="0.3" />
+
+                        <!-- Core Distribution (Posterior) -->
+                        <path d="M500 700 C 600 700 650 150 800 150 C 950 150 1000 700 1100 700" stroke="var(--color-2)" stroke-width="4" />
+                    </g>
+                    
+                    <!-- Schematic Labels (Diagrammed Orientation) -->
+                    <g font-family="var(--font-heading)" fill="var(--color-2)" font-size="10" letter-spacing="2">
+                        <text x="800" y="130" text-anchor="middle" font-weight="bold" font-size="14">POSTERIOR DENSITY PEAK (θ|D)</text>
+                        <line x1="800" y1="140" x2="800" y2="180" stroke="var(--color-2)" stroke-width="1" />
+                        
+                        <text x="500" y="680">INFERENCE ENGINE V10.7</text>
+                        <text x="1100" y="680" text-anchor="end">SIGNAL RECURSION: ACTIVE</text>
+                        
+                        <!-- Formula Block -->
+                        <rect x="50" y="50" width="300" height="80" stroke="var(--color-2)" stroke-width="1" fill="rgba(201,169,110,0.05)" />
+                        <text x="70" y="85" font-size="20" font-style="italic">P(θ|D) = [P(D|θ)P(θ)] / P(D)</text>
+                        <text x="70" y="110" font-size="10">BAYESIAN TRUTH SYNTHESIS MANIFOLD</text>
+                        
+                        <!-- Axes -->
+                        <line x1="100" y1="700" x2="1300" y2="700" stroke="var(--color-2)" stroke-width="2" />
+                        <line x1="100" y1="700" x2="100" y2="100" stroke="var(--color-2)" stroke-width="2" />
+                        <text x="1300" y="720" text-anchor="end">PARAMETER SPACE (θ)</text>
+                        <text x="80" y="120" transform="rotate(-90 80 120)" text-anchor="end">EVIDENCE MAGNITUDE</text>
+                    </g>
+
+                    <!-- Data Nodes (The Agents) -->
+                    <g fill="var(--color-2)">
+                        <circle cx="800" cy="150" r="6" />
+                        <circle cx="650" cy="350" r="4" opacity="0.6"/>
+                        <circle cx="950" cy="350" r="4" opacity="0.6"/>
+                        <path d="M650 350 L 800 150 L 950 350" stroke="var(--color-2)" stroke-width="1" stroke-dasharray="5 5" />
+                    </g>
+
+                    <!-- Scanning Identity -->
+                    <rect x="0" y="0" width="100%" height="1" fill="var(--color-2)" opacity="0.3">
+                        <animate attributeName="y" from="0" to="900" dur="15s" repeatCount="indefinite" />
+                    </rect>
+                </svg>
+            </div>
             <p>
-                AEGIS es el hub oficial para la infraestructura <strong>OpenGravity V10</strong>. Un oráculo diseñado para la metrología de la verdad, calculando probabilidades de supervivencia institucional mediante bayesianismo logit y forensia recursiva.
+                AEGIS is the official hub for <strong>OpenGravity V10</strong> infrastructure. An oracle designed for the metrology of truth, calculating institutional survival probabilities through logit Bayesianism and recursive forensic analysis.
             </p>
             <div class="hero-stats">
                 <div class="stat-item">
                     <h3>0.1499</h3>
-                    <p>Brier Score (Calibración)</p>
+                    <p>Brier Score (Calibration)</p>
                 </div>
                 <div class="stat-item">
                     <h3>1.2K+</h3>
                     <p>Ground Truth Cases</p>
                 </div>
                 <div class="stat-item">
-                    <h3>DeepSeek-V3</h3>
-                    <p>Truth Synthesis core</p>
+                    <h3>Cognitive Oracle</h3>
+                    <p>Protocol V10.7</p>
                 </div>
             </div>
         </section>
 
         <section id="about">
-            <h2 class="section-title">Metrología Bayesiana</h2>
+            <h2 class="section-title">Bayesian Metrology</h2>
             <div class="specs-grid">
                 <div class="glass-card">
                     <span class="card-icon">Σ</span>
                     <h3>Bayesian Logit Engine</h3>
                     <p>
-                        Cálculo puro de probabilidad mediante modelos parametrizados con factores macroestructurales (ZIRP, Región, Sector). 
-                        Prior institucional endurecido al 20% para máximo escepticismo técnico.
+                        Pure probability calculation through models parameterized with macro-structural factors (ZIRP, Region, Sector). 
+                        Institutional prior hardened to 20% for maximum technical skepticism.
                     </p>
                 </div>
                 <div class="glass-card">
                     <span class="card-icon">⚖️</span>
                     <h3>Isotonic PAVA Calibration</h3>
                     <p>
-                        Transformación de probabilidades teóricas a realidades empíricas mediante Regresión Isotónica (Pool-Adjacent-Violators Algorithm). 
-                        Eliminación total del colapso binario 0/1.
+                        Transformation of theoretical probabilities into empirical realities through Isotonic Regression (Pool-Adjacent-Violators Algorithm). 
+                        Total elimination of 0/1 binary collapse.
                     </p>
                 </div>
                 <div class="glass-card">
                     <span class="card-icon">🧠</span>
                     <h3>Monte Carlo Module</h3>
                     <p>
-                        Ejecución de 1,000 perturbaciones por auditoría para cuantificación de incertidumbre. Identificación 
-                        automática de varianza crítica para disparo de agentes recursivos.
+                        Execution of 1,000 perturbations per audit for uncertainty quantification. Automatic identification 
+                        of critical variance to trigger recursive agent cycles.
                     </p>
                 </div>
             </div>
         </section>
 
         <section id="specs">
-            <h2 class="section-title">Arquitectura OpenGravity</h2>
+            <h2 class="section-title">OpenGravity Architecture</h2>
             <p style="color: rgba(255,255,255,0.5); max-width: 800px; margin-bottom: 30px;">
-                V10.7.0 opera como un "Digital Dragnet" institucional, integrando señales multi-vectoriales en una tesis de inversión bruta.
+                V10.7.0 operates as an institutional "Digital Dragnet," integrating multi-vector signals into a raw, high-conviction investment thesis.
             </p>
             <table class="tech-table">
                 <thead>
                     <tr>
-                        <th>Capa</th>
-                        <th>Componente</th>
-                        <th>Función Crítica</th>
+                        <th>Layer</th>
+                        <th>Component</th>
+                        <th>Critical Function</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -477,62 +545,62 @@
                     <tr>
                         <td>L2: Truth Dispatcher</td>
                         <td><code>v10_orchestrator.py</code></td>
-                        <td>Orquestación multi-agente (Tavily + Firecrawl + DeepSeek).</td>
+                        <td>Multi-agent orchestration (Tavily + Firecrawl + DeepSeek).</td>
                     </tr>
                     <tr>
                         <td>L3: Policy Engine</td>
                         <td><code>models.py</code></td>
-                        <td>Veto automático por Unit Economics y Fatal Finding Detection.</td>
+                        <td>Automatic veto by Unit Economics and Fatal Finding Detection.</td>
                     </tr>
                     <tr>
                         <td>L4: Forensic Dashboard</td>
                         <td>War Room (Streamlit)</td>
-                        <td>Terminal visual de evidencias, Moats técnicos y lealtad de fundadores.</td>
+                        <td>Visual evidence terminal, technical moats, and founder forensics.</td>
                     </tr>
                 </tbody>
             </table>
         </section>
 
         <section id="plans">
-            <h2 class="section-title">Modelos de Inversión</h2>
+            <h2 class="section-title">Investment Models</h2>
             <div class="plans-container">
                 <div class="plan-card">
                     <h3>SENTINEL</h3>
                     <p>Compliance Base</p>
-                    <div class="plan-price">$2,500<span>/mes</span></div>
+                    <div class="plan-price">$2,500<span>/mo</span></div>
                     <ul class="plan-features">
-                        <li>5 Auditorías Mensuales</li>
-                        <li>Motor Logit Estándar</li>
-                        <li>Reportes PDF Estructurados</li>
-                        <li>Soporte vía Ticket</li>
+                        <li>5 Monthly Audits</li>
+                        <li>Standard Logit Engine</li>
+                        <li>Structured PDF Reports</li>
+                        <li>Ticket Support</li>
                     </ul>
-                    <a href="#contact" style="color: var(--color-2); text-decoration: none; font-family: var(--font-display);">ADQUIRIR SENTINEL</a>
+                    <a href="#contact" style="color: var(--color-2); text-decoration: none; font-family: var(--font-display);">ACQUIRE SENTINEL</a>
                 </div>
                 <div class="plan-card" style="border-color: var(--color-2); background: rgba(201,169,110,0.05);">
                     <h3>TITAN</h3>
                     <p>Truth Synthesis Full</p>
-                    <div class="plan-price">$8,500<span>/mes</span></div>
+                    <div class="plan-price">$8,500<span>/mo</span></div>
                     <ul class="plan-features">
-                        <li>25 Auditorías Mensuales</li>
-                        <li>Forensia AI DeepSeek-V3</li>
-                        <li>Acceso a War Room Live</li>
-                        <li>Certificados Hash Inmutables</li>
-                        <li>Soporte 24/7 Premium</li>
+                        <li>25 Monthly Audits</li>
+                        <li>DeepSeek-V3 Forensic AI</li>
+                        <li>Live War Room Access</li>
+                        <li>Immutable Hash Certificates</li>
+                        <li>24/7 Premium Support</li>
                     </ul>
-                    <a href="#contact" style="background: var(--color-2); color: #000; padding: 12px; text-align: center; text-decoration: none; font-family: var(--font-display);">MÁS POPULAR</a>
+                    <a href="#contact" style="background: var(--color-2); color: #000; padding: 12px; text-align: center; text-decoration: none; font-family: var(--font-display);">MOST POPULAR</a>
                 </div>
                 <div class="plan-card">
                     <h3>HYDRA</h3>
-                    <p>Soberanía On-Premise</p>
+                    <p>On-Premise Sovereignty</p>
                     <div class="plan-price">UNDER QUOTE</div>
                     <ul class="plan-features">
-                        <li>Auditorías Ilimitadas</li>
-                        <li>Despliegue en Nube Privada</li>
-                        <li>Integración de Datos Propios</li>
+                        <li>Unlimited Audits</li>
+                        <li>Private Cloud Deployment</li>
+                        <li>Proprietary Data Integration</li>
                         <li>Custom Policy Weights</li>
-                        <li>SLA Industrial 99.9%</li>
+                        <li>99.9% Industrial SLA</li>
                     </ul>
-                    <a href="#contact" style="color: var(--color-2); text-decoration: none; font-family: var(--font-display);">CONTACTAR VENTAS</a>
+                    <a href="#contact" style="color: var(--color-2); text-decoration: none; font-family: var(--font-display);">CONTACT SALES</a>
                 </div>
             </div>
         </section>
@@ -541,18 +609,18 @@
             <h2 class="section-title">War Room Live</h2>
             <div class="contact-container">
                 <div>
-                    <img src="https://images.unsplash.com/photo-1551288049-bbda38a5f452?auto=format&fit=crop&q=80&w=1000" alt="War Room visual" style="width: 100%; opacity: 0.4; border-radius: 4px; filter: grayscale(1);">
+                    <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=1000" alt="Sovereign Terminal" style="width: 100%; opacity: 0.5; border-radius: 4px; filter: grayscale(1) contrast(1.2);">
                 </div>
                 <div style="display: flex; flex-direction: column; justify-content: center;">
-                    <h3 style="font-family: var(--font-display); font-size: 2.5rem; color: var(--color-2); margin-bottom: 20px;">Auditoría Forense 2026</h3>
+                    <h3 style="font-family: var(--font-display); font-size: 2.5rem; color: var(--color-2); margin-bottom: 20px;">Forensic Audit 2026</h3>
                     <p style="font-weight: 200; color: rgba(255,255,255,0.7); margin-bottom: 30px;">
-                        Visualice el flujo de "Truth Synthesis". OpenGravity V10 desmantela narrativas de marketing mediante scraping profundo de Firecrawl, 
-                        analizando desde el código en GitHub hasta rumores en foros técnicos.
+                        Visualize the "Truth Synthesis" flow. OpenGravity V10 dismantles marketing narratives through deep multi-source scraping, 
+                        analyzing everything from GitHub commits to technical forum sentiment in real-time.
                     </p>
                     <ul style="list-style: none; font-weight: 300; font-size: 0.9rem; color: var(--color-2);">
-                        <li style="margin-bottom: 10px;">⚡ Extracción de "Brutal Facts" automatizada.</li>
-                        <li style="margin-bottom: 10px;">⚡ Análisis de lealtad de fundadores (Edison Flores & Core team).</li>
-                        <li style="margin-bottom: 10px;">⚡ Verificación de moats técnicos reales.</li>
+                        <li style="margin-bottom: 10px;">⚡ Automated "Brutal Facts" extraction engine.</li>
+                        <li style="margin-bottom: 10px;">⚡ Founder integrity analysis (Edison Flores & Core team).</li>
+                        <li style="margin-bottom: 10px;">⚡ Real-time technical moat verification protocol.</li>
                     </ul>
                 </div>
             </div>
@@ -561,16 +629,16 @@
         <section id="contact">
             <div class="contact-container">
                 <div>
-                    <h2 class="section-title">Solicitar Auditoría</h2>
+                    <h2 class="section-title">Request Audit</h2>
                     <p style="font-weight: 200; font-size: 1.1rem; color: rgba(255,255,255,0.7); margin-bottom: 40px;">
-                        AEGIS es la interfaz institucional de AliceLabs. Para despliegues soberanos o acceso a la v10.7.0, complete el formulario.
+                        AEGIS is the institutional interface of AliceLabs. For sovereign deployments or v10.7.0 access, please complete the credentials form.
                     </p>
                 </div>
                 <form id="contact-form">
-                    <input type="text" placeholder="ENTIDAD / FONDO" required>
-                    <input type="email" placeholder="EMAIL DE AUDITOR" required>
-                    <textarea placeholder="PROYECTO O VOLUMEN DE AUDITORIAS" rows="5" required></textarea>
-                    <button type="submit" class="submit-btn" id="submit-btn">ENVIAR CREDENCIALES</button>
+                    <input type="text" placeholder="ENTITY / FUND" required>
+                    <input type="email" placeholder="AUDITOR EMAIL" required>
+                    <textarea placeholder="PROJECT SCOPE OR AUDIT VOLUME" rows="5" required></textarea>
+                    <button type="submit" class="submit-btn" id="submit-btn">SUBMIT CREDENTIALS</button>
                 </form>
             </div>
         </section>
@@ -582,11 +650,11 @@
                 <div class="footer-logo">ALICELABS</div>
                 <p style="color: #666; font-weight: 200; font-size: 0.9rem; max-width: 400px;">
                     Sovereign Infrastructure Division. <br>
-                    Liderando la metrología del riesgo para un futuro veraz e inmutable.
+                    Leading risk metrology for a truthful and immutable financial future.
                 </p>
             </div>
             <div class="footer-links">
-                <h4>PRODUCTO</h4>
+                <h4>PRODUCT</h4>
                 <ul>
                     <li><a href="#">OpenGravity V10.7.0</a></li>
                     <li><a href="#">Sovereign Hub</a></li>
@@ -595,18 +663,18 @@
                 </ul>
             </div>
             <div class="footer-links">
-                <h4>POLÍTICAS</h4>
+                <h4>POLICIES</h4>
                 <ul>
-                    <li><a href="#">Privacidad de Datos</a></li>
-                    <li><a href="#">Confidencialidad Audit</a></li>
-                    <li><a href="#">Términos Legales</a></li>
-                    <li><a href="#">SLA de Oracle</a></li>
+                    <li><a href="#">Data Privacy</a></li>
+                    <li><a href="#">Audit Confidentiality</a></li>
+                    <li><a href="#">Legal Terms</a></li>
+                    <li><a href="#">Oracle SLA</a></li>
                 </ul>
             </div>
         </div>
         <div class="copyright">
-            <p>&copy; 2026 ALICELABS. TODOS LOS DERECHOS RESERVADOS.</p>
-            <p>ELABORADO POR ALICELABS SOVEREIGN DIVISION</p>
+            <p>&copy; 2026 ALICELABS. ALL RIGHTS RESERVED.</p>
+            <p>DESIGNED BY ALICELABS SOVEREIGN DIVISION</p>
         </div>
     </footer>
 
@@ -662,12 +730,12 @@
         document.getElementById('contact-form').addEventListener('submit', (e) => {
             e.preventDefault();
             const btn = document.getElementById('submit-btn');
-            btn.innerHTML = "PROCESANDO HASH...";
+            btn.innerHTML = "PROCESSING HASH...";
             btn.style.background = "#444";
             setTimeout(() => {
-                btn.innerHTML = "ACCESO ENVIADO";
+                btn.innerHTML = "ACCESS GRANTED";
                 btn.style.background = "#c9a96e";
-                alert("Protocolo de acceso iniciado. AliceLabs Sovereign Division validará su entidad.");
+                alert("Access protocol initiated. AliceLabs Sovereign Division will validate your entity credentials.");
             }, 1500);
         });
     </script>
