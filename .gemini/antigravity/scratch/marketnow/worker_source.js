@@ -1306,8 +1306,12 @@ var search_default = {
                 ? "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359"
                 : "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913";
 
-              const expectedAmount = parseFloat(skill.price || (skill.m2m_metadata ? skill.m2m_metadata.price_usdc : "0") || amount || "0");
-              const expectedTo = env.MARKETNOW_TREASURY || "0x309353AE6c8B17c7d85D420302A20D0B4cbB6917";
+               const expectedAmount = parseFloat(skill.price || (skill.m2m_metadata ? skill.m2m_metadata.price_usdc : "0") || amount || "0");
+              const expectedToAddresses = [
+                env.MARKETNOW_TREASURY,
+                "0x309353AE6c8B17c7d85D420302A20D0B4cbB6917", // Wallet Principal
+                "0x39Dddf5aEdb58A559CF195fB8bdF23F0604Bf5Ee"  // Wallet de Respaldo
+              ].filter(Boolean);
 
               let lastError = "";
               let rpcSuccess = false;
@@ -1346,18 +1350,26 @@ var search_default = {
                   
                   if (receipt.status === "0x1") {
                     const transferTopic = "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef";
-                    const targetTopic2 = "0x" + expectedTo.slice(2).toLowerCase().padStart(64, "0");
+                    const targetTopics = expectedToAddresses.map(addr => "0x" + addr.slice(2).toLowerCase().padStart(64, "0"));
+                    
                     let transferFound = false;
                     let foundValue = 0;
+                    let recipientFound = "";
                     
                     for (const log of (receipt.logs || [])) {
                       if (log.address.toLowerCase() !== usdcToken.toLowerCase()) continue;
                       if (log.topics && log.topics[0] === transferTopic) {
-                        if (log.topics[2] && log.topics[2].toLowerCase() === targetTopic2) {
-                          foundValue = parseInt(log.data, 16) / 1_000_000;
-                          if (foundValue >= expectedAmount) {
-                            transferFound = true;
-                            break;
+                        if (log.topics[2]) {
+                          const logRecipient = log.topics[2].toLowerCase();
+                          const matchIndex = targetTopics.indexOf(logRecipient);
+                          
+                          if (matchIndex !== -1) {
+                            foundValue = parseInt(log.data, 16) / 1_000_000;
+                            if (foundValue >= expectedAmount) {
+                              transferFound = true;
+                              recipientFound = expectedToAddresses[matchIndex];
+                              break;
+                            }
                           }
                         }
                       }
@@ -1365,9 +1377,9 @@ var search_default = {
                     
                     if (transferFound) {
                       verified = true;
-                      verificationMsg = "Payment verified on-chain via " + rpcUrl + "! Received " + foundValue + " USDC in Treasury.";
+                      verificationMsg = "Payment verified on-chain via " + rpcUrl + "! Received " + foundValue + " USDC in Treasury (" + recipientFound + ").";
                     } else {
-                      verificationMsg = "USDC transfer to treasury (" + expectedTo + ") not found or amount too low (Expected: " + expectedAmount + ", Transferred: " + foundValue + ").";
+                      verificationMsg = "USDC transfer to treasury (Expected: one of " + expectedToAddresses.join(", ") + ") not found or amount too low (Expected: " + expectedAmount + ", Transferred: " + foundValue + ").";
                     }
                     break;
                   }

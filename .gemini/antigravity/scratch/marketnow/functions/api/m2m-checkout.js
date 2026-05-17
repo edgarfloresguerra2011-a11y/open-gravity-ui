@@ -15,7 +15,7 @@ export async function onRequestOptions() {
 }
 
 // Función auxiliar para verificar transferencia USDC vía JSON-RPC
-async function verifyUSDCContractTransfer({ rpcUrl, usdcAddress, txHash, expectedTo, expectedAmount }) {
+async function verifyUSDCContractTransfer({ rpcUrl, usdcAddress, txHash, expectedToAddresses, expectedAmount }) {
   try {
     const res = await fetch(rpcUrl, {
       method: 'POST',
@@ -46,10 +46,11 @@ async function verifyUSDCContractTransfer({ rpcUrl, usdcAddress, txHash, expecte
     
     // Evento de transferencia ERC-20: Transfer(address,address,uint256)
     const transferTopic = '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef';
-    const targetTopic2 = '0x' + expectedTo.slice(2).toLowerCase().padStart(64, '0');
+    const targetTopics = expectedToAddresses.map(addr => '0x' + addr.slice(2).toLowerCase().padStart(64, '0'));
     
     let verified = false;
     let foundAmount = 0;
+    let recipientFound = '';
     
     for (const log of (receipt.logs || [])) {
       // Verificar dirección del contrato USDC
@@ -58,21 +59,27 @@ async function verifyUSDCContractTransfer({ rpcUrl, usdcAddress, txHash, expecte
       // Verificar topic del evento Transfer
       if (log.topics && log.topics[0] === transferTopic) {
         // topics[2] contiene el destinatario del transfer (padded)
-        if (log.topics[2] && log.topics[2].toLowerCase() === targetTopic2) {
-          const rawValue = log.data;
-          const amountHuman = parseInt(rawValue, 16) / 1_000_000; // 6 decimales USDC
-          foundAmount = amountHuman;
+        if (log.topics[2]) {
+          const logRecipient = log.topics[2].toLowerCase();
+          const matchIndex = targetTopics.indexOf(logRecipient);
           
-          if (amountHuman >= expectedAmount) {
-            verified = true;
-            break;
+          if (matchIndex !== -1) {
+            const rawValue = log.data;
+            const amountHuman = parseInt(rawValue, 16) / 1_000_000; // 6 decimales USDC
+            foundAmount = amountHuman;
+            recipientFound = expectedToAddresses[matchIndex];
+            
+            if (amountHuman >= expectedAmount) {
+              verified = true;
+              break;
+            }
           }
         }
       }
     }
     
     if (verified) {
-      return { verified: true, amount: foundAmount };
+      return { verified: true, amount: foundAmount, recipient: recipientFound };
     }
     
     return { 
@@ -133,19 +140,24 @@ export async function onRequestPost(context) {
     }
 
     // 2. Resolver Treasury Address
-    // El treasury por defecto es el configurado en MARKETNOW_TREASURY.
-    // Si no está configurado, usamos el wallet del usuario del despliegue: 0x309353AE6c8B17c7d85D420302A20D0B4cbB6917
-    const treasuryAddress = context.env.MARKETNOW_TREASURY || '0x309353AE6c8B17c7d85D420302A20D0B4cbB6917';
+    // El treasury soporta la wallet configurada en MARKETNOW_TREASURY, la wallet principal y la de respaldo.
+    const expectedToAddresses = [
+      context.env.MARKETNOW_TREASURY,
+      '0x309353AE6c8B17c7d85D420302A20D0B4cbB6917', // Wallet Principal
+      '0x39Dddf5aEdb58A559CF195fB8bdF23F0604Bf5Ee'  // Wallet de Respaldo
+    ].filter(Boolean);
 
     // 3. Validación de bypass para testing (si se requiere)
     const isTestBypass = tx_hash && (tx_hash === "0x0" || tx_hash.startsWith("0xE2E")) && (context.env.BYPASS_TEST_PAYMENTS === "true" || context.env.ENVIRONMENT !== "production");
     
     let isPaymentValid = false;
     let verificationErrorReason = '';
+    let confirmedRecipient = '';
 
     if (isTestBypass) {
       console.log(`[M2M_TRANSACTION] Test bypass active for tx: ${tx_hash}`);
       isPaymentValid = true;
+      confirmedRecipient = expectedToAddresses[0];
     } else {
       if (!tx_hash) {
         return new Response(JSON.stringify({
@@ -178,13 +190,14 @@ export async function onRequestPost(context) {
         rpcUrl,
         usdcAddress,
         txHash: tx_hash,
-        expectedTo: treasuryAddress,
+        expectedToAddresses,
         expectedAmount
       });
 
       if (verification.verified) {
         isPaymentValid = true;
-        console.log(`[M2M_TRANSACTION] Success! Verified ${verification.amount} USDC transfer to ${treasuryAddress}`);
+        confirmedRecipient = verification.recipient;
+        console.log(`[M2M_TRANSACTION] Success! Verified ${verification.amount} USDC transfer to ${verification.recipient}`);
       } else {
         isPaymentValid = false;
         verificationErrorReason = verification.reason;

@@ -1,0 +1,22 @@
+{
+  "description": "MarketNow Production & Treasury Wallets Configuration",
+  "updated_at": "2026-05-17T13:16:00-05:00",
+  "wallets": {
+    "evm": {
+      "primary": "0x309353AE6c8B17c7d85D420302A20D0B4cbB6917",
+      "backup": "0x39Dddf5aEdb58A559CF195fB8bdF23F0604Bf5Ee"
+    },
+    "bitcoin": {
+      "primary": "bc1qtw9rnr6mqptjddkr35vcs2dertshw2k4dydn4m",
+      "backup": "bc1qdrh8t879kmdgtgfxgqnhzh7269jdd7ku4qa7at"
+    },
+    "solana": {
+      "primary": "7ExqcqL2jMJC8anyCssKpFckt3RY5ecEn1pigz4BnBux",
+      "backup": "8EPF2CMr9tvyewcyoqEJkduQcgE2pBxpNsQY7fQ5VZim"
+    },
+    "tron": {
+      "primary": "TLW1YmcJW7C8yTFvFrR7XTLfQZQCE1gJZ5",
+      "backup": "TDhQFXDzTA52NoELHD8WdcV1VRSgPLrtvQ"
+    }
+  }
+}
