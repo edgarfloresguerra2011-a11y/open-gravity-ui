@@ -93,6 +93,9 @@ async function run() {
       agent_id: AGENT_ID,
       wallet_address: USER_WALLET,
       payment_network: 'base_usdc',
+      // ⚠️ Para compras REALES on-chain: 
+      // 1. Envía el monto de USDC a la dirección del Treasury (env.MARKETNOW_TREASURY)
+      // 2. Coloca aquí el hash de la transacción real confirmada
       tx_hash: `0xE2E_AUTO_${Date.now().toString(16).toUpperCase()}`,
       amount: cheapest.price,
       referral_code: referralCode,
