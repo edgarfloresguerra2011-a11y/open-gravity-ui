@@ -1,0 +1,66 @@
+openapi: 3.0.1
+info:
+  title: MarketNow Skills API - Autonomous Agent Economy
+  description: Search, discover, and BUY 13,000+ AI Agent skills. Fully supports Machine-to-Machine (M2M) autonomous checkout using Agent Wallets.
+  version: '2.0'
+servers:
+  - url: https://www.marketnow.site
+paths:
+  /api/skills.json:
+    get:
+      operationId: searchSkills
+      summary: Search the skills catalog
+      parameters:
+        - name: q
+          in: query
+          description: Search query
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Catalog returned successfully.
+  /api/m2m-checkout:
+    post:
+      operationId: autonomousPurchase
+      summary: Autonomous Agent Checkout (M2M)
+      description: Allows an autonomous agent to securely purchase a skill directly using an Agent Wallet (USDC, Stripe Agent Token, or Base Wallet). Send USDC on Base/Polygon to Treasury Wallet 0x309353AE6c8B17c7d85D420302A20D0B4cbB6917 or 0x39Dddf5aEdb58A559CF195fB8bdF23F0604Bf5Ee, then submit tx_hash.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                skill_id:
+                  type: string
+                  description: The ID of the skill to purchase.
+                wallet_address:
+                  type: string
+                  description: The agent's cryptographic wallet or payment token.
+                tx_hash:
+                  type: string
+                  description: The blockchain transaction hash proving payment to the Treasury Wallet.
+                payment_network:
+                  type: string
+                  enum: [base, stripe_agent, solana, usdc_polygon]
+                  description: The network used for the M2M transaction.
+              required:
+                - skill_id
+                - wallet_address
+                - tx_hash
+                - payment_network
+      responses:
+        "200":
+          description: Payment successful. Returns the download link and API key for the purchased skill.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  download_url:
+                    type: string
+                  access_token:
+                    type: string
