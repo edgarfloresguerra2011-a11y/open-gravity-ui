@@ -1144,14 +1144,10 @@ var search_default = {
       return Response.redirect(`https://${clean}${path}${url.search}`, 308);
     }
     if (env.SKILLS_KV && path !== "/api/analytics" && !path.startsWith("/badge/") && !path.startsWith("/api/mcp")) {
-      try {
-        const p = path;
-        env.SKILLS_KV.put("analytics:hits", String(parseInt(await env.SKILLS_KV.get("analytics:hits") || "0") + 1));
-        const dp = p.startsWith("/api/") ? "/api/*" : p.startsWith("/skill/") ? "/skill/*" : p.startsWith("/agent/") ? "/agent/*" : p;
-        env.SKILLS_KV.put("analytics:last_path", dp);
-        env.SKILLS_KV.put("analytics:last_ts", String(Date.now()));
-      } catch (_) {
-      }
+      // ⚠️ KV Write Loop Prevention: Removed naive analytics tracking.
+      // Cloudflare KV is not meant for real-time counters. This consumed 3 writes per request,
+      // exhausting the 1,000 daily free tier write limit in just 333 requests.
+      // Use Cloudflare Web Analytics instead.
     }
     if (path === "/api/health") {
       return AH({
