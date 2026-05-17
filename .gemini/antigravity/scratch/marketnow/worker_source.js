@@ -2014,7 +2014,8 @@ function agentsPageHTML(env) {
 <meta property="og:description" content="${escapeHTML(desc)}">
 <meta property="og:url" content="https://marketnow.site/agents">
 <meta property="og:type" content="website">
-<meta property="og:image" content="https://marketnow.site/favicon.svg">
+<meta property="og:image" content="https://marketnow.site/favicon.png">
+<link rel="icon" type="image/png" href="https://marketnow.site/favicon.png">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:#0a0a1a;color:#c8d6e5;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;line-height:1.7}
@@ -2272,7 +2273,7 @@ async function skillSSRPage(slug, env) {
     if (!skill) {
       const spaRes = await fetch(PAGES + "/skill/" + slug);
       if (spaRes.ok) return await spaRes.text();
-      return '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>Skill Not Found - MarketNow</title><link rel="icon" href="' + SITE + '/favicon.ico"><meta name="robots" content="noindex"></head><body><h1>Skill Not Found</h1><a href="/">Back</a></body></html>';
+      return '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>Skill Not Found - MarketNow</title><link rel="icon" type="image/png" href="' + SITE + '/favicon.png"><meta name="robots" content="noindex"></head><body><h1>Skill Not Found</h1><a href="/">Back</a></body></html>';
     }
     const name = skill.name || slug;
     const desc = skill.shortDesc || skill.description || "MCP skill on the Agent Exchange Protocol marketplace";
