@@ -1,59 +1,84 @@
 'use client';
 
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
-import { ArrowRight, ArrowUpRight, Check, Plus, Minus } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { ArrowRight, ArrowUpRight, Check, X } from 'lucide-react';
 import { useI18n } from '@/i18n';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 
-/**
- * Landing editorial premium.
- *
- * Principios de diseño:
- *   - Tipografía serif para headlines (Playfair Display) — distingue del SaaS genérico
- *   - Layouts asimétricos (no todo centrado)
- *   - Paleta champagne + navy oscuro — no verde neón
- *   - Líneas finas decorativas, no blobs
- *   - Animaciones sutiles (fade-up), no parpadeos
- *   - Hierarquía clara con eyebrow labels + reglas
- */
+/* ════════════════════════════════════════════════════════════════════════
+   OpenGravity — Landing V2
+   Design refs: Linear · Vercel · Resend · marketnow.site
+   Pure black #050505 · mint #00F299 · cyan #00d1ff · paper #f4f3ec
+   Geist display · Inter body · JetBrains Mono for code/data
+   Asymmetric grid · sharp 4px corners · 1px hairlines · terminal windows
+   ════════════════════════════════════════════════════════════════════════ */
 
 const DEMOS = [
   {
     id: 'saas-colombia',
     viabilityScore: 72,
-    verdictKey: 'Favorable',
     ltv: '$340',
     cac: '$45',
     breakEven: '8m',
-    accent: '#7fb069',
+    filename: 'sim_saas_colombia.log',
+    barColor: '#00F299', // mint
   },
   {
     id: 'restaurante-cdmx',
     viabilityScore: 58,
-    verdictKey: 'Moderado',
     ltv: '$180',
     cac: '$28',
     breakEven: '14m',
-    accent: '#d4a574',
+    filename: 'sim_restaurante_cdmx.log',
+    barColor: '#ffd479', // amber
   },
   {
     id: 'moda-sostenible',
     viabilityScore: 81,
-    verdictKey: 'Excelente',
     ltv: '$520',
     cac: '$62',
     breakEven: '6m',
-    accent: '#9d7bd8',
+    filename: 'sim_moda_sostenible.log',
+    barColor: '#00d1ff', // cyan
   },
 ];
 
-const TRUST_LOGOS = [
-  { label: 'DeepSeek V3', sub: 'LLM reasoning' },
-  { label: 'Tavily', sub: '5 parallel crawlers' },
-  { label: 'Monte Carlo', sub: '1,000 iterations' },
-  { label: 'Upstash Redis', sub: 'Isolated storage' },
+const TICKER_STATS = [
+  '8,560 simulations run',
+  '73% accuracy',
+  'Avg response 47s',
+  'Trust score 0.84',
+  '5 parallel crawlers',
+  '1,000 MC iterations',
+  'P10 / P50 / P90',
+  'Mulberry32 PRNG',
+  'DeepSeek V3 reasoning',
+  'Upstash isolated storage',
+  '4-phase pipeline',
+  'PDF report export',
 ];
+
+/* ── Pricing comparison matrix ──
+   Single-column comparison table (not 3 cards). Rows are features,
+   cells are per-plan values (text / ✓ / ✗). Built from the i18n plan
+   list, but normalized into a matrix since plan.features aren't 1:1.
+*/
+type Cell = string;
+type MatrixRow = { label: string; cells: [Cell, Cell, Cell] };
+const PRICING_MATRIX: MatrixRow[] = [
+  { label: 'Simulations / month', cells: ['3', '50', '∞'] },
+  { label: 'AI chat', cells: ['10/day', '∞', '∞'] },
+  { label: 'Report P10 / P50 / P90', cells: ['✓', '✓', '✓'] },
+  { label: 'PDF export', cells: ['—', '✓', '✓'] },
+  { label: 'Cron jobs', cells: ['1', '10', '∞'] },
+  { label: 'Persistent history', cells: ['—', '✓', '✓'] },
+  { label: 'API access', cells: ['—', '—', '10K / mo'] },
+  { label: 'Multi-user', cells: ['—', '—', '5 seats'] },
+  { label: 'White-label reports', cells: ['—', '—', '✓'] },
+  { label: 'Support', cells: ['Community', 'Email', 'Priority'] },
+];
+const PRICING_PRICES = ['$0', '$29', 'Custom'];
 
 export default function LandingPage() {
   const { t } = useI18n();
@@ -66,506 +91,873 @@ export default function LandingPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#0c0c10] text-[#f5f3ee] overflow-x-hidden">
-      {/* Texture overlay muy sutil */}
-      <div
-        className="fixed inset-0 pointer-events-none opacity-[0.015] z-0"
-        style={{
-          backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' /%3E%3C/svg%3E\")",
-        }}
-      />
+    <div className="relative min-h-screen bg-og-bg text-paper overflow-x-hidden">
+      <a href="#main" className="skip-link">
+        Skip to content
+      </a>
 
-      {/* ════════════════════════════════════════ NAV ════════════════════════════════════════ */}
+      {/* Fixed technical grid background (Linear/Vercel) */}
+      <div className="og-grid-bg" aria-hidden />
+
+      {/* ════════════════════════════════════════ 1. TICKER ════════════════════════════════════════ */}
+      <TickerBar stats={TICKER_STATS} />
+
+      {/* ════════════════════════════════════════ 2. NAV ════════════════════════════════════════ */}
       <nav
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-          scrolled ? 'bg-[#0c0c10]/80 backdrop-blur-xl border-b border-white/5' : ''
+        className={`sticky top-0 z-40 transition-all duration-300 ${
+          scrolled
+            ? 'bg-og-bg/85 backdrop-blur-xl border-b border-hairline'
+            : 'bg-transparent border-b border-transparent'
         }`}
+        aria-label="Primary"
       >
-        <div className="max-w-7xl mx-auto px-6 lg:px-10 h-16 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-8 h-8 rounded-md bg-gradient-to-br from-champagne to-champagne-deep flex items-center justify-center">
-              <span className="text-ink font-serif font-bold text-sm">OG</span>
-            </div>
-            <span className="font-serif text-lg tracking-tight">OpenGravity</span>
+        <div className="max-w-[1280px] mx-auto px-5 lg:px-10 h-14 flex items-center justify-between">
+          <Link
+            href="/"
+            className="font-mono text-[15px] font-medium tracking-tight text-paper hover:text-mint transition-colors"
+          >
+            OpenGravity
+            <span className="text-mint">_</span>
           </Link>
 
-          <div className="hidden md:flex items-center gap-10 text-sm">
-            <a href="#features" className="text-white/60 hover:text-white transition-colors">{t.nav.features}</a>
-            <a href="#demos" className="text-white/60 hover:text-white transition-colors">{t.nav.demos}</a>
-            <a href="#pricing" className="text-white/60 hover:text-white transition-colors">{t.nav.pricing}</a>
-            <a href="#faq" className="text-white/60 hover:text-white transition-colors">{t.nav.faq}</a>
+          <div className="hidden md:flex items-center gap-8 text-[13px] font-mono">
+            <a
+              href="#demos"
+              className="text-paper/60 hover:text-paper transition-colors"
+            >
+              {t.nav.demos}
+            </a>
+            <a
+              href="#pipeline"
+              className="text-paper/60 hover:text-paper transition-colors"
+            >
+              {t.nav.features}
+            </a>
+            <a
+              href="#pricing"
+              className="text-paper/60 hover:text-paper transition-colors"
+            >
+              {t.nav.pricing}
+            </a>
           </div>
 
           <div className="flex items-center gap-3">
             <LanguageSwitcher compact />
             <Link
               href="/app"
-              className="hidden sm:block text-sm text-white/70 hover:text-white transition-colors px-3 py-2"
+              className="hidden sm:block font-mono text-[13px] text-paper/60 hover:text-paper transition-colors"
             >
               {t.nav.login}
             </Link>
-            <Link
-              href="/app"
-              className="bg-champagne text-ink px-4 py-2 rounded-md text-sm font-semibold hover:bg-champagne-light transition-colors flex items-center gap-2 group"
-            >
+            <Link href="/app" className="btn-primary text-[13px]">
               {t.nav.cta}
-              <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
+              <ArrowRight size={13} strokeWidth={2.5} />
             </Link>
           </div>
         </div>
       </nav>
 
-      {/* ════════════════════════════════════════ HERO ════════════════════════════════════════ */}
-      <section className="relative pt-32 pb-24 px-6 lg:px-10">
-        <div className="max-w-7xl mx-auto">
-          {/* Layout asimétrico: 2/3 + 1/3 */}
-          <div className="grid lg:grid-cols-12 gap-12 items-end">
-            <div className="lg:col-span-8">
-              {/* Eyebrow */}
-              <div className="flex items-center gap-3 mb-8 animate-fade-up">
-                <span className="rule-accent" />
-                <span className="eyebrow text-champagne">{t.hero.badge}</span>
-              </div>
+      <main id="main">
+        {/* ════════════════════════════════════════ 3. HERO ════════════════════════════════════════ */}
+        <Hero t={t} />
 
-              {/* Headline editorial — Playfair italic para énfasis */}
-              <h1 className="font-serif text-[clamp(2.5rem,6vw,5.5rem)] leading-[0.95] tracking-tight mb-8 animate-fade-up" style={{ animationDelay: '0.1s' }}>
-                {t.hero.title1}{' '}
-                <em className="text-champagne not-italic font-bold">{t.hero.titleHighlight1}</em>
-                <br />
-                {t.hero.title2}{' '}
-                <em className="text-champagne not-italic font-bold">{t.hero.titleHighlight2}</em>
-                <span className="text-champagne">.</span>
-              </h1>
+        {/* ════════════════════════════════════════ 4. TRUST STRIP ════════════════════════════════════════ */}
+        <TrustStrip t={t} />
 
-              <p className="text-lg lg:text-xl text-white/60 max-w-2xl leading-relaxed mb-10 animate-fade-up" style={{ animationDelay: '0.2s' }}>
-                {t.hero.subtitle}
-              </p>
+        {/* ════════════════════════════════════════ 5. DEMOS ════════════════════════════════════════ */}
+        <DemosSection t={t} />
 
-              <div className="flex flex-col sm:flex-row gap-4 animate-fade-up" style={{ animationDelay: '0.3s' }}>
-                <Link
-                  href="/app"
-                  className="group inline-flex items-center justify-center gap-2 bg-champagne text-ink px-7 py-4 rounded-md font-semibold hover:bg-champagne-light transition-all"
-                >
-                  {t.hero.ctaPrimary}
-                  <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-                </Link>
-                <a
-                  href="#demos"
-                  className="inline-flex items-center justify-center gap-2 border border-white/15 px-7 py-4 rounded-md font-medium hover:bg-white/5 transition-colors"
-                >
-                  {t.hero.ctaSecondary}
-                </a>
-              </div>
+        {/* ════════════════════════════════════════ 6. PIPELINE ════════════════════════════════════════ */}
+        <PipelineSection t={t} />
 
-              <div className="flex flex-wrap items-center gap-x-6 gap-y-2 mt-8 text-xs text-white/40 animate-fade-up" style={{ animationDelay: '0.4s' }}>
-                <span className="flex items-center gap-2"><Check size={12} className="text-champagne" />{t.hero.noCard}</span>
-                <span className="flex items-center gap-2"><Check size={12} className="text-champagne" />{t.hero.freeSim}</span>
-                <span className="flex items-center gap-2"><Check size={12} className="text-champagne" />{t.hero.pdfExport}</span>
-              </div>
-            </div>
+        {/* ════════════════════════════════════════ 7. PRICING ════════════════════════════════════════ */}
+        <PricingSection t={t} />
 
-            {/* Right column: floating stat card */}
-            <div className="lg:col-span-4 lg:pl-8 lg:border-l lg:border-white/8 animate-fade-up" style={{ animationDelay: '0.5s' }}>
-              <div className="space-y-8">
-                <div>
-                  <div className="eyebrow mb-3">A single simulation gives you</div>
-                  <ul className="space-y-3 text-sm">
-                    {[
-                      '1,000 Monte Carlo iterations',
-                      'P10 / P50 / P90 percentiles',
-                      '5-source confidence scoring',
-                      'Executive PDF report',
-                    ].map((item, i) => (
-                      <li key={i} className="flex items-baseline gap-3">
-                        <span className="text-champagne font-mono text-xs">0{i + 1}</span>
-                        <span className="text-white/70">{item}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+        {/* ════════════════════════════════════════ 8. FINAL CTA ════════════════════════════════════════ */}
+        <FinalCta t={t} />
+      </main>
 
-                <div className="pt-6 border-t border-white/8">
-                  <div className="font-serif text-5xl text-champagne mb-1">60s</div>
-                  <div className="text-xs text-white/40">average simulation time</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ════════════════════════════════════════ TRUST BAR ════════════════════════════════════════ */}
-      <section className="border-y border-white/5 py-12">
-        <div className="max-w-7xl mx-auto px-6 lg:px-10">
-          <p className="text-center text-xs uppercase tracking-[0.2em] text-white/30 mb-10">
-            {t.trust.title}
-          </p>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {TRUST_LOGOS.map((logo, i) => (
-              <div key={i} className="text-center">
-                <div className="font-serif text-xl text-white/70 mb-1">{logo.label}</div>
-                <div className="text-xs text-white/30">{logo.sub}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ════════════════════════════════════════ DEMOS ════════════════════════════════════════ */}
-      <section id="demos" className="py-32 px-6 lg:px-10">
-        <div className="max-w-7xl mx-auto">
-          <div className="mb-20 max-w-3xl">
-            <div className="flex items-center gap-3 mb-6">
-              <span className="rule-accent" />
-              <span className="eyebrow">{t.demos.badge}</span>
-            </div>
-            <h2 className="font-serif text-4xl lg:text-6xl tracking-tight mb-6">
-              {t.demos.title}
-              <span className="text-champagne">.</span>
-            </h2>
-            <p className="text-lg text-white/50 leading-relaxed">{t.demos.subtitle}</p>
-          </div>
-
-          {/* Cards asimétricas — no 3 columnas iguales */}
-          <div className="grid md:grid-cols-3 gap-6">
-            {DEMOS.map((demo, i) => {
-              const demoT = t.demos.items[i];
-              return (
-                <Link
-                  key={demo.id}
-                  href={`/app/predict?demo=${demo.id}`}
-                  className="group relative p-8 rounded-xl border border-white/8 hover:border-white/20 transition-all duration-500 hover:-translate-y-1"
-                  style={{
-                    background: `linear-gradient(180deg, ${demo.accent}08 0%, transparent 60%)`,
-                  }}
-                >
-                  <div className="flex items-start justify-between mb-8">
-                    <div>
-                      <div className="text-xs text-white/40 mb-1">0{i + 1}</div>
-                      <h3 className="font-serif text-2xl mb-1">{demoT.title}</h3>
-                      <p className="text-sm text-white/50">{demoT.subtitle}</p>
-                    </div>
-                    <ArrowUpRight
-                      size={20}
-                      className="text-white/30 group-hover:text-champagne transition-colors"
-                    />
-                  </div>
-
-                  {/* Score grande */}
-                  <div className="mb-6">
-                    <div className="flex items-baseline justify-between mb-3">
-                      <span className="text-xs uppercase tracking-wider text-white/40">{t.demos.viability}</span>
-                      <span
-                        className="font-serif text-5xl font-bold"
-                        style={{ color: demo.accent }}
-                      >
-                        {demo.viabilityScore}
-                      </span>
-                    </div>
-                    <div className="h-px bg-white/8 relative overflow-hidden">
-                      <div
-                        className="absolute inset-y-0 left-0 transition-all duration-700"
-                        style={{
-                          width: `${demo.viabilityScore}%`,
-                          background: demo.accent,
-                        }}
-                      />
-                    </div>
-                  </div>
-
-                  {/* Stats */}
-                  <div className="grid grid-cols-3 gap-2 pt-6 border-t border-white/5">
-                    <div>
-                      <div className="text-[10px] uppercase tracking-wider text-white/30 mb-1">{t.demos.ltv}</div>
-                      <div className="font-mono text-sm">{demo.ltv}</div>
-                    </div>
-                    <div>
-                      <div className="text-[10px] uppercase tracking-wider text-white/30 mb-1">{t.demos.cac}</div>
-                      <div className="font-mono text-sm">{demo.cac}</div>
-                    </div>
-                    <div>
-                      <div className="text-[10px] uppercase tracking-wider text-white/30 mb-1">{t.demos.breakEven}</div>
-                      <div className="font-mono text-sm">{demo.breakEven}</div>
-                    </div>
-                  </div>
-
-                  <div className="mt-6 flex items-center justify-between">
-                    <span
-                      className="text-xs font-bold uppercase tracking-wider"
-                      style={{ color: demo.accent }}
-                    >
-                      {demoT.verdict}
-                    </span>
-                  </div>
-                </Link>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* ════════════════════════════════════════ FEATURES ════════════════════════════════════════ */}
-      <section id="features" className="py-32 px-6 lg:px-10 border-t border-white/5">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-12 gap-12 mb-20">
-            <div className="lg:col-span-7">
-              <div className="flex items-center gap-3 mb-6">
-                <span className="rule-accent" />
-                <span className="eyebrow">{t.features.badge}</span>
-              </div>
-              <h2 className="font-serif text-4xl lg:text-6xl tracking-tight">
-                {t.features.title}
-                <span className="text-champagne">.</span>
-              </h2>
-            </div>
-            <div className="lg:col-span-5 lg:pt-12">
-              <p className="text-lg text-white/50 leading-relaxed">{t.features.subtitle}</p>
-            </div>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-px bg-white/5">
-            {t.features.items.map((f, i) => (
-              <div
-                key={i}
-                className="bg-[#0c0c10] p-8 hover:bg-white/[0.02] transition-colors group"
-              >
-                <div className="font-mono text-xs text-champagne mb-6">PHASE</div>
-                <h3 className="font-serif text-xl mb-4 leading-tight">{f.title}</h3>
-                <p className="text-sm text-white/50 leading-relaxed">{f.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ════════════════════════════════════════ HOW IT WORKS ════════════════════════════════════════ */}
-      <section className="py-32 px-6 lg:px-10 border-t border-white/5 bg-white/[0.015]">
-        <div className="max-w-7xl mx-auto">
-          <div className="mb-20 max-w-2xl">
-            <div className="flex items-center gap-3 mb-6">
-              <span className="rule-accent" />
-              <span className="eyebrow">PROCESS</span>
-            </div>
-            <h2 className="font-serif text-4xl lg:text-6xl tracking-tight">
-              {t.how.title}
-              <span className="text-champagne">.</span>
-            </h2>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-12">
-            {t.how.steps.map((step, i) => (
-              <div key={i} className="relative">
-                <div className="font-serif text-7xl text-champagne/20 mb-6 leading-none">
-                  {String(i + 1).padStart(2, '0')}
-                </div>
-                <h3 className="font-serif text-2xl mb-4">{step.title}</h3>
-                <p className="text-sm text-white/50 leading-relaxed">{step.desc}</p>
-                {i < t.how.steps.length - 1 && (
-                  <div className="hidden md:block absolute top-8 -right-6 text-champagne/30">
-                    <ArrowRight size={20} />
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ════════════════════════════════════════ PRICING ════════════════════════════════════════ */}
-      <section id="pricing" className="py-32 px-6 lg:px-10 border-t border-white/5">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-12 gap-12 mb-20">
-            <div className="lg:col-span-7">
-              <div className="flex items-center gap-3 mb-6">
-                <span className="rule-accent" />
-                <span className="eyebrow">{t.pricing.badge}</span>
-              </div>
-              <h2 className="font-serif text-4xl lg:text-6xl tracking-tight">
-                {t.pricing.title}
-                <span className="text-champagne">.</span>
-              </h2>
-            </div>
-            <div className="lg:col-span-5 lg:pt-12">
-              <p className="text-lg text-white/50 leading-relaxed">{t.pricing.subtitle}</p>
-            </div>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-6">
-            {t.pricing.plans.map((plan, i) => {
-              const prices = ['$0', '$29', '$99'];
-              const highlighted = i === 1;
-              return (
-                <div
-                  key={plan.name}
-                  className={`relative p-8 rounded-xl border transition-all ${
-                    highlighted
-                      ? 'border-champagne/40 bg-gradient-to-b from-champagne/[0.06] to-transparent shadow-premium'
-                      : 'border-white/8 bg-white/[0.01] hover:border-white/15'
-                  }`}
-                >
-                  {highlighted && (
-                    <div className="absolute -top-3 left-8 bg-champagne text-ink text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full">
-                      {t.pricing.popular}
-                    </div>
-                  )}
-                  <h3 className="font-serif text-2xl mb-2">{plan.name}</h3>
-                  <p className="text-sm text-white/40 mb-8 min-h-[40px]">{plan.description}</p>
-                  <div className="mb-8">
-                    <span className="font-serif text-5xl font-bold tracking-tight">{prices[i]}</span>
-                    <span className="text-white/40 text-sm">{t.pricing.perMonth}</span>
-                  </div>
-                  <ul className="space-y-3 mb-10">
-                    {plan.features.map((feat, j) => (
-                      <li key={j} className="flex items-start gap-3 text-sm">
-                        <Check
-                          size={14}
-                          className={`mt-1 shrink-0 ${highlighted ? 'text-champagne' : 'text-white/30'}`}
-                        />
-                        <span className="text-white/70">{feat}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <Link
-                    href="/app"
-                    className={`block text-center py-3 rounded-md font-semibold text-sm transition-all ${
-                      highlighted
-                        ? 'bg-champagne text-ink hover:bg-champagne-light'
-                        : 'border border-white/15 hover:bg-white/5'
-                    }`}
-                  >
-                    {plan.cta}
-                  </Link>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* ════════════════════════════════════════ TESTIMONIALS ════════════════════════════════════════ */}
-      <section className="py-32 px-6 lg:px-10 border-t border-white/5 bg-white/[0.015]">
-        <div className="max-w-7xl mx-auto">
-          <div className="mb-20 max-w-2xl">
-            <div className="flex items-center gap-3 mb-6">
-              <span className="rule-accent" />
-              <span className="eyebrow">CASE STUDIES</span>
-            </div>
-            <h2 className="font-serif text-4xl lg:text-6xl tracking-tight">
-              {t.testimonials.title}
-              <span className="text-champagne">.</span>
-            </h2>
-            <p className="text-lg text-white/50 mt-6">{t.testimonials.subtitle}</p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-6">
-            {t.testimonials.items.map((item, i) => (
-              <div key={i} className="p-8 rounded-xl border border-white/8 bg-white/[0.01]">
-                <h3 className="font-serif text-xl mb-1">{item.title}</h3>
-                <p className="text-xs text-white/40 mb-6">{item.role}</p>
-                <blockquote className="text-sm text-white/70 leading-relaxed italic mb-8">
-                  &ldquo;{item.quote}&rdquo;
-                </blockquote>
-                <div className="pt-6 border-t border-white/5">
-                  <div className="text-[10px] uppercase tracking-wider text-white/30 mb-1">{t.testimonials.result}</div>
-                  <div className="font-serif text-xl text-champagne">{item.metric}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ════════════════════════════════════════ FAQ ════════════════════════════════════════ */}
-      <section id="faq" className="py-32 px-6 lg:px-10 border-t border-white/5">
-        <div className="max-w-3xl mx-auto">
-          <div className="mb-16">
-            <div className="flex items-center gap-3 mb-6">
-              <span className="rule-accent" />
-              <span className="eyebrow">FAQ</span>
-            </div>
-            <h2 className="font-serif text-4xl lg:text-6xl tracking-tight">
-              {t.faq.title}
-              <span className="text-champagne">.</span>
-            </h2>
-          </div>
-
-          <div className="divide-y divide-white/8 border-y border-white/8">
-            {t.faq.items.map((item, i) => (
-              <FaqItem key={i} q={item.q} a={item.a} />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ════════════════════════════════════════ FINAL CTA ════════════════════════════════════════ */}
-      <section className="py-40 px-6 lg:px-10 border-t border-white/5 relative overflow-hidden">
-        {/* Glow sutil */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-champagne/[0.04] rounded-full blur-3xl pointer-events-none" />
-
-        <div className="max-w-3xl mx-auto text-center relative">
-          <h2 className="font-serif text-4xl lg:text-7xl tracking-tight mb-8 leading-[0.95]">
-            {t.finalCta.title1}
-            <br />
-            <em className="text-champagne not-italic font-bold">{t.finalCta.title2}</em>
-            <span className="text-champagne">.</span>
-          </h2>
-          <p className="text-lg text-white/50 mb-10 max-w-xl mx-auto">{t.finalCta.subtitle}</p>
-          <Link
-            href="/app"
-            className="inline-flex items-center gap-2 bg-champagne text-ink px-10 py-5 rounded-md font-bold text-lg hover:bg-champagne-light transition-all group"
-          >
-            {t.finalCta.cta}
-            <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
-          </Link>
-          <p className="text-xs text-white/30 mt-6">{t.finalCta.note}</p>
-        </div>
-      </section>
-
-      {/* ════════════════════════════════════════ FOOTER ════════════════════════════════════════ */}
-      <footer className="border-t border-white/5 py-12 px-6 lg:px-10">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="flex items-center gap-3">
-            <div className="w-7 h-7 rounded-md bg-gradient-to-br from-champagne to-champagne-deep flex items-center justify-center">
-              <span className="text-ink font-serif font-bold text-xs">OG</span>
-            </div>
-            <div>
-              <div className="font-serif text-sm">OpenGravity</div>
-              <div className="text-xs text-white/30">{t.footer.copyright}</div>
-            </div>
-          </div>
-          <div className="flex items-center gap-6 text-xs text-white/40">
-            <Link href="/privacy" className="hover:text-white transition-colors">{t.footer.privacy}</Link>
-            <Link href="/terms" className="hover:text-white transition-colors">{t.footer.terms}</Link>
-            <Link href="/app" className="hover:text-white transition-colors">{t.footer.dashboard}</Link>
-            <a href="mailto:hola@opengravity.dev" className="hover:text-white transition-colors">{t.footer.contact}</a>
-            <LanguageSwitcher compact />
-          </div>
-        </div>
-      </footer>
+      {/* ════════════════════════════════════════ 9. FOOTER ════════════════════════════════════════ */}
+      <Footer t={t} />
     </div>
   );
 }
 
-// ─── FAQ Item con animación ──────────────────────────────────────────────────
-function FaqItem({ q, a }: { q: string; a: string }) {
-  const [open, setOpen] = useState(false);
+/* ════════════════════════════════════════════════════════════════════════
+   1. TICKER — auto-scrolling stats marquee at top
+   ════════════════════════════════════════════════════════════════════════ */
+function TickerBar({ stats }: { stats: string[] }) {
+  // Duplicate the list so the marquee can loop seamlessly (-50% translate)
+  const doubled = [...stats, ...stats];
   return (
-    <div>
-      <button
-        onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between gap-4 py-6 text-left group"
-        aria-expanded={open}
-      >
-        <span className="font-serif text-lg group-hover:text-champagne transition-colors">{q}</span>
-        <span className="text-champagne shrink-0">
-          {open ? <Minus size={18} /> : <Plus size={18} />}
-        </span>
-      </button>
-      {open && (
-        <div className="pb-6 text-sm text-white/60 leading-relaxed animate-fade-up">
-          {a}
+    <div
+      className="relative z-50 h-8 bg-og-bg border-b border-hairline overflow-hidden flex items-center"
+      role="status"
+      aria-live="off"
+      aria-label="Live platform stats"
+    >
+      <div className="flex items-center h-full">
+        <div className="h-full px-3 flex items-center bg-mint text-og-bg font-mono text-[10px] font-bold uppercase tracking-[0.15em] shrink-0">
+          <span className="w-1.5 h-1.5 rounded-full bg-og-bg animate-pulse mr-2" />
+          LIVE
         </div>
-      )}
+        <div className="relative flex-1 overflow-hidden">
+          <div className="flex animate-marquee whitespace-nowrap will-change-transform">
+            {doubled.map((s, i) => (
+              <span
+                key={i}
+                className="inline-flex items-center font-mono text-[11px] text-paper/55 px-5"
+              >
+                <span className="text-mint mr-2">▸</span>
+                {s}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
     </div>
+  );
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   3. HERO — asymmetric 7/5 split
+   ════════════════════════════════════════════════════════════════════════ */
+function Hero({ t }: { t: ReturnType<typeof useI18n>['t'] }) {
+  const heroRef = useRef<HTMLDivElement>(null);
+
+  // Cursor-following gradient (subtle, hero-only)
+  useEffect(() => {
+    const el = heroRef.current;
+    if (!el) return;
+    if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      return;
+    }
+    const onMove = (e: MouseEvent) => {
+      const rect = el.getBoundingClientRect();
+      const mx = (e.clientX - rect.left) / rect.width;
+      const my = (e.clientY - rect.top) / rect.height;
+      el.style.setProperty('--mx', mx.toFixed(3));
+      el.style.setProperty('--my', my.toFixed(3));
+    };
+    el.addEventListener('mousemove', onMove);
+    return () => el.removeEventListener('mousemove', onMove);
+  }, []);
+
+  return (
+    <section
+      ref={heroRef}
+      className="cursor-glow relative pt-16 lg:pt-24 pb-24 lg:pb-32 px-5 lg:px-10 overflow-hidden"
+      aria-labelledby="hero-title"
+    >
+      {/* Glowing intersection dots over the grid (mint) */}
+      <div className="og-grid-dots" aria-hidden />
+
+      <div className="relative max-w-[1280px] mx-auto">
+        {/* Asymmetric grid 7 / 5 */}
+        <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-start">
+          {/* LEFT — 7 cols */}
+          <div className="lg:col-span-7 relative z-10">
+            {/* Eyebrow */}
+            <div className="flex items-center mb-8 animate-fade-up">
+              <span className="rule-accent" />
+              <span className="eyebrow">MONTE CARLO V3 // LIVE</span>
+            </div>
+
+            {/* Headline — Geist, very tight tracking, $50K + 60s in mint */}
+            <h1
+              id="hero-title"
+              className="font-display text-[clamp(2.4rem,6.2vw,5.25rem)] leading-[0.95] tracking-[-0.045em] mb-8 animate-fade-up"
+              style={{ animationDelay: '80ms' }}
+            >
+              Simulate your startup&rsquo;s survival in{' '}
+              <span className="hl-mint">1,000 parallel universes</span>.
+            </h1>
+
+            {/* Subhead using the i18n subtitle */}
+            <p
+              className="text-[15px] lg:text-[17px] text-paper/55 max-w-[640px] leading-relaxed mb-10 animate-fade-up"
+              style={{ animationDelay: '160ms' }}
+            >
+              {t.hero.subtitle}
+            </p>
+
+            {/* Inline price-ticker row — big mono numbers */}
+            <div
+              className="flex items-stretch gap-px border border-hairline mb-10 animate-fade-up"
+              style={{ animationDelay: '220ms' }}
+            >
+              <StatTicker
+                label="COST OF FAILURE"
+                value="$50,000"
+                accent="mint"
+              />
+              <div className="w-px bg-hairline" />
+              <StatTicker
+                label="TIME TO VERDICT"
+                value="60s"
+                accent="cyan"
+              />
+              <div className="w-px bg-hairline" />
+              <StatTicker
+                label="ITERATIONS"
+                value="1,000"
+                accent="paper"
+              />
+            </div>
+
+            {/* CTAs */}
+            <div
+              className="flex flex-col sm:flex-row gap-3 animate-fade-up"
+              style={{ animationDelay: '280ms' }}
+            >
+              <Link href="/app" className="btn-primary">
+                {t.hero.ctaPrimary}
+                <ArrowRight size={15} strokeWidth={2.5} />
+              </Link>
+              <a href="#demos" className="btn-ghost">
+                {t.hero.ctaSecondary}
+              </a>
+            </div>
+
+            {/* Fine print — mono */}
+            <div
+              className="flex flex-wrap items-center gap-x-6 gap-y-2 mt-8 font-mono text-[11px] text-paper/40 animate-fade-up"
+              style={{ animationDelay: '340ms' }}
+            >
+              <span className="flex items-center gap-2">
+                <Check size={11} className="text-mint" strokeWidth={3} />
+                {t.hero.noCard}
+              </span>
+              <span className="flex items-center gap-2">
+                <Check size={11} className="text-mint" strokeWidth={3} />
+                {t.hero.freeSim}
+              </span>
+              <span className="flex items-center gap-2">
+                <Check size={11} className="text-mint" strokeWidth={3} />
+                {t.hero.pdfExport}
+              </span>
+            </div>
+          </div>
+
+          {/* RIGHT — 5 cols : live simulation terminal */}
+          <div
+            className="lg:col-span-5 relative z-10 animate-fade-up"
+            style={{ animationDelay: '380ms' }}
+          >
+            <HeroTerminal />
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* Hero stat ticker — like a price ticker (mono, big) */
+function StatTicker({
+  label,
+  value,
+  accent,
+}: {
+  label: string;
+  value: string;
+  accent: 'mint' | 'cyan' | 'paper';
+}) {
+  const color =
+    accent === 'mint'
+      ? 'text-mint'
+      : accent === 'cyan'
+      ? 'text-cyan-elec'
+      : 'text-paper';
+  return (
+    <div className="flex-1 px-4 py-3 bg-og-panel/60 backdrop-blur-sm">
+      <div className="font-mono text-[9px] tracking-[0.16em] text-paper/40 uppercase mb-1">
+        {label}
+      </div>
+      <div className={`font-mono text-2xl lg:text-3xl font-medium tabular-nums ${color}`}>
+        {value}
+      </div>
+    </div>
+  );
+}
+
+/* Hero terminal — fake live Monte Carlo simulation output */
+function HeroTerminal() {
+  const lines: { ln: string; content: React.ReactNode }[] = [
+    { ln: '01', content: <><span className="prompt">$</span> og simulate &quot;B2B SaaS Colombia&quot;</> },
+    { ln: '02', content: <><span className="dim">▸</span> spawning 5 research crawlers... <span className="ok">ok</span></> },
+    { ln: '03', content: <><span className="dim">▸</span> 1,000 monte carlo iterations      <span className="ok">ok</span></> },
+    { ln: '04', content: <><span className="dim">▸</span> synthesizing LLM report...        <span className="ok">ok</span></> },
+    { ln: '05', content: <span className="dim">─────────────────────────────────────────</span> },
+    { ln: '06', content: <><span className="accent">P50 LTV</span>      <span className="ok">$340</span>   ±12%</> },
+    { ln: '07', content: <><span className="accent">P50 CAC</span>      <span className="ok">$45</span></> },
+    { ln: '08', content: <><span className="accent">break-even</span>  <span className="ok">8 months</span></> },
+    { ln: '09', content: <span className="dim">─────────────────────────────────────────</span> },
+    { ln: '10', content: <>verdict  <span className="ok">████████</span><span className="dim">██</span>  <span className="ok">72 / 100</span></> },
+    { ln: '11', content: <><span className="ok">✓ done in 47s</span><span className="term-cursor" /></> },
+  ];
+  return (
+    <div className="terminal shadow-glow-mint">
+      <div className="terminal-titlebar">
+        <span className="terminal-dot" style={{ background: '#ff5f57' }} />
+        <span className="terminal-dot" style={{ background: '#febc2e' }} />
+        <span className="terminal-dot" style={{ background: '#28c840' }} />
+        <span className="ml-2">opengravity — monte-carlo-v3 — zsh</span>
+        <span className="ml-auto text-paper/30">v3.0.0</span>
+      </div>
+      <div className="terminal-body">
+        {lines.map((l, i) => (
+          <div key={i}>
+            <span className="ln">{l.ln}</span>
+            {l.content}
+          </div>
+        ))}
+      </div>
+      {/* Subtle scan-line animation across the terminal */}
+      <div
+        aria-hidden
+        className="absolute inset-x-0 top-12 bottom-0 pointer-events-none overflow-hidden"
+      >
+        <div
+          className="absolute inset-x-0 h-px bg-mint/40 animate-scan-line"
+          style={{ filter: 'blur(0.5px)' }}
+        />
+      </div>
+    </div>
+  );
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   4. TRUST STRIP — mono names, dot-separated
+   ════════════════════════════════════════════════════════════════════════ */
+function TrustStrip({ t }: { t: ReturnType<typeof useI18n>['t'] }) {
+  const items = [
+    t.trust.deepseek,
+    t.trust.tavily,
+    t.trust.montecarlo,
+    t.trust.upstash,
+  ];
+  return (
+    <section
+      className="relative border-y border-hairline py-8 px-5 lg:px-10"
+      aria-label={t.trust.title}
+    >
+      <div className="max-w-[1280px] mx-auto flex flex-wrap items-center justify-center gap-x-6 gap-y-3 font-mono text-[13px]">
+        {items.map((name, i) => (
+          <span key={i} className="flex items-center gap-6">
+            <span className="text-paper/55 hover:text-paper transition-colors">
+              {name}
+            </span>
+            {i < items.length - 1 && (
+              <span className="text-mint/60 select-none" aria-hidden>
+                ·
+              </span>
+            )}
+          </span>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   5. DEMOS — 3 terminal windows with titlebar + verdict as big mono number
+   ════════════════════════════════════════════════════════════════════════ */
+function DemosSection({ t }: { t: ReturnType<typeof useI18n>['t'] }) {
+  return (
+    <section
+      id="demos"
+      className="relative py-24 lg:py-32 px-5 lg:px-10"
+      aria-labelledby="demos-title"
+    >
+      <div className="max-w-[1280px] mx-auto">
+        {/* Header — asymmetric */}
+        <div className="grid lg:grid-cols-12 gap-8 mb-16">
+          <div className="lg:col-span-7">
+            <div className="flex items-center gap-3 mb-5">
+              <span className="section-index">02 / 06</span>
+              <span className="rule-accent" />
+              <span className="eyebrow">{t.demos.badge}</span>
+            </div>
+            <h2
+              id="demos-title"
+              className="font-display text-[clamp(2rem,4.5vw,3.75rem)] leading-[1] tracking-[-0.04em]"
+            >
+              {t.demos.title}
+              <span className="hl-mint">.</span>
+            </h2>
+          </div>
+          <div className="lg:col-span-5 lg:pt-6">
+            <p className="text-[15px] text-paper/50 leading-relaxed">
+              {t.demos.subtitle}
+            </p>
+          </div>
+        </div>
+
+        {/* Three terminal cards */}
+        <div className="grid md:grid-cols-3 gap-5">
+          {DEMOS.map((demo, i) => (
+            <DemoTerminalCard key={demo.id} demo={demo} index={i} t={t} />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function DemoTerminalCard({
+  demo,
+  index,
+  t,
+}: {
+  demo: (typeof DEMOS)[number];
+  index: number;
+  t: ReturnType<typeof useI18n>['t'];
+}) {
+  const demoT = t.demos.items[index];
+  const filled = Math.round(demo.viabilityScore / 10);
+  const bar = Array.from({ length: 10 }, (_, i) =>
+    i < filled ? '█' : '░'
+  ).join('');
+
+  return (
+    <Link
+      href={`/app/predict?demo=${demo.id}`}
+      className="terminal group hover:border-mint/40 transition-colors duration-300"
+      aria-label={`${demoT.title} — ${demoT.verdict}`}
+    >
+      <div className="terminal-titlebar">
+        <span className="terminal-dot" style={{ background: '#ff5f57' }} />
+        <span className="terminal-dot" style={{ background: '#febc2e' }} />
+        <span className="terminal-dot" style={{ background: '#28c840' }} />
+        <span className="ml-2 truncate">{demo.filename}</span>
+        <ArrowUpRight
+          size={13}
+          className="ml-auto text-paper/30 group-hover:text-mint transition-colors shrink-0"
+        />
+      </div>
+
+      <div className="terminal-body min-h-[260px] flex flex-col">
+        {/* Title + subtitle */}
+        <div className="mb-4">
+          <div className="font-mono text-[10px] text-paper/40 mb-1">
+            0{index + 1}
+          </div>
+          <div className="font-sans text-[15px] font-semibold text-paper leading-tight mb-1">
+            {demoT.title}
+          </div>
+          <div className="font-sans text-[12px] text-paper/45">
+            {demoT.subtitle}
+          </div>
+        </div>
+
+        <div className="border-t border-hairline pt-4 mb-4">
+          <span className="dim">▸ running simulation...</span>{' '}
+          <span className="ok">ok</span>
+          <br />
+          <span className="dim">▸ verdict:</span>
+        </div>
+
+        {/* BIG verdict number in mono — the centerpiece */}
+        <div className="flex items-baseline justify-between mb-3">
+          <span className="font-mono text-[10px] tracking-[0.16em] text-paper/40 uppercase">
+            {t.demos.viability}
+          </span>
+          <span
+            className="font-mono text-5xl font-medium tabular-nums leading-none"
+            style={{ color: demo.barColor, textShadow: `0 0 24px ${demo.barColor}55` }}
+          >
+            {demo.viabilityScore}
+          </span>
+        </div>
+
+        {/* ASCII bar in mono */}
+        <div className="font-mono text-[12px] mb-4" style={{ color: demo.barColor }}>
+          {bar}
+        </div>
+
+        {/* Stats — mono, tabular */}
+        <div className="grid grid-cols-3 gap-px bg-hairline border border-hairline mb-4">
+          <DemoStat label={t.demos.ltv} value={demo.ltv} />
+          <DemoStat label={t.demos.cac} value={demo.cac} />
+          <DemoStat label={t.demos.breakEven} value={demo.breakEven} />
+        </div>
+
+        {/* Verdict label */}
+        <div className="mt-auto pt-3 border-t border-hairline flex items-center justify-between">
+          <span
+            className="font-mono text-[11px] font-bold uppercase tracking-[0.14em]"
+            style={{ color: demo.barColor }}
+          >
+            {demoT.verdict}
+          </span>
+          <span className="font-mono text-[11px] text-paper/40 group-hover:text-mint transition-colors">
+            {t.demos.viewFull} →
+          </span>
+        </div>
+      </div>
+    </Link>
+  );
+}
+
+function DemoStat({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="bg-og-panel px-3 py-2">
+      <div className="font-mono text-[9px] tracking-[0.14em] text-paper/40 uppercase mb-0.5">
+        {label}
+      </div>
+      <div className="font-mono text-[13px] text-paper tabular-nums">{value}</div>
+    </div>
+  );
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   6. PIPELINE — vertical timeline (uses t.features.items = 4 phases)
+   ════════════════════════════════════════════════════════════════════════ */
+function PipelineSection({ t }: { t: ReturnType<typeof useI18n>['t'] }) {
+  return (
+    <section
+      id="pipeline"
+      className="relative py-24 lg:py-32 px-5 lg:px-10 border-t border-hairline bg-og-panel/40"
+      aria-labelledby="pipeline-title"
+    >
+      <div className="max-w-[1280px] mx-auto">
+        {/* Header */}
+        <div className="grid lg:grid-cols-12 gap-8 mb-20">
+          <div className="lg:col-span-7">
+            <div className="flex items-center gap-3 mb-5">
+              <span className="section-index">03 / 06</span>
+              <span className="rule-accent" />
+              <span className="eyebrow">{t.features.badge}</span>
+            </div>
+            <h2
+              id="pipeline-title"
+              className="font-display text-[clamp(2rem,4.5vw,3.75rem)] leading-[1] tracking-[-0.04em]"
+            >
+              {t.features.title}
+              <span className="hl-mint">.</span>
+            </h2>
+          </div>
+          <div className="lg:col-span-5 lg:pt-6">
+            <p className="text-[15px] text-paper/50 leading-relaxed">
+              {t.features.subtitle}
+            </p>
+          </div>
+        </div>
+
+        {/* Vertical timeline */}
+        <ol className="relative border-l border-hairline pl-8 lg:pl-12 space-y-12">
+          {t.features.items.map((phase, i) => {
+            const num = String(i + 1).padStart(2, '0');
+            const isLast = i === t.features.items.length - 1;
+            return (
+              <li key={i} className="relative animate-fade-up" style={{ animationDelay: `${i * 80}ms` }}>
+                {/* Node on the line — mint glow dot */}
+                <span
+                  className="absolute -left-[42px] lg:-left-[58px] top-1 flex items-center justify-center"
+                  aria-hidden
+                >
+                  <span className="w-3 h-3 bg-mint rounded-full shadow-glow-mint" />
+                  <span className="absolute w-3 h-3 bg-mint rounded-full animate-ping opacity-40" />
+                </span>
+
+                {/* Phase number + horizontal rule + title */}
+                <div className="flex items-center gap-4 mb-3">
+                  <span className="font-mono text-[13px] font-medium text-mint tabular-nums">
+                    {num}
+                  </span>
+                  <span className="flex-1 h-px bg-gradient-to-r from-mint/60 via-hairline to-transparent" />
+                </div>
+
+                <div className="grid lg:grid-cols-12 gap-6">
+                  <div className="lg:col-span-5">
+                    <h3 className="font-display text-2xl lg:text-[28px] tracking-[-0.025em] text-paper">
+                      {phase.title.replace(/^\d+\s·\s/, '')}
+                    </h3>
+                  </div>
+                  <div className="lg:col-span-7">
+                    <p className="text-[14px] text-paper/55 leading-relaxed">
+                      {phase.desc}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Terminal preview for the last node */}
+                {isLast && (
+                  <div className="mt-6 terminal max-w-2xl">
+                    <div className="terminal-titlebar">
+                      <span className="terminal-dot" style={{ background: '#ff5f57' }} />
+                      <span className="terminal-dot" style={{ background: '#febc2e' }} />
+                      <span className="terminal-dot" style={{ background: '#28c840' }} />
+                      <span className="ml-2">synthesis.log</span>
+                    </div>
+                    <div className="terminal-body text-[11.5px]">
+                      <div>
+                        <span className="ln">$</span>
+                        <span className="prompt">og</span> synthesize --job=85a3
+                      </div>
+                      <div>
+                        <span className="ln">·</span>
+                        <span className="dim">▸</span> executive summary...{' '}
+                        <span className="ok">ok</span>
+                      </div>
+                      <div>
+                        <span className="ln">·</span>
+                        <span className="dim">▸</span> key risks extracted...{' '}
+                        <span className="ok">ok</span>
+                      </div>
+                      <div>
+                        <span className="ln">·</span>
+                        <span className="dim">▸</span> pricing strategy...{' '}
+                        <span className="ok">ok</span>
+                      </div>
+                      <div>
+                        <span className="ln">✓</span>
+                        <span className="ok">report ready</span> ·{' '}
+                        <span className="accent">report_p50.pdf</span>
+                        <span className="term-cursor" />
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </li>
+            );
+          })}
+        </ol>
+      </div>
+    </section>
+  );
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   7. PRICING — single-column comparison matrix table
+   ════════════════════════════════════════════════════════════════════════ */
+function PricingSection({ t }: { t: ReturnType<typeof useI18n>['t'] }) {
+  const plans = t.pricing.plans;
+  const popularIdx = 1; // Pro is the highlighted plan
+
+  return (
+    <section
+      id="pricing"
+      className="relative py-24 lg:py-32 px-5 lg:px-10 border-t border-hairline"
+      aria-labelledby="pricing-title"
+    >
+      <div className="max-w-[1280px] mx-auto">
+        {/* Header */}
+        <div className="grid lg:grid-cols-12 gap-8 mb-16">
+          <div className="lg:col-span-7">
+            <div className="flex items-center gap-3 mb-5">
+              <span className="section-index">04 / 06</span>
+              <span className="rule-accent" />
+              <span className="eyebrow">{t.pricing.badge}</span>
+            </div>
+            <h2
+              id="pricing-title"
+              className="font-display text-[clamp(2rem,4.5vw,3.75rem)] leading-[1] tracking-[-0.04em]"
+            >
+              {t.pricing.title}
+              <span className="hl-mint">.</span>
+            </h2>
+          </div>
+          <div className="lg:col-span-5 lg:pt-6">
+            <p className="text-[15px] text-paper/50 leading-relaxed">
+              {t.pricing.subtitle}
+            </p>
+          </div>
+        </div>
+
+        {/* Comparison table */}
+        <div className="terminal">
+          {/* Header row — plan names + prices */}
+          <div className="grid grid-cols-4 border-b border-hairline">
+            <div className="p-5 lg:p-6">
+              <span className="font-mono text-[10px] tracking-[0.16em] text-paper/40 uppercase">
+                Plan
+              </span>
+            </div>
+            {plans.map((plan, i) => (
+              <div
+                key={plan.name}
+                className={`relative p-5 lg:p-6 border-l border-hairline ${
+                  i === popularIdx ? 'bg-mint/[0.04]' : ''
+                }`}
+              >
+                {i === popularIdx && (
+                  <span className="absolute top-0 left-0 right-0 h-px bg-mint" />
+                )}
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="font-display text-lg lg:text-xl text-paper tracking-tight">
+                    {plan.name}
+                  </span>
+                  {i === popularIdx && (
+                    <span className="font-mono text-[9px] tracking-[0.14em] text-mint uppercase border border-mint/40 px-1.5 py-0.5">
+                      {t.pricing.popular}
+                    </span>
+                  )}
+                </div>
+                <div className="font-mono text-2xl lg:text-3xl text-paper tabular-nums">
+                  {PRICING_PRICES[i]}
+                  {i < 2 && (
+                    <span className="font-mono text-[11px] text-paper/40 ml-1">
+                      {t.pricing.perMonth}
+                    </span>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Feature rows */}
+          {PRICING_MATRIX.map((row, ri) => (
+            <div
+              key={row.label}
+              className={`grid grid-cols-4 ${
+                ri % 2 === 0 ? 'bg-paper/[0.012]' : ''
+              } border-b border-hairline last:border-b-0`}
+            >
+              <div className="p-4 lg:p-5 font-mono text-[12px] text-paper/65">
+                {row.label}
+              </div>
+              {row.cells.map((cell, ci) => (
+                <div
+                  key={ci}
+                  className={`p-4 lg:p-5 border-l border-hairline font-mono text-[12px] ${
+                    ci === popularIdx ? 'bg-mint/[0.02]' : ''
+                  } ${cell === '✓' ? 'text-mint' : cell === '—' ? 'text-paper/25' : 'text-paper/80'}`}
+                >
+                  {cell === '✓' ? (
+                    <Check size={14} strokeWidth={3} className="inline" />
+                  ) : cell === '—' ? (
+                    <X size={13} strokeWidth={2.5} className="inline opacity-60" />
+                  ) : (
+                    <span className="tabular-nums">{cell}</span>
+                  )}
+                </div>
+              ))}
+            </div>
+          ))}
+
+          {/* CTA row */}
+          <div className="grid grid-cols-4">
+            <div className="p-5 lg:p-6" />
+            {plans.map((plan, i) => (
+              <div
+                key={plan.name}
+                className={`p-5 lg:p-6 border-l border-hairline ${
+                  i === popularIdx ? 'bg-mint/[0.04]' : ''
+                }`}
+              >
+                <Link
+                  href="/app"
+                  className={
+                    i === popularIdx
+                      ? 'btn-primary w-full text-[12px]'
+                      : 'btn-ghost w-full text-[12px]'
+                  }
+                >
+                  {plan.cta}
+                </Link>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   8. FINAL CTA — full-width mint glow
+   ════════════════════════════════════════════════════════════════════════ */
+function FinalCta({ t }: { t: ReturnType<typeof useI18n>['t'] }) {
+  return (
+    <section
+      className="relative py-28 lg:py-40 px-5 lg:px-10 border-t border-hairline overflow-hidden"
+      aria-labelledby="final-cta-title"
+    >
+      {/* Full-width mint glow */}
+      <div
+        aria-hidden
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            'radial-gradient(ellipse 60% 60% at 50% 100%, rgba(0, 242, 153, 0.16), transparent 70%)',
+        }}
+      />
+      {/* Diagonal sharp divider at top */}
+      <div
+        aria-hidden
+        className="absolute top-0 left-0 right-0 h-px"
+        style={{
+          background:
+            'linear-gradient(to right, transparent, var(--mint), transparent)',
+        }}
+      />
+
+      <div className="relative max-w-[900px] mx-auto text-center">
+        <div className="flex items-center justify-center gap-3 mb-8">
+          <span className="rule-accent" />
+          <span className="eyebrow">READY?</span>
+          <span className="rule-accent" style={{ marginRight: 0, marginLeft: 12 }} />
+        </div>
+
+        <h2
+          id="final-cta-title"
+          className="font-display text-[clamp(2.4rem,6vw,5rem)] leading-[0.95] tracking-[-0.045em] mb-8"
+        >
+          {t.finalCta.title1} <span className="hl-mint">{t.finalCta.title2}</span>
+          <span className="hl-mint">.</span>
+        </h2>
+
+        <p className="text-[16px] lg:text-[17px] text-paper/55 mb-10 max-w-[560px] mx-auto leading-relaxed">
+          {t.finalCta.subtitle}
+        </p>
+
+        <Link href="/app" className="btn-primary text-base px-10 py-4">
+          {t.finalCta.cta}
+          <ArrowRight size={17} strokeWidth={2.5} />
+        </Link>
+
+        <p className="font-mono text-[11px] text-paper/35 mt-6">
+          {t.finalCta.note}
+        </p>
+      </div>
+    </section>
+  );
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   9. FOOTER — minimal, mono
+   ════════════════════════════════════════════════════════════════════════ */
+function Footer({ t }: { t: ReturnType<typeof useI18n>['t'] }) {
+  return (
+    <footer className="border-t border-hairline py-10 px-5 lg:px-10">
+      <div className="max-w-[1280px] mx-auto flex flex-col md:flex-row items-center justify-between gap-6 font-mono text-[12px]">
+        <div className="flex items-center gap-3">
+          <span className="text-paper font-medium">
+            OpenGravity<span className="text-mint">_</span>
+          </span>
+          <span className="text-paper/30">·</span>
+          <span className="text-paper/40">{t.footer.copyright}</span>
+        </div>
+        <div className="flex items-center gap-5 text-paper/40">
+          <Link href="/privacy" className="hover:text-mint transition-colors">
+            {t.footer.privacy}
+          </Link>
+          <Link href="/terms" className="hover:text-mint transition-colors">
+            {t.footer.terms}
+          </Link>
+          <Link href="/app" className="hover:text-mint transition-colors">
+            {t.footer.dashboard}
+          </Link>
+          <a
+            href="mailto:hola@opengravity.dev"
+            className="hover:text-mint transition-colors"
+          >
+            {t.footer.contact}
+          </a>
+          <LanguageSwitcher compact />
+        </div>
+      </div>
+    </footer>
   );
 }

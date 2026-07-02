@@ -2,34 +2,48 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  /* ═══ Paleta editorial premium ═══
-     Inspiración: Linear, Vercel, Stripe — pero con más temperatura.
-     Texto: blanco roto, no blanco puro.
-     Background: navy oscuro con tinte cálido.
-     Accent: dorado champagne (no verde neón genérico).
-  */
-  --foreground-rgb: 245, 243, 238;       /* #F5F3EE — blanco roto */
-  --background-start-rgb: 12, 12, 16;    /* #0C0C10 — navy casi negro */
-  --background-end-rgb: 18, 18, 24;      /* #121218 */
+/* ════════════════════════════════════════════════════════════════════════
+   OpenGravity V2 — Design System
+   Inspired by: Linear, Vercel, Resend, marketnow.site
+   Pure black canvas · mint #00F299 + cyan #00d1ff accents · warm paper text
+   ════════════════════════════════════════════════════════════════════════ */
 
-  --c-ink: #0a0a0d;                      /* texto sobre fondo claro */
-  --c-paper: #f5f3ee;                    /* papel — opuesto del ink */
-  --c-cream: #e8e4d9;                    /* crema cálido */
-  --c-champagne: #c9a96e;                /* dorado champagne — accent principal */
-  --c-champagne-deep: #a07840;           /* dorado profundo */
-  --c-emerald-deep: #1a3d2e;             /* verde bosque — success */
-  --c-rust: #b04a2a;                     /* óxido — warning */
-  --c-plum: #2d1b3e;                     /* ciruela — premium accent */
+:root {
+  /* ── Brand colors ── */
+  --og-bg: #050505;
+  --og-panel: #0a0a0a;
+  --og-panel-2: #101010;
+  --paper: #f4f3ec;
+  --paper-muted: rgba(244, 243, 236, 0.55);
+  --paper-dim: rgba(244, 243, 236, 0.30);
+  --paper-faint: rgba(244, 243, 236, 0.12);
+  --hairline: rgba(244, 243, 236, 0.08);
+  --hairline-bright: rgba(244, 243, 236, 0.16);
+
+  --mint: #00F299;
+  --mint-deep: #00C97A;
+  --mint-glow: rgba(0, 242, 153, 0.35);
+  --cyan-elec: #00d1ff;
+  --cyan-deep: #00A8CC;
+
+  /* Legacy — keep for dashboard backwards-compat (do NOT use in new code) */
+  --c-ink: #0a0a0d;
+  --c-paper: #f4f3ec;
+  --c-cream: #e8e4d9;
+  --c-champagne: #c9a96e;
+  --c-champagne-deep: #a07840;
+  --c-emerald-deep: #1a3d2e;
+  --c-rust: #b04a2a;
+  --c-plum: #2d1b3e;
 
   --btn-text: #0a0a0d;
-  --glass-bg: rgba(245, 243, 238, 0.04);
-  --glass-border: rgba(245, 243, 238, 0.08);
+  --glass-bg: rgba(244, 243, 236, 0.04);
+  --glass-border: rgba(244, 243, 236, 0.08);
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: rgb(var(--background-start-rgb));
+  color: var(--paper);
+  background: var(--og-bg);
   min-height: 100vh;
   font-family:
     var(--font-sans, "Inter"),
@@ -38,133 +52,294 @@ body {
     sans-serif;
   overflow-x: hidden;
   -webkit-tap-highlight-color: transparent;
-  font-feature-settings: "ss01", "cv11";
+  font-feature-settings: "ss01", "cv11", "tnum";
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* ═══ Tipografía editorial ═══
-   Usar font-serif para títulos grandes — le da personalidad,
-   distingue del look "Inter en todo" que usan todos los SaaS.
+/* ── Font helpers ──
+   Headlines use Geist (var(--font-display)). Body uses Inter. Mono uses
+   JetBrains Mono. NO serif — too editorial for this brand.
 */
-.font-serif {
-  font-family: var(--font-serif, Georgia, serif);
-}
-.font-mono {
-  font-family: var(--font-mono, "JetBrains Mono", monospace);
-}
-
-/* Eyebrow labels — tracking alto, uppercase, pequeño */
-.eyebrow {
-  font-family: var(--font-sans);
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.18em;
-  color: var(--c-champagne);
-}
-
-/* Headings editoriales — usar serif italic para énfasis */
-.heading-display {
-  font-family: var(--font-serif);
-  font-weight: 800;
+.font-display {
+  font-family: var(--font-display, var(--font-sans)), system-ui, sans-serif;
+  font-weight: 700;
   letter-spacing: -0.04em;
   line-height: 0.95;
 }
+.font-serif {
+  /* Legacy alias — kept for dashboard. Maps to display now (no more Playfair). */
+  font-family: var(--font-display, var(--font-sans)), system-ui, sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+.font-mono {
+  font-family: var(--font-mono, "JetBrains Mono"), monospace;
+}
+
+/* ── Eyebrow label — uppercase tracking, mono ──
+   Linear/Vercel-style technical labels.
+*/
+.eyebrow {
+  font-family: var(--font-mono, "JetBrains Mono"), monospace;
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--mint);
+}
+
+/* ── Section index marker — mono "01 / 04" style ── */
+.section-index {
+  font-family: var(--font-mono, "JetBrains Mono"), monospace;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  color: var(--paper-dim);
+}
 
 @layer components {
-  /* Glassmorphism refinado — menos saturado que el anterior */
+  /* ── Background grid (Linear/Vercel) ──
+     Fixed-position, fades out toward edges via radial mask.
+  */
+  .og-grid-bg {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      linear-gradient(to right, rgba(244, 243, 236, 0.035) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(244, 243, 236, 0.035) 1px, transparent 1px);
+    background-size: 64px 64px;
+    -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 30%, transparent 80%);
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 30%, transparent 80%);
+    z-index: 0;
+  }
+
+  /* ── Glowing intersection dots — placed on the grid corners ──
+     Subtle mint glow points scattered across the hero area.
+  */
+  .og-grid-dots {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image: radial-gradient(circle, var(--mint-glow) 1px, transparent 1.4px);
+    background-size: 64px 64px;
+    background-position: -1px -1px;
+    opacity: 0.45;
+    -webkit-mask-image: radial-gradient(ellipse 70% 50% at 50% 30%, #000 0%, transparent 75%);
+    mask-image: radial-gradient(ellipse 70% 50% at 50% 30%, #000 0%, transparent 75%);
+  }
+
+  /* ── Terminal window styling ──
+     Sharp 4px corners, hairline border, mono content with line numbers.
+  */
+  .terminal {
+    position: relative;
+    background: #070707;
+    border: 1px solid var(--hairline-bright);
+    border-radius: 4px;
+    overflow: hidden;
+    font-family: var(--font-mono, "JetBrains Mono"), monospace;
+  }
+  .terminal-titlebar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: #0c0c0c;
+    border-bottom: 1px solid var(--hairline);
+    font-family: var(--font-mono, "JetBrains Mono"), monospace;
+    font-size: 11px;
+    color: var(--paper-dim);
+    letter-spacing: 0.05em;
+  }
+  .terminal-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+  .terminal-body {
+    padding: 16px 18px;
+    font-size: 12.5px;
+    line-height: 1.65;
+    color: var(--paper-muted);
+  }
+  .terminal-body .ln {
+    color: var(--paper-dim);
+    user-select: none;
+    display: inline-block;
+    width: 1.6em;
+    text-align: right;
+    margin-right: 14px;
+  }
+  .terminal-body .ok { color: var(--mint); }
+  .terminal-body .warn { color: #ffd479; }
+  .terminal-body .err { color: #ff5d5d; }
+  .terminal-body .dim { color: var(--paper-dim); }
+  .terminal-body .accent { color: var(--cyan-elec); }
+  .terminal-body .prompt { color: var(--mint); }
+
+  /* Cursor blink */
+  .term-cursor {
+    display: inline-block;
+    width: 7px;
+    height: 14px;
+    background: var(--mint);
+    vertical-align: text-bottom;
+    margin-left: 2px;
+    animation: blink 1.1s steps(2, start) infinite;
+  }
+
+  /* ── Sharp diagonal cut — for section transitions ──
+     Use a divider with .og-cut-top to clip a sharp angled edge.
+  */
+  .og-cut-top {
+    clip-path: polygon(0 24px, 100% 0, 100% 100%, 0 100%);
+    margin-top: -24px;
+    padding-top: 24px;
+  }
+
+  /* ── Mint glow pulse — for hover/idle accents ── */
+  .glow-mint {
+    box-shadow:
+      0 0 0 1px rgba(0, 242, 153, 0.4),
+      0 0 24px -4px rgba(0, 242, 153, 0.45);
+  }
+  .glow-cyan {
+    box-shadow:
+      0 0 0 1px rgba(0, 209, 255, 0.4),
+      0 0 24px -4px rgba(0, 209, 255, 0.45);
+  }
+
+  /* ── Hairline divider with mint accent dot ── */
+  .rule-accent {
+    width: 28px;
+    height: 1px;
+    background: var(--mint);
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 12px;
+    box-shadow: 0 0 8px rgba(0, 242, 153, 0.5);
+  }
+
+  /* ── Button system — sharp 4px corners, no rounded-2xl ── */
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: var(--mint);
+    color: #050505;
+    font-weight: 600;
+    padding: 12px 20px;
+    border-radius: 4px;
+    font-size: 14px;
+    letter-spacing: -0.005em;
+    transition: box-shadow 0.3s ease, background 0.2s ease;
+    border: none;
+    cursor: pointer;
+  }
+  .btn-primary:hover {
+    background: #1AFF9F;
+    box-shadow: 0 0 24px -4px rgba(0, 242, 153, 0.65);
+  }
+
+  .btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: transparent;
+    color: var(--paper);
+    font-weight: 500;
+    padding: 12px 20px;
+    border-radius: 4px;
+    font-size: 14px;
+    border: 1px solid var(--hairline-bright);
+    transition: border-color 0.2s ease, background 0.2s ease;
+    cursor: pointer;
+  }
+  .btn-ghost:hover {
+    border-color: var(--mint);
+    background: rgba(0, 242, 153, 0.04);
+  }
+
+  /* Glass / panel surfaces (kept for dashboard) */
   .glass {
     background: var(--glass-bg);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border: 1px solid var(--glass-border);
   }
-
   .glass-premium {
-    background: rgba(245, 243, 238, 0.03);
+    background: rgba(244, 243, 236, 0.03);
     backdrop-filter: blur(40px);
     -webkit-backdrop-filter: blur(40px);
-    border: 1px solid rgba(245, 243, 238, 0.08);
-    border-top: 1px solid rgba(245, 243, 238, 0.12);
+    border: 1px solid rgba(244, 243, 236, 0.08);
+    border-top: 1px solid rgba(244, 243, 236, 0.12);
   }
 
-  /* Línea decorativa fina — usar como eyebrow accent */
-  .rule-accent {
-    width: 32px;
-    height: 1px;
-    background: var(--c-champagne);
-    display: inline-block;
-    vertical-align: middle;
-    margin-right: 12px;
-  }
-}
-
-@layer components {
-  /* Legacy colors used by dashboard — keep for backward compat */
-  .text-gladiator-green { color: #c9a96e; }  /* ahora mapea a champagne */
+  /* Legacy color helpers — DO NOT USE in new code (kept for dashboard) */
+  .text-gladiator-green { color: var(--mint); }
   .text-gladiator-purple { color: #6d4aff; }
-  .text-gladiator-cyan { color: #4dd6c5; }
-  .border-gladiator-green { border-color: #c9a96e; }
+  .text-gladiator-cyan { color: var(--cyan-elec); }
+  .border-gladiator-green { border-color: var(--mint); }
   .border-gladiator-purple { border-color: #6d4aff; }
-  .border-gladiator-cyan { border-color: #4dd6c5; }
-  .bg-gladiator-green { background-color: #c9a96e; }
+  .border-gladiator-cyan { border-color: var(--cyan-elec); }
+  .bg-gladiator-green { background-color: var(--mint); }
   .bg-gladiator-purple { background-color: #6d4aff; }
-  .bg-gladiator-cyan { background-color: #4dd6c5; }
+  .bg-gladiator-cyan { background-color: var(--cyan-elec); }
 
-  .shadow-glow { box-shadow: 0 0 20px -3px rgba(201, 169, 110, 0.35); }
-  .shadow-neon { box-shadow: 0 0 30px rgba(201, 169, 110, 0.3); }
+  .shadow-glow { box-shadow: 0 0 20px -3px var(--mint-glow); }
+  .shadow-neon { box-shadow: 0 0 30px rgba(0, 242, 153, 0.3); }
 }
 
-/* Inkafit & Equastore High-Conversion Elements — legacy button */
+/* Legacy button — kept for dashboard backwards compat */
 .btn-gladiator {
   position: relative;
   overflow: hidden;
-  background-color: var(--c-champagne);
+  background-color: var(--mint);
   color: var(--btn-text) !important;
-  font-weight: 900;
+  font-weight: 700;
   padding: 1.25rem 2.5rem;
   text-transform: uppercase;
-  letter-spacing: -0.05em;
+  letter-spacing: -0.03em;
   font-size: 1.125rem;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   border: none;
   cursor: pointer;
-  box-shadow: 0 10px 20px -5px rgba(201, 169, 110, 0.3);
+  border-radius: 4px;
+  box-shadow: 0 10px 20px -5px rgba(0, 242, 153, 0.3);
 }
-
 .btn-gladiator:hover {
   transform: translateY(-2px);
-  box-shadow: 0 15px 25px -5px rgba(201, 169, 110, 0.45);
+  box-shadow: 0 15px 25px -5px rgba(0, 242, 153, 0.45);
 }
-
-.btn-gladiator:active {
-  transform: scale(0.97);
-}
+.btn-gladiator:active { transform: scale(0.97); }
 
 .btn-gladiator-outline {
-  border: 4px solid var(--primary-accent);
-  color: var(--primary-accent);
+  border: 2px solid var(--mint);
+  color: var(--mint);
   background-color: transparent;
-  font-weight: 900;
+  font-weight: 700;
   padding: 1.25rem 2.5rem;
   text-transform: uppercase;
-  letter-spacing: -0.05em;
+  letter-spacing: -0.03em;
   font-size: 1rem;
   transition: all 0.3s ease;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  border-radius: 4px;
 }
-
 .btn-gladiator-outline:hover {
-  background-color: var(--primary-accent);
-  color: #000;
-  transform: scale(1.05);
+  background-color: var(--mint);
+  color: #050505;
 }
 
 .text-mega {
@@ -174,100 +349,85 @@ body {
   line-height: 0.8;
   letter-spacing: -0.05em;
 }
-
 .text-outline {
   -webkit-text-stroke: 1px rgba(255, 255, 255, 0.3);
   color: transparent;
   transition: -webkit-text-stroke 0.3s ease;
 }
-
 .text-outline:hover {
-  -webkit-text-stroke: 1px var(--primary-accent);
+  -webkit-text-stroke: 1px var(--mint);
 }
-
-/* Gradient Text (Equastore) */
 .text-gradient {
-  background: linear-gradient(to right, #39ff14, #00ff9d);
+  background: linear-gradient(to right, var(--mint), var(--cyan-elec));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 
-/* Animations (Equastore & Dropes) */
+/* Legacy keyframes (kept) */
 @keyframes float {
-  0%,
-  100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-15px);
-  }
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-15px); }
 }
-
 @keyframes float-3d {
-  0% {
-    transform: translateY(0px) rotateX(0deg) rotateY(0deg);
-  }
-  25% {
-    transform: translateY(-5px) rotateX(5deg) rotateY(3deg);
-  }
-  50% {
-    transform: translateY(-10px) rotateX(0deg) rotateY(-3deg);
-  }
-  75% {
-    transform: translateY(-5px) rotateX(-5deg) rotateY(0deg);
-  }
-  100% {
-    transform: translateY(0px) rotateX(0deg) rotateY(0deg);
-  }
+  0% { transform: translateY(0px) rotateX(0deg) rotateY(0deg); }
+  25% { transform: translateY(-5px) rotateX(5deg) rotateY(3deg); }
+  50% { transform: translateY(-10px) rotateX(0deg) rotateY(-3deg); }
+  75% { transform: translateY(-5px) rotateX(-5deg) rotateY(0deg); }
+  100% { transform: translateY(0px) rotateX(0deg) rotateY(0deg); }
 }
-
 @keyframes marquee {
-  0% {
-    transform: translateX(0);
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+@keyframes pulse-neon {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba(0, 242, 153, 0.2), 0 0 20px rgba(0, 242, 153, 0.2);
   }
-  100% {
-    transform: translateX(-50%);
+  50% {
+    box-shadow: 0 0 15px rgba(0, 242, 153, 0.6), 0 0 30px rgba(0, 242, 153, 0.4);
   }
 }
 
-@keyframes pulse-neon {
-  0%,
-  100% {
-    box-shadow:
-      0 0 10px rgba(57, 255, 20, 0.2),
-      0 0 20px rgba(57, 255, 20, 0.2);
-  }
-  50% {
-    box-shadow:
-      0 0 15px rgba(57, 255, 20, 0.6),
-      0 0 30px rgba(57, 255, 20, 0.4);
-  }
+/* New V2 keyframes */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(0, 242, 153, 0); }
+  50% { box-shadow: 0 0 24px 0 rgba(0, 242, 153, 0.25); }
+}
+@keyframes scanLine {
+  0% { transform: translateY(-100%); opacity: 0; }
+  10% { opacity: 0.5; }
+  90% { opacity: 0.5; }
+  100% { transform: translateY(2000%); opacity: 0; }
+}
+@keyframes barGrow {
+  0% { transform: scaleX(0); }
+  100% { transform: scaleX(1); }
 }
 
 @layer utilities {
-  .bg-gladiator-green { background-color: #39ff14; }
-  .text-gladiator-green { color: #39ff14; }
-  .border-gladiator-green { border-color: #39ff14; }
-  
+  .bg-gladiator-green { background-color: var(--mint); }
+  .text-gladiator-green { color: var(--mint); }
+  .border-gladiator-green { border-color: var(--mint); }
+
   .bg-gladiator-purple { background-color: #5142f5; }
   .text-gladiator-purple { color: #5142f5; }
   .border-gladiator-purple { border-color: #5142f5; }
-  
-  .bg-gladiator-cyan { background-color: #00ffff; }
-  .text-gladiator-cyan { color: #00ffff; }
-  .border-gladiator-cyan { border-color: #00ffff; }
 
-  .shadow-glow {
-    box-shadow: 0 0 15px rgba(57, 255, 20, 0.5);
-  }
+  .bg-gladiator-cyan { background-color: var(--cyan-elec); }
+  .text-gladiator-cyan { color: var(--cyan-elec); }
+  .border-gladiator-cyan { border-color: var(--cyan-elec); }
+
+  .shadow-glow { box-shadow: 0 0 15px rgba(0, 242, 153, 0.5); }
   .shadow-neon {
-    box-shadow: 0 0 30px rgba(57, 255, 20, 0.4), 0 0 60px rgba(57, 255, 20, 0.2);
+    box-shadow: 0 0 30px rgba(0, 242, 153, 0.4), 0 0 60px rgba(0, 242, 153, 0.2);
   }
 
-  .animate-scanline {
-    animation: scanline 8s linear infinite;
-  }
+  .animate-scanline { animation: scanline 8s linear infinite; }
 
   @keyframes scanline {
     0% { transform: translateY(-100vh); }
@@ -275,25 +435,65 @@ body {
   }
 
   .glass-card {
-    background: rgba(10, 10, 15, 0.8);
+    background: rgba(7, 7, 7, 0.85);
     backdrop-filter: blur(30px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(244, 243, 236, 0.08);
+    border-top: 1px solid rgba(244, 243, 236, 0.15);
   }
+
+  /* ── Parallax helper ── */
+  .will-parallax { will-change: transform; }
+
+  /* ── Cursor-follow glow container ──
+     Inline-set CSS vars --mx and --my (0..1) drive the gradient position.
+  */
+  .cursor-glow::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(
+      420px circle at calc(var(--mx, 0.5) * 100%) calc(var(--my, 0.3) * 100%),
+      rgba(0, 242, 153, 0.10),
+      transparent 60%
+    );
+    transition: background 0.18s ease;
+    z-index: 1;
+  }
+
+  /* ── Vertical text (for tickers / labels) ── */
+  .text-vertical {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+  }
+
+  /* ── Highlighted word (mint) in display headlines ── */
+  .hl-mint {
+    color: var(--mint);
+    text-shadow: 0 0 32px rgba(0, 242, 153, 0.35);
+  }
+  .hl-cyan {
+    color: var(--cyan-elec);
+    text-shadow: 0 0 32px rgba(0, 209, 255, 0.35);
+  }
+
+  /* ── Hide scrollbars on horizontal containers (still keyboard-scrollable) ── */
+  .no-scrollbar { scrollbar-width: none; }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   ACCESIBILIDAD — OpenGravity (FIX M5)
+   ACCESSIBILITY — OpenGravity (FIX M5, kept from V1)
    ═══════════════════════════════════════════════════════════════ */
 
-/* 1. Focus visible — reemplaza outline:none global con foco accesible */
+/* 1. Focus visible — accessible focus ring (mint, sharp) */
 *:focus-visible {
-  outline: 2px solid #39ff14;
+  outline: 2px solid var(--mint);
   outline-offset: 2px;
   border-radius: 4px;
 }
 
-/* 2. prefers-reduced-motion — respeta usuarios con vestibular disorders */
+/* 2. prefers-reduced-motion — respect vestibular disorders */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -304,52 +504,52 @@ body {
     scroll-behavior: auto !important;
   }
 
-  /* Desactivar animaciones decorativas específicas */
   .animate-blob,
   .animate-marquee,
   .animate-float-text,
   .animate-float-3d,
   .animate-neon-pulse,
-  .animate-scanline {
+  .animate-scanline,
+  .animate-blink,
+  .animate-glow-pulse,
+  .animate-scan-line,
+  .animate-bar-grow,
+  .term-cursor,
+  .animate-ticker {
     animation: none !important;
   }
 }
 
-/* 3. Skip link — permite saltar al contenido principal con teclado */
+/* 3. Skip link */
 .skip-link {
   position: absolute;
   top: -100px;
   left: 0;
-  background: #39ff14;
-  color: #000;
+  background: var(--mint);
+  color: #050505;
   padding: 12px 24px;
   font-weight: 700;
   z-index: 1000;
   text-decoration: none;
-  border-radius: 0 0 8px 0;
+  border-radius: 0 0 4px 0;
 }
-.skip-link:focus {
-  top: 0;
-}
+.skip-link:focus { top: 0; }
 
-/* 4. Scrollbars accesibles (no se ocultan con scrollbar-width: none) */
-.custom-scrollbar::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
+/* 4. Accessible scrollbars */
+.custom-scrollbar::-webkit-scrollbar { width: 8px; height: 8px; }
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(244, 243, 236, 0.02);
   border-radius: 4px;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(57, 255, 20, 0.3);
+  background: rgba(0, 242, 153, 0.3);
   border-radius: 4px;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(57, 255, 20, 0.5);
+  background: rgba(0, 242, 153, 0.5);
 }
 
-/* 5. Screen reader only — para texto solo para lectores de pantalla */
+/* 5. Screen reader only */
 .sr-only {
   position: absolute;
   width: 1px;
@@ -362,11 +562,13 @@ body {
   border: 0;
 }
 
-/* 6. Detener auto-play de audio si el usuario tiene data-save-data */
+/* 6. prefers-reduced-data */
 @media (prefers-reduced-data: reduce) {
-  audio,
-  video {
-    preload: none;
-  }
+  audio, video { preload: none; }
 }
 
+/* Selection — mint, dark text */
+::selection {
+  background: var(--mint);
+  color: #050505;
+}
