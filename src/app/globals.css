@@ -3,83 +3,146 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 255, 255, 255;
-  --background-start-rgb: 5, 5, 8;
-  --background-end-rgb: 15, 15, 20;
+  /* ═══ Paleta editorial premium ═══
+     Inspiración: Linear, Vercel, Stripe — pero con más temperatura.
+     Texto: blanco roto, no blanco puro.
+     Background: navy oscuro con tinte cálido.
+     Accent: dorado champagne (no verde neón genérico).
+  */
+  --foreground-rgb: 245, 243, 238;       /* #F5F3EE — blanco roto */
+  --background-start-rgb: 12, 12, 16;    /* #0C0C10 — navy casi negro */
+  --background-end-rgb: 18, 18, 24;      /* #121218 */
 
-  --primary-accent: #39ff14; /* Neon Green from Inkafit */
-  --secondary-accent: #5142f5; /* Deep purple from Equastore */
-  --btn-text: #000000;
+  --c-ink: #0a0a0d;                      /* texto sobre fondo claro */
+  --c-paper: #f5f3ee;                    /* papel — opuesto del ink */
+  --c-cream: #e8e4d9;                    /* crema cálido */
+  --c-champagne: #c9a96e;                /* dorado champagne — accent principal */
+  --c-champagne-deep: #a07840;           /* dorado profundo */
+  --c-emerald-deep: #1a3d2e;             /* verde bosque — success */
+  --c-rust: #b04a2a;                     /* óxido — warning */
+  --c-plum: #2d1b3e;                     /* ciruela — premium accent */
 
-  --glass-bg: rgba(255, 255, 255, 0.05);
-  --glass-border: rgba(255, 255, 255, 0.1);
+  --btn-text: #0a0a0d;
+  --glass-bg: rgba(245, 243, 238, 0.04);
+  --glass-border: rgba(245, 243, 238, 0.08);
 }
 
 body {
   color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  background: rgb(var(--background-start-rgb));
   min-height: 100vh;
   font-family:
-    "Inter",
+    var(--font-sans, "Inter"),
     system-ui,
     -apple-system,
     sans-serif;
   overflow-x: hidden;
   -webkit-tap-highlight-color: transparent;
+  font-feature-settings: "ss01", "cv11";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ═══ Tipografía editorial ═══
+   Usar font-serif para títulos grandes — le da personalidad,
+   distingue del look "Inter en todo" que usan todos los SaaS.
+*/
+.font-serif {
+  font-family: var(--font-serif, Georgia, serif);
+}
+.font-mono {
+  font-family: var(--font-mono, "JetBrains Mono", monospace);
+}
+
+/* Eyebrow labels — tracking alto, uppercase, pequeño */
+.eyebrow {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--c-champagne);
+}
+
+/* Headings editoriales — usar serif italic para énfasis */
+.heading-display {
+  font-family: var(--font-serif);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 0.95;
 }
 
 @layer components {
-  /* Dropes Premium Glassmorphism */
+  /* Glassmorphism refinado — menos saturado que el anterior */
   .glass {
     background: var(--glass-bg);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border: 1px solid var(--glass-border);
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
   }
 
   .glass-premium {
-    background: rgba(20, 20, 25, 0.7);
+    background: rgba(245, 243, 238, 0.03);
     backdrop-filter: blur(40px);
     -webkit-backdrop-filter: blur(40px);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-top: 1px solid rgba(255, 255, 255, 0.3);
-    box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(245, 243, 238, 0.08);
+    border-top: 1px solid rgba(245, 243, 238, 0.12);
+  }
+
+  /* Línea decorativa fina — usar como eyebrow accent */
+  .rule-accent {
+    width: 32px;
+    height: 1px;
+    background: var(--c-champagne);
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 12px;
   }
 }
 
-/* Inkafit & Equastore High-Conversion Elements */
+@layer components {
+  /* Legacy colors used by dashboard — keep for backward compat */
+  .text-gladiator-green { color: #c9a96e; }  /* ahora mapea a champagne */
+  .text-gladiator-purple { color: #6d4aff; }
+  .text-gladiator-cyan { color: #4dd6c5; }
+  .border-gladiator-green { border-color: #c9a96e; }
+  .border-gladiator-purple { border-color: #6d4aff; }
+  .border-gladiator-cyan { border-color: #4dd6c5; }
+  .bg-gladiator-green { background-color: #c9a96e; }
+  .bg-gladiator-purple { background-color: #6d4aff; }
+  .bg-gladiator-cyan { background-color: #4dd6c5; }
+
+  .shadow-glow { box-shadow: 0 0 20px -3px rgba(201, 169, 110, 0.35); }
+  .shadow-neon { box-shadow: 0 0 30px rgba(201, 169, 110, 0.3); }
+}
+
+/* Inkafit & Equastore High-Conversion Elements — legacy button */
 .btn-gladiator {
   position: relative;
   overflow: hidden;
-  background-color: var(--primary-accent);
+  background-color: var(--c-champagne);
   color: var(--btn-text) !important;
   font-weight: 900;
   padding: 1.25rem 2.5rem;
   text-transform: uppercase;
   letter-spacing: -0.05em;
   font-size: 1.125rem;
-  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   border: none;
   cursor: pointer;
-  box-shadow: 0 10px 20px -5px rgba(57, 255, 20, 0.3);
+  box-shadow: 0 10px 20px -5px rgba(201, 169, 110, 0.3);
 }
 
 .btn-gladiator:hover {
-  transform: scale(1.05) translateY(-2px);
-  box-shadow: 0 15px 25px -5px rgba(57, 255, 20, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 15px 25px -5px rgba(201, 169, 110, 0.45);
 }
 
 .btn-gladiator:active {
-  transform: scale(0.95);
+  transform: scale(0.97);
 }
 
 .btn-gladiator-outline {

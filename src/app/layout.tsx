@@ -1,14 +1,17 @@
 import './globals.css'
 import type { Metadata, Viewport } from 'next'
-import { Inter } from 'next/font/google'
+import { Inter, Playfair_Display, JetBrains_Mono } from 'next/font/google'
 import ErrorBoundary from '@/components/ErrorBoundary'
 import SessionProviderWrapper from '@/components/SessionProvider'
+import { I18nProvider } from '@/i18n'
 import { assertEnv } from '@/lib/env'
 
 // Validar env vars al cargar el módulo (fail-fast en producción)
 assertEnv();
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({ subsets: ['latin'], variable: '--font-sans' })
+const playfair = Playfair_Display({ subsets: ['latin'], variable: '--font-serif', style: ['normal', 'italic'] })
+const mono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-mono' })
 
 export const metadata: Metadata = {
   title: 'OpenGravity — Simula la viabilidad de tu negocio con IA',
@@ -42,11 +45,13 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="es">
+    <html lang="es" className={`${inter.variable} ${playfair.variable} ${mono.variable}`}>
       <body className={inter.className}>
-        <SessionProviderWrapper>
-          <ErrorBoundary>{children}</ErrorBoundary>
-        </SessionProviderWrapper>
+        <I18nProvider>
+          <SessionProviderWrapper>
+            <ErrorBoundary>{children}</ErrorBoundary>
+          </SessionProviderWrapper>
+        </I18nProvider>
       </body>
     </html>
   )
