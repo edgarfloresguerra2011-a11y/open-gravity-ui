@@ -9,6 +9,90 @@ export const pt: Dictionary = {
     description: 'Antes de investir $50K, simule sua startup em 60 segundos. Deep Research + 1.000 iterações Monte Carlo + síntese LLM.',
   },
 
+  ticker: {
+    live: 'AO VIVO',
+    stats: [
+      '8.560 simulações executadas',
+      '73% precisão backtested',
+      '47s tempo médio',
+      '0.84 trust score global',
+      '1.000 iterações por run',
+      '5 crawlers em paralelo',
+      'P10 / P50 / P90',
+      '24h cache L1',
+    ],
+  },
+
+  heroStats: {
+    costOfFailure: 'CUSTO DO FRACASSO',
+    timeToVerdict: 'TEMPO ATÉ VEREDITO',
+    iterations: 'ITERAÇÕES',
+  },
+
+  terminal: {
+    titlebar: 'opengravity — monte-carlo-v3 — zsh',
+    version: 'v3.0.0',
+    cmd: '$ og simulate "SaaS B2B Brasil"',
+    crawlerLine: '▸ lançando 5 crawlers de pesquisa...',
+    iterationsLine: '▸ 1.000 iterações monte carlo',
+    synthesisLine: '▸ sintetizando relatório LLM...',
+    p50ltv: 'P50 LTV',
+    p50cac: 'P50 CAC',
+    breakEven: 'break-even',
+    months: 'meses',
+    verdict: 'veredito',
+    done: '✓ concluído em 47s',
+    ok: 'ok',
+  },
+
+  pipeline: {
+    badge: 'PIPELINE INDUSTRIAL V3',
+    title: 'Quatro fases. Uma resposta.',
+    subtitle: 'Não é um wrapper do ChatGPT. É um motor estocástico real que combina pesquisa, agentes sintéticos, simulação e síntese — tudo orquestrado.',
+  },
+
+  pricingMatrix: {
+    planHeader: 'Plano',
+    rows: [
+      { label: 'Simulações / mês', cells: ['3', '50', '∞'] },
+      { label: 'Chat com IA', cells: ['10/dia', '∞', '∞'] },
+      { label: 'Relatório P10 / P50 / P90', cells: ['✓', '✓', '✓'] },
+      { label: 'Export PDF', cells: ['—', '✓', '✓'] },
+      { label: 'Cron jobs', cells: ['1', '10', '∞'] },
+      { label: 'Histórico persistente', cells: ['—', '✓', '✓'] },
+      { label: 'Acesso à API', cells: ['—', '—', '10K / mês'] },
+      { label: 'Multi-usuário', cells: ['—', '—', '5 contas'] },
+      { label: 'White-label', cells: ['—', '—', '✓'] },
+      { label: 'Suporte', cells: ['Comunidade', 'Email', 'Prioritário'] },
+    ],
+  },
+
+  finalCtaReady: 'PRONTO?',
+
+  // Accessibility
+  skipToContent: 'Pular para o conteúdo',
+
+  // Login page
+  login: {
+    title: 'Entrar',
+    subtitle: 'Acesse seu dashboard de simulações',
+    welcomeBack: 'Bem-vindo de volta',
+    goToDashboard: 'Ir para o dashboard',
+    signOut: 'Sair',
+    github: 'Continuar com GitHub',
+    google: 'Continuar com Google',
+    devEmail: 'Email (modo dev)',
+    devButton: 'Entrar em modo dev',
+    devModeNotice: 'OAuth não configurado. Usando login de desenvolvimento — qualquer email funciona. Não usar em produção.',
+    loading: 'Carregando provedores…',
+    noProviders: 'Nenhum provedor de auth configurado.',
+    error: 'Erro ao entrar. Verifique se você autorizou o app no provedor OAuth.',
+    noAccount: 'Não tem conta?',
+    seeDemos: 'Ver demos primeiro',
+    legalPrefix: 'Ao continuar você aceita nossos',
+    legalAnd: 'e',
+  },
+
   nav: {
     features: 'Recursos',
     demos: 'Demos',

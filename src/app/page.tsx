@@ -20,7 +20,7 @@ const DEMOS = [
     viabilityScore: 72,
     ltv: '$340',
     cac: '$45',
-    breakEven: '8m',
+    breakEven: '8',
     filename: 'sim_saas_colombia.log',
     barColor: '#00F299', // mint
   },
@@ -29,7 +29,7 @@ const DEMOS = [
     viabilityScore: 58,
     ltv: '$180',
     cac: '$28',
-    breakEven: '14m',
+    breakEven: '14',
     filename: 'sim_restaurante_cdmx.log',
     barColor: '#ffd479', // amber
   },
@@ -38,47 +38,15 @@ const DEMOS = [
     viabilityScore: 81,
     ltv: '$520',
     cac: '$62',
-    breakEven: '6m',
+    breakEven: '6',
     filename: 'sim_moda_sostenible.log',
     barColor: '#00d1ff', // cyan
   },
 ];
 
-const TICKER_STATS = [
-  '8,560 simulations run',
-  '73% accuracy',
-  'Avg response 47s',
-  'Trust score 0.84',
-  '5 parallel crawlers',
-  '1,000 MC iterations',
-  'P10 / P50 / P90',
-  'Mulberry32 PRNG',
-  'DeepSeek V3 reasoning',
-  'Upstash isolated storage',
-  '4-phase pipeline',
-  'PDF report export',
-];
-
-/* ── Pricing comparison matrix ──
-   Single-column comparison table (not 3 cards). Rows are features,
-   cells are per-plan values (text / ✓ / ✗). Built from the i18n plan
-   list, but normalized into a matrix since plan.features aren't 1:1.
-*/
-type Cell = string;
-type MatrixRow = { label: string; cells: [Cell, Cell, Cell] };
-const PRICING_MATRIX: MatrixRow[] = [
-  { label: 'Simulations / month', cells: ['3', '50', '∞'] },
-  { label: 'AI chat', cells: ['10/day', '∞', '∞'] },
-  { label: 'Report P10 / P50 / P90', cells: ['✓', '✓', '✓'] },
-  { label: 'PDF export', cells: ['—', '✓', '✓'] },
-  { label: 'Cron jobs', cells: ['1', '10', '∞'] },
-  { label: 'Persistent history', cells: ['—', '✓', '✓'] },
-  { label: 'API access', cells: ['—', '—', '10K / mo'] },
-  { label: 'Multi-user', cells: ['—', '—', '5 seats'] },
-  { label: 'White-label reports', cells: ['—', '—', '✓'] },
-  { label: 'Support', cells: ['Community', 'Email', 'Priority'] },
-];
-const PRICING_PRICES = ['$0', '$29', 'Custom'];
+// Pricing matrix labels — translated at runtime via t.pricingMatrix.*
+// (defined in i18n dictionaries)
+const PRICING_PRICES = ['$0', '$29', '$99'];
 
 export default function LandingPage() {
   const { t } = useI18n();
@@ -93,14 +61,14 @@ export default function LandingPage() {
   return (
     <div className="relative min-h-screen bg-og-bg text-paper overflow-x-hidden">
       <a href="#main" className="skip-link">
-        Skip to content
+        {t.skipToContent}
       </a>
 
       {/* Fixed technical grid background (Linear/Vercel) */}
       <div className="og-grid-bg" aria-hidden />
 
       {/* ════════════════════════════════════════ 1. TICKER ════════════════════════════════════════ */}
-      <TickerBar stats={TICKER_STATS} />
+      <TickerBar t={t} />
 
       {/* ════════════════════════════════════════ 2. NAV ════════════════════════════════════════ */}
       <nav
@@ -186,20 +154,21 @@ export default function LandingPage() {
 /* ════════════════════════════════════════════════════════════════════════
    1. TICKER — auto-scrolling stats marquee at top
    ════════════════════════════════════════════════════════════════════════ */
-function TickerBar({ stats }: { stats: string[] }) {
+function TickerBar({ t }: { t: ReturnType<typeof useI18n>['t'] }) {
   // Duplicate the list so the marquee can loop seamlessly (-50% translate)
+  const stats = t.ticker.stats;
   const doubled = [...stats, ...stats];
   return (
     <div
       className="relative z-50 h-8 bg-og-bg border-b border-hairline overflow-hidden flex items-center"
       role="status"
       aria-live="off"
-      aria-label="Live platform stats"
+      aria-label={t.ticker.live}
     >
       <div className="flex items-center h-full">
         <div className="h-full px-3 flex items-center bg-mint text-og-bg font-mono text-[10px] font-bold uppercase tracking-[0.15em] shrink-0">
           <span className="w-1.5 h-1.5 rounded-full bg-og-bg animate-pulse mr-2" />
-          LIVE
+          {t.ticker.live}
         </div>
         <div className="relative flex-1 overflow-hidden">
           <div className="flex animate-marquee whitespace-nowrap will-change-transform">
@@ -260,7 +229,7 @@ function Hero({ t }: { t: ReturnType<typeof useI18n>['t'] }) {
             {/* Eyebrow */}
             <div className="flex items-center mb-8 animate-fade-up">
               <span className="rule-accent" />
-              <span className="eyebrow">MONTE CARLO V3 // LIVE</span>
+              <span className="eyebrow">{t.hero.badge}</span>
             </div>
 
             {/* Headline — Geist, very tight tracking, $50K + 60s in mint */}
@@ -269,8 +238,12 @@ function Hero({ t }: { t: ReturnType<typeof useI18n>['t'] }) {
               className="font-display text-[clamp(2.4rem,6.2vw,5.25rem)] leading-[0.95] tracking-[-0.045em] mb-8 animate-fade-up"
               style={{ animationDelay: '80ms' }}
             >
-              Simulate your startup&rsquo;s survival in{' '}
-              <span className="hl-mint">1,000 parallel universes</span>.
+              {t.hero.title1}{' '}
+              <span className="hl-mint">{t.hero.titleHighlight1}</span>
+              <br />
+              {t.hero.title2}{' '}
+              <span className="hl-mint">{t.hero.titleHighlight2}</span>
+              <span className="text-mint">.</span>
             </h1>
 
             {/* Subhead using the i18n subtitle */}
@@ -287,19 +260,19 @@ function Hero({ t }: { t: ReturnType<typeof useI18n>['t'] }) {
               style={{ animationDelay: '220ms' }}
             >
               <StatTicker
-                label="COST OF FAILURE"
-                value="$50,000"
+                label={t.heroStats.costOfFailure}
+                value={t.hero.titleHighlight1}
                 accent="mint"
               />
               <div className="w-px bg-hairline" />
               <StatTicker
-                label="TIME TO VERDICT"
-                value="60s"
+                label={t.heroStats.timeToVerdict}
+                value={t.hero.titleHighlight2}
                 accent="cyan"
               />
               <div className="w-px bg-hairline" />
               <StatTicker
-                label="ITERATIONS"
+                label={t.heroStats.iterations}
                 value="1,000"
                 accent="paper"
               />
@@ -344,7 +317,7 @@ function Hero({ t }: { t: ReturnType<typeof useI18n>['t'] }) {
             className="lg:col-span-5 relative z-10 animate-fade-up"
             style={{ animationDelay: '380ms' }}
           >
-            <HeroTerminal />
+            <HeroTerminal t={t} />
           </div>
         </div>
       </div>
@@ -381,19 +354,19 @@ function StatTicker({
 }
 
 /* Hero terminal — fake live Monte Carlo simulation output */
-function HeroTerminal() {
+function HeroTerminal({ t }: { t: ReturnType<typeof useI18n>['t'] }) {
   const lines: { ln: string; content: React.ReactNode }[] = [
-    { ln: '01', content: <><span className="prompt">$</span> og simulate &quot;B2B SaaS Colombia&quot;</> },
-    { ln: '02', content: <><span className="dim">▸</span> spawning 5 research crawlers... <span className="ok">ok</span></> },
-    { ln: '03', content: <><span className="dim">▸</span> 1,000 monte carlo iterations      <span className="ok">ok</span></> },
-    { ln: '04', content: <><span className="dim">▸</span> synthesizing LLM report...        <span className="ok">ok</span></> },
+    { ln: '01', content: <><span className="prompt">$</span> {t.terminal.cmd.replace(/^\$\s*/, '')}</> },
+    { ln: '02', content: <><span className="dim">▸</span> {t.terminal.crawlerLine.replace(/^▸\s*/, '')} <span className="ok">{t.terminal.ok}</span></> },
+    { ln: '03', content: <><span className="dim">▸</span> {t.terminal.iterationsLine.replace(/^▸\s*/, '')} <span className="ok">{t.terminal.ok}</span></> },
+    { ln: '04', content: <><span className="dim">▸</span> {t.terminal.synthesisLine.replace(/^▸\s*/, '')} <span className="ok">{t.terminal.ok}</span></> },
     { ln: '05', content: <span className="dim">─────────────────────────────────────────</span> },
-    { ln: '06', content: <><span className="accent">P50 LTV</span>      <span className="ok">$340</span>   ±12%</> },
-    { ln: '07', content: <><span className="accent">P50 CAC</span>      <span className="ok">$45</span></> },
-    { ln: '08', content: <><span className="accent">break-even</span>  <span className="ok">8 months</span></> },
+    { ln: '06', content: <><span className="accent">{t.terminal.p50ltv}</span>      <span className="ok">$340</span>   ±12%</> },
+    { ln: '07', content: <><span className="accent">{t.terminal.p50cac}</span>      <span className="ok">$45</span></> },
+    { ln: '08', content: <><span className="accent">{t.terminal.breakEven}</span>  <span className="ok">8 {t.terminal.months}</span></> },
     { ln: '09', content: <span className="dim">─────────────────────────────────────────</span> },
-    { ln: '10', content: <>verdict  <span className="ok">████████</span><span className="dim">██</span>  <span className="ok">72 / 100</span></> },
-    { ln: '11', content: <><span className="ok">✓ done in 47s</span><span className="term-cursor" /></> },
+    { ln: '10', content: <>{t.terminal.verdict}  <span className="ok">████████</span><span className="dim">██</span>  <span className="ok">72 / 100</span></> },
+    { ln: '11', content: <><span className="ok">{t.terminal.done}</span><span className="term-cursor" /></> },
   ];
   return (
     <div className="terminal shadow-glow-mint">
@@ -401,8 +374,8 @@ function HeroTerminal() {
         <span className="terminal-dot" style={{ background: '#ff5f57' }} />
         <span className="terminal-dot" style={{ background: '#febc2e' }} />
         <span className="terminal-dot" style={{ background: '#28c840' }} />
-        <span className="ml-2">opengravity — monte-carlo-v3 — zsh</span>
-        <span className="ml-auto text-paper/30">v3.0.0</span>
+        <span className="ml-2">{t.terminal.titlebar}</span>
+        <span className="ml-auto text-paper/30">{t.terminal.version}</span>
       </div>
       <div className="terminal-body">
         {lines.map((l, i) => (
@@ -551,10 +524,10 @@ function DemoTerminalCard({
         </div>
 
         <div className="border-t border-hairline pt-4 mb-4">
-          <span className="dim">▸ running simulation...</span>{' '}
-          <span className="ok">ok</span>
+          <span className="dim">▸ {t.terminal.crawlerLine.replace(/^▸\s*/, '')}</span>{' '}
+          <span className="ok">{t.terminal.ok}</span>
           <br />
-          <span className="dim">▸ verdict:</span>
+          <span className="dim">▸ {t.terminal.verdict}:</span>
         </div>
 
         {/* BIG verdict number in mono — the centerpiece */}
@@ -771,7 +744,7 @@ function PricingSection({ t }: { t: ReturnType<typeof useI18n>['t'] }) {
           <div className="grid grid-cols-4 border-b border-hairline">
             <div className="p-5 lg:p-6">
               <span className="font-mono text-[10px] tracking-[0.16em] text-paper/40 uppercase">
-                Plan
+                {t.pricingMatrix.planHeader}
               </span>
             </div>
             {plans.map((plan, i) => (
@@ -807,7 +780,7 @@ function PricingSection({ t }: { t: ReturnType<typeof useI18n>['t'] }) {
           </div>
 
           {/* Feature rows */}
-          {PRICING_MATRIX.map((row, ri) => (
+          {t.pricingMatrix.rows.map((row, ri) => (
             <div
               key={row.label}
               className={`grid grid-cols-4 ${
@@ -896,7 +869,7 @@ function FinalCta({ t }: { t: ReturnType<typeof useI18n>['t'] }) {
       <div className="relative max-w-[900px] mx-auto text-center">
         <div className="flex items-center justify-center gap-3 mb-8">
           <span className="rule-accent" />
-          <span className="eyebrow">READY?</span>
+          <span className="eyebrow">{t.finalCtaReady}</span>
           <span className="rule-accent" style={{ marginRight: 0, marginLeft: 12 }} />
         </div>
 

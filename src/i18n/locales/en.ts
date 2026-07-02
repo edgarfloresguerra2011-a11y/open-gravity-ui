@@ -9,6 +9,94 @@ export const en: Dictionary = {
     description: 'Before investing $50K, simulate your startup in 60 seconds. Deep Research + 1,000 Monte Carlo iterations + LLM synthesis.',
   },
 
+  // Ticker bar
+  ticker: {
+    live: 'LIVE',
+    stats: [
+      '8,560 simulations run',
+      '73% backtested accuracy',
+      '47s average response',
+      '0.84 global trust score',
+      '1,000 iterations per run',
+      '5 crawlers in parallel',
+      'P10 / P50 / P90',
+      '24h L1 cache',
+    ],
+  },
+
+  // Hero stat ticker labels
+  heroStats: {
+    costOfFailure: 'COST OF FAILURE',
+    timeToVerdict: 'TIME TO VERDICT',
+    iterations: 'ITERATIONS',
+  },
+
+  // Hero terminal
+  terminal: {
+    titlebar: 'opengravity — monte-carlo-v3 — zsh',
+    version: 'v3.0.0',
+    cmd: '$ og simulate "B2B SaaS Colombia"',
+    crawlerLine: '▸ spawning 5 research crawlers...',
+    iterationsLine: '▸ 1,000 monte carlo iterations',
+    synthesisLine: '▸ synthesizing LLM report...',
+    p50ltv: 'P50 LTV',
+    p50cac: 'P50 CAC',
+    breakEven: 'break-even',
+    months: 'months',
+    verdict: 'verdict',
+    done: '✓ done in 47s',
+    ok: 'ok',
+  },
+
+  // Pipeline section
+  pipeline: {
+    badge: 'INDUSTRIAL PIPELINE V3',
+    title: 'Four phases. One answer.',
+    subtitle: 'Not a ChatGPT wrapper. A real stochastic engine combining research, synthetic agents, simulation, and synthesis — fully orchestrated.',
+  },
+
+  pricingMatrix: {
+    planHeader: 'Plan',
+    rows: [
+      { label: 'Simulations / month', cells: ['3', '50', '∞'] },
+      { label: 'AI chat', cells: ['10/day', '∞', '∞'] },
+      { label: 'Report P10 / P50 / P90', cells: ['✓', '✓', '✓'] },
+      { label: 'PDF export', cells: ['—', '✓', '✓'] },
+      { label: 'Cron jobs', cells: ['1', '10', '∞'] },
+      { label: 'Persistent history', cells: ['—', '✓', '✓'] },
+      { label: 'API access', cells: ['—', '—', '10K / mo'] },
+      { label: 'Multi-user', cells: ['—', '—', '5 seats'] },
+      { label: 'White-label', cells: ['—', '—', '✓'] },
+      { label: 'Support', cells: ['Community', 'Email', 'Priority'] },
+    ],
+  },
+
+  finalCtaReady: 'READY?',
+
+  // Accessibility
+  skipToContent: 'Skip to content',
+
+  // Login page
+  login: {
+    title: 'Sign in',
+    subtitle: 'Access your simulation dashboard',
+    welcomeBack: 'Welcome back',
+    goToDashboard: 'Go to dashboard',
+    signOut: 'Sign out',
+    github: 'Continue with GitHub',
+    google: 'Continue with Google',
+    devEmail: 'Email (dev mode)',
+    devButton: 'Enter dev mode',
+    devModeNotice: 'OAuth not configured. Using dev login — any email works. Do not use in production.',
+    loading: 'Loading providers…',
+    noProviders: 'No auth providers configured.',
+    error: 'Sign-in failed. Make sure you authorized the app in the OAuth provider.',
+    noAccount: "Don't have an account?",
+    seeDemos: 'See demos first',
+    legalPrefix: 'By continuing you accept our',
+    legalAnd: 'and',
+  },
+
   nav: {
     features: 'Features',
     demos: 'Demos',

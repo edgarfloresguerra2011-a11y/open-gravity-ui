@@ -12,6 +12,96 @@ export const es = {
     description: 'Antes de invertir $50K, simula tu startup en 60 segundos. Deep Research + 1,000 iteraciones Monte Carlo + síntesis LLM.',
   },
 
+  // Ticker bar (top scrolling stats)
+  ticker: {
+    live: 'EN VIVO',
+    stats: [
+      '8,560 simulaciones ejecutadas',
+      '73% precisión backtested',
+      '47s tiempo promedio',
+      '0.84 trust score global',
+      '1,000 iteraciones por run',
+      '5 crawlers en paralelo',
+      'P10 / P50 / P90',
+      '24h caché L1',
+    ],
+  },
+
+  // Hero stat ticker labels
+  heroStats: {
+    costOfFailure: 'COSTO DEL FRACASO',
+    timeToVerdict: 'TIEMPO AL VEREDICTO',
+    iterations: 'ITERACIONES',
+  },
+
+  // Hero terminal (live Monte Carlo demo)
+  terminal: {
+    titlebar: 'opengravity — monte-carlo-v3 — zsh',
+    version: 'v3.0.0',
+    cmd: '$ og simulate "SaaS B2B Colombia"',
+    crawlerLine: '▸ lanzando 5 crawlers de research...',
+    iterationsLine: '▸ 1,000 iteraciones monte carlo',
+    synthesisLine: '▸ sintetizando reporte LLM...',
+    p50ltv: 'P50 LTV',
+    p50cac: 'P50 CAC',
+    breakEven: 'break-even',
+    months: 'meses',
+    verdict: 'veredicto',
+    done: '✓ completado en 47s',
+    ok: 'ok',
+  },
+
+  // Pipeline section
+  pipeline: {
+    badge: 'PIPELINE INDUSTRIAL V3',
+    title: 'Cuatro fases. Una respuesta.',
+    subtitle: 'No es un wrapper de ChatGPT. Es un motor estocástico real que combina research, agentes sintéticos, simulación y síntesis — todo orquestado.',
+  },
+
+  // Pricing comparison matrix — rows of features with values per plan
+  pricingMatrix: {
+    planHeader: 'Plan',
+    rows: [
+      { label: 'Simulaciones / mes', cells: ['3', '50', '∞'] },
+      { label: 'Chat con IA', cells: ['10/día', '∞', '∞'] },
+      { label: 'Reporte P10 / P50 / P90', cells: ['✓', '✓', '✓'] },
+      { label: 'Export PDF', cells: ['—', '✓', '✓'] },
+      { label: 'Cron jobs', cells: ['1', '10', '∞'] },
+      { label: 'Historial persistente', cells: ['—', '✓', '✓'] },
+      { label: 'API access', cells: ['—', '—', '10K / mes'] },
+      { label: 'Multi-usuario', cells: ['—', '—', '5 cuentas'] },
+      { label: 'Marca blanca', cells: ['—', '—', '✓'] },
+      { label: 'Soporte', cells: ['Comunidad', 'Email', 'Prioritario'] },
+    ],
+  },
+
+  // Final CTA eyebrow
+  finalCtaReady: '¿LISTO?',
+
+  // Accessibility
+  skipToContent: 'Saltar al contenido',
+
+  // Login page
+  login: {
+    title: 'Inicia sesión',
+    subtitle: 'Accede a tu dashboard de simulaciones',
+    welcomeBack: 'Bienvenido de nuevo',
+    goToDashboard: 'Ir al dashboard',
+    signOut: 'Cerrar sesión',
+    github: 'Continuar con GitHub',
+    google: 'Continuar con Google',
+    devEmail: 'Email (modo desarrollo)',
+    devButton: 'Entrar en modo dev',
+    devModeNotice: 'OAuth no configurado. Usando login de desarrollo — cualquier email funciona. No usar en producción.',
+    loading: 'Cargando proveedores…',
+    noProviders: 'No hay proveedores de auth configurados.',
+    error: 'Error al iniciar sesión. Verifica que autorizaste la app en el proveedor OAuth.',
+    noAccount: '¿No tienes cuenta?',
+    seeDemos: 'Ver demos primero',
+    legalPrefix: 'Al continuar aceptas nuestros',
+    legalAnd: 'y',
+  },
+
   // Nav
   nav: {
     features: 'Features',

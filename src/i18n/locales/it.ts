@@ -9,6 +9,90 @@ export const it: Dictionary = {
     description: 'Prima di investire $50K, simula la tua startup in 60 secondi. Deep Research + 1.000 iterazioni Monte Carlo + sintesi LLM.',
   },
 
+  ticker: {
+    live: 'IN DIRETTA',
+    stats: [
+      '8.560 simulazioni eseguite',
+      '73% precisione backtested',
+      '47s tempo medio',
+      '0.84 trust score globale',
+      '1.000 iterazioni per run',
+      '5 crawler in parallelo',
+      'P10 / P50 / P90',
+      '24h cache L1',
+    ],
+  },
+
+  heroStats: {
+    costOfFailure: 'COSTO DEL FALLIMENTO',
+    timeToVerdict: 'TEMPO AL VERDETTO',
+    iterations: 'ITERAZIONI',
+  },
+
+  terminal: {
+    titlebar: 'opengravity — monte-carlo-v3 — zsh',
+    version: 'v3.0.0',
+    cmd: '$ og simulate "SaaS B2B Italia"',
+    crawlerLine: '▸ lancio di 5 crawler di ricerca...',
+    iterationsLine: '▸ 1.000 iterazioni monte carlo',
+    synthesisLine: '▸ sintesi del report LLM...',
+    p50ltv: 'P50 LTV',
+    p50cac: 'P50 CAC',
+    breakEven: 'break-even',
+    months: 'mesi',
+    verdict: 'verdetto',
+    done: '✓ completato in 47s',
+    ok: 'ok',
+  },
+
+  pipeline: {
+    badge: 'PIPELINE INDUSTRIALE V3',
+    title: 'Quattro fasi. Una risposta.',
+    subtitle: 'Non è un wrapper ChatGPT. È un vero motore stocastico che combina ricerca, agenti sintetici, simulazione e sintesi — tutto orchestrato.',
+  },
+
+  pricingMatrix: {
+    planHeader: 'Piano',
+    rows: [
+      { label: 'Simulazioni / mese', cells: ['3', '50', '∞'] },
+      { label: 'Chat IA', cells: ['10/giorno', '∞', '∞'] },
+      { label: 'Report P10 / P50 / P90', cells: ['✓', '✓', '✓'] },
+      { label: 'Export PDF', cells: ['—', '✓', '✓'] },
+      { label: 'Cron job', cells: ['1', '10', '∞'] },
+      { label: 'Cronologia persistente', cells: ['—', '✓', '✓'] },
+      { label: 'Accesso API', cells: ['—', '—', '10K / mese'] },
+      { label: 'Multi-utente', cells: ['—', '—', '5 account'] },
+      { label: 'White-label', cells: ['—', '—', '✓'] },
+      { label: 'Supporto', cells: ['Community', 'Email', 'Prioritario'] },
+    ],
+  },
+
+  finalCtaReady: 'PRONTO?',
+
+  // Accessibility
+  skipToContent: 'Vai al contenuto',
+
+  // Login page
+  login: {
+    title: 'Accedi',
+    subtitle: 'Accedi alla tua dashboard di simulazioni',
+    welcomeBack: 'Bentornato',
+    goToDashboard: 'Vai alla dashboard',
+    signOut: 'Esci',
+    github: 'Continua con GitHub',
+    google: 'Continua con Google',
+    devEmail: 'Email (modalità dev)',
+    devButton: 'Entra in modalità dev',
+    devModeNotice: 'OAuth non configurato. Uso del login di sviluppo — qualsiasi email funziona. Non usare in produzione.',
+    loading: 'Caricamento provider…',
+    noProviders: 'Nessun provider di auth configurato.',
+    error: 'Errore di accesso. Verifica di aver autorizzato l\'app nel provider OAuth.',
+    noAccount: 'Non hai un account?',
+    seeDemos: 'Vedi le demo prima',
+    legalPrefix: 'Continuando accetti i nostri',
+    legalAnd: 'e',
+  },
+
   nav: {
     features: 'Funzioni',
     demos: 'Demo',
