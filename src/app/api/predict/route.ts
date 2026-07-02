@@ -2,12 +2,14 @@
  * OpenGravity V3 — POST /api/predict
  * FIX: Rate limiting applied before any pipeline work.
  * FIX: Security validation (dangerous patterns + prompt injection) integrated.
+ * FIX (A2): Acepta tanto `idea` como `proposal` (frontend usaba `proposal`, backend leía `idea`).
  *
  * Changes from original:
  *   [+] checkRateLimit guard at entry point
  *   [+] enqueuePredictionJob now awaited (was fire-and-forget sync bug)
  *   [+] Input validation before enqueue (Structural + Patterns)
  *   [+] Semantic validation (min 10 chars)
+ *   [+] readJsonBody con límite de tamaño
  */
 
 import { NextRequest, NextResponse } from "next/server";
@@ -15,6 +17,7 @@ import { randomUUID } from "crypto";
 import { checkRateLimit, predictLimiter } from "@/lib/rate_limiter";
 import { enqueuePredictionJob } from "@/lib/job_queue";
 import { validateUserInput } from "@/lib/security";
+import { readJsonBody } from "@/lib/auth";
 
 export async function POST(req: NextRequest) {
   // ── 1. Rate limit check (must be first — before any compute) ──────────────
@@ -22,14 +25,13 @@ export async function POST(req: NextRequest) {
   if (limited) return limited;
 
   // ── 2. Parse & validate input ─────────────────────────────────────────────
-  let body: { idea?: string; financials?: Record<string, unknown> };
-  try {
-    body = await req.json();
-  } catch {
-    return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
-  }
+  let body: { idea?: string; proposal?: string; financials?: Record<string, unknown> };
+  const [parsedBody, bodyError] = await readJsonBody(req, 16 * 1024);
+  if (bodyError) return bodyError;
+  body = (parsedBody ?? {}) as typeof body;
 
-  const idea = body.idea?.trim();
+  // FIX A2: aceptar tanto `idea` como `proposal` (backward compatibility)
+  const idea = (body.idea ?? body.proposal ?? "").trim();
 
   // A. Semantic Validation
   if (!idea || typeof idea !== "string" || idea.length < 10) {

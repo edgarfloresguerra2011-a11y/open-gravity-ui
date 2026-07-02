@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { Download, Loader2 } from "lucide-react";
 
 // ─── TYPES ────────────────────────────────────────────────────────────────────
 
@@ -63,6 +64,7 @@ export interface NarrativePayload {
 interface PredictionReportProps {
   quantPayload?: QuantPayload;
   narrativePayload?: NarrativePayload;
+  jobId?: string;
 }
 
 // ─── HELPERS ──────────────────────────────────────────────────────────────────
@@ -191,14 +193,26 @@ function AuditRow({ label, value }: { label: string; value: string }) {
 export default function PredictionReport({
   quantPayload,
   narrativePayload,
+  jobId,
 }: PredictionReportProps) {
   const [mounted, setMounted] = useState(false);
   const [activeTab, setActiveTab] = useState<"distribution" | "risk" | "audit" | "narrative">("distribution");
+  const [pdfLoading, setPdfLoading] = useState(false);
 
   useEffect(() => {
     const t = setTimeout(() => setMounted(true), 80);
     return () => clearTimeout(t);
   }, []);
+
+  const handleDownloadPdf = async () => {
+    if (!jobId) return;
+    setPdfLoading(true);
+    try {
+      window.location.href = `/api/simulations/${jobId}/pdf`;
+    } finally {
+      setTimeout(() => setPdfLoading(false), 2000);
+    }
+  };
 
   // Safe fallbacks if props are missing
   if (!quantPayload) {
@@ -326,6 +340,34 @@ export default function PredictionReport({
               <div style={{ fontSize: "9px", letterSpacing: "2px", color: "rgba(255,255,255,0.3)", marginBottom: "4px" }}>VEREDICTO</div>
               <div style={{ fontFamily: "'Syne', sans-serif", fontSize: "18px", fontWeight: 800, color: vc.color }}>{vc.label}</div>
             </div>
+
+            {/* PDF Export Button — solo si tenemos jobId */}
+            {jobId && (
+              <button
+                onClick={handleDownloadPdf}
+                disabled={pdfLoading}
+                aria-label="Descargar reporte en PDF"
+                style={{
+                  background: "rgba(255,255,255,0.05)",
+                  border: "1px solid rgba(255,255,255,0.1)",
+                  borderRadius: "12px",
+                  padding: "14px 20px",
+                  color: "white",
+                  fontSize: "11px",
+                  fontWeight: 700,
+                  letterSpacing: "1px",
+                  cursor: pdfLoading ? "wait" : "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  transition: "all 0.2s",
+                }}
+                className="hover:bg-white/10"
+              >
+                {pdfLoading ? <Loader2 size={14} className="animate-spin" /> : <Download size={14} />}
+                PDF
+              </button>
+            )}
           </div>
         </div>
 

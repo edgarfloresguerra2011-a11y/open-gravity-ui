@@ -19,17 +19,18 @@ export type ToolCall = {
 };
 
 // ─── PARSER ──────────────────────────────────────────────────────────────────
-// BUG FIX #1: El regex original capturaba TODO con [^\]]+ pero el contenido
-// de un archivo puede tener ], [, =, comas, etc. 
+// El parser special de SAVE_FILE usa ||| como separador porque el contenido
+// del archivo puede tener ], [, =, comas, etc.
 //
-// SOLUCIÓN: Para SAVE_FILE usamos un formato especial con delimitador |||
-// Ejemplo de uso en el LLM:
+// Ejemplos de uso en el LLM:
 //   [SAVE_FILE: nombre.ts ||| /src/lib/ ||| contenido del archivo aquí]
-//
-// Para otras herramientas el formato simple sigue funcionando:
 //   [WEB_SEARCH: término de búsqueda]
 //   [SCRAPE: https://example.com]
 //   [REMEMBER: dato importante sobre el usuario]
+//
+// NOTA DE SEGURIDAD: RUN_PYTHON fue eliminado — era un vector de RCE.
+// Si en el futuro se necesita ejecutar código, debe ser en un sandbox separado
+// (Firecracker, gVisor, o un worker dedicado con permisos mínimos).
 
 export function parseToolCalls(text: string): ToolCall[] {
     const calls: ToolCall[] = [];
@@ -50,8 +51,8 @@ export function parseToolCalls(text: string): ToolCall[] {
     }
 
     // Parser general para el resto de herramientas
-    // Excluye SAVE_FILE porque ya lo manejamos arriba
-    const generalPattern = /\[\s*(DEEP_RESEARCH|WEB_SEARCH|SCRAPE|REMEMBER|CREATE_SKILL|READ_FILE|RUN_PYTHON)\s*:\s*([^\]]+)\]/gi;
+    // RUN_PYTHON fue eliminado por seguridad (RCE vía prompt injection).
+    const generalPattern = /\[\s*(DEEP_RESEARCH|WEB_SEARCH|SCRAPE|REMEMBER|CREATE_SKILL|READ_FILE)\s*:\s*([^\]]+)\]/gi;
     while ((match = generalPattern.exec(text)) !== null) {
         calls.push({
             tool: match[1].toUpperCase().trim(),
@@ -137,8 +138,9 @@ async function dispatchTool(call: ToolCall, ctx: { userId: string }): Promise<st
             case "READ_FILE":
                 return await readFile(call.args.input || call.args.path || '');
 
-            case "RUN_PYTHON":
-                return await runPython(call.args.input || call.args.script || '');
+            // RUN_PYTHON eliminado por seguridad (RCE vía prompt injection).
+            // Cualquier referencia residual en output del LLM caerá al default:
+            //   "[Tool RUN_PYTHON no implementada]"
 
             default:
                 return `[Tool ${call.tool} no implementada]`;
@@ -233,35 +235,33 @@ async function createSkill(description: string, userId: string): Promise<string>
 }
 
 async function readFile(filePath: string): Promise<string> {
-    // Solo permitir leer desde el directorio de datos del proyecto
+    // FIX de seguridad: path traversal protection estricta.
+    // Solo permite leer archivos dentro de ./data/ y con extensión segura.
+    const path = require('path');
+    const fs = require('fs');
+    const SAFE_DIR = path.resolve(process.cwd(), 'data');
+    const SAFE_EXTENSIONS = new Set(['.txt', '.md', '.json', '.csv', '.log']);
+
+    const baseName = path.basename(filePath);
+    const resolved = path.resolve(SAFE_DIR, baseName);
+
+    // Path traversal check — resolved debe estar dentro de SAFE_DIR
+    if (!resolved.startsWith(SAFE_DIR + path.sep)) {
+        return `Error: acceso fuera del directorio permitido`;
+    }
+    if (!SAFE_EXTENSIONS.has(path.extname(baseName).toLowerCase())) {
+        return `Error: extensión no permitida. Permitidas: ${[...SAFE_EXTENSIONS].join(', ')}`;
+    }
+    if (!fs.existsSync(resolved)) return `Archivo no encontrado: ${baseName}`;
+
     try {
-        const path = require('path');
-        const fs = require('fs');
-        const safePath = path.join(process.cwd(), 'data', path.basename(filePath));
-        if (!fs.existsSync(safePath)) return `Archivo no encontrado: ${filePath}`;
-        return fs.readFileSync(safePath, 'utf-8').substring(0, 3000);
+        const content = fs.readFileSync(resolved, 'utf-8');
+        // Limitar a 3KB para no saturar el contexto del LLM
+        return content.length > 3072
+            ? content.substring(0, 3072) + '\n\n[...contenido truncado]'
+            : content;
     } catch (err: any) {
         return `Error leyendo archivo: ${err.message}`;
-    }
-}
-
-async function runPython(scriptPath: string): Promise<string> {
-    try {
-        const { exec } = require('child_process');
-        const path = require('path');
-        const fullPath = path.join(process.cwd(), scriptPath);
-
-        return new Promise((resolve) => {
-            exec(`python "${fullPath}"`, (error: any, stdout: string, stderr: string) => {
-                if (error) {
-                    resolve(`[Python Error]: ${error.message}\n${stderr}`);
-                } else {
-                    resolve(stdout || "[Script ejecutado sin salida]");
-                }
-            });
-        });
-    } catch (err: any) {
-        return `Error iniciando Python: ${err.message}`;
     }
 }
 

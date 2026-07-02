@@ -11,6 +11,7 @@
  */
 
 import { Redis } from "@upstash/redis";
+import { randomUUID } from "crypto";
 
 const redis = new Redis({
   url: process.env.UPSTASH_REDIS_REST_URL!,
@@ -24,6 +25,29 @@ const NS = "og:store";
 function safeKey(folder: string, filename: string): string {
   const clean = (s: string) => s.replace(/[^a-zA-Z0-9_\-\.]/g, "_").slice(0, 128);
   return `${NS}:${clean(folder)}:${clean(filename)}`;
+}
+
+/**
+ * Construye un key namespaced por userId.
+ * Todas las collections pasan a ser: og:store:u:{userId}:{colName}:{id}
+ *
+ * Si userId es null/undefined, usa el namespace global (backwards-compatible
+ * con datos pre-existing). Las rutas API autenticadas siempre pasan userId.
+ */
+function userNamespacedKey(userId: string | null | undefined, folder: string, filename: string): string {
+  const clean = (s: string) => s.replace(/[^a-zA-Z0-9_\-\.]/g, "_").slice(0, 128);
+  if (userId) {
+    return `${NS}:u:${clean(userId)}:${clean(folder)}:${clean(filename)}`;
+  }
+  return safeKey(folder, filename);
+}
+
+function userNamespacedPattern(userId: string | null | undefined, folder: string): string {
+  const clean = (s: string) => s.replace(/[^a-zA-Z0-9_\-\.]/g, "_").slice(0, 128);
+  if (userId) {
+    return `${NS}:u:${clean(userId)}:${clean(folder)}:*`;
+  }
+  return `${NS}:${clean(folder)}:*`;
 }
 
 // ─── Core operations ──────────────────────────────────────────────────────────
@@ -72,23 +96,36 @@ export async function listFiles(folder: string): Promise<string[]> {
 
 // ─── Compatibility Layer (db.collection API) ─────────────────────────────────
 
+/**
+ * Collection con namespace opcional por userId.
+ *
+ * Uso sin auth (legacy):
+ *   db.collection('knowledge').add(...)
+ *
+ * Uso con auth (multi-tenant):
+ *   db.collection('knowledge', userId).add(...)
+ *
+ * Si userId está presente, los keys se aíslan: og:store:u:{userId}:{col}:{id}
+ */
 export class Collection {
     private colName: string;
+    private userId: string | null;
 
-    constructor(name: string) {
+    constructor(name: string, userId?: string | null) {
         this.colName = name;
+        this.userId = userId ?? null;
     }
 
     async add(data: any) {
-        const id = `rec_${Date.now()}_${Math.random().toString(36).substring(7)}`;
+        const id = `rec_${randomUUID()}`;
         await this.doc(id).set(data);
         return { id };
     }
 
     async get() {
-        const filenames = await listFiles(this.colName);
+        const filenames = await this.listFilesInternal();
         const docs = await Promise.all(filenames.map(async (id) => {
-            const content = await loadFile<any>(this.colName, id);
+            const content = await this.loadDoc(id);
             return {
                 id,
                 exists: !!content,
@@ -104,27 +141,63 @@ export class Collection {
     doc(id: string) {
         return {
             get: async () => {
-                const data = await loadFile<any>(this.colName, id);
+                const data = await this.loadDoc(id);
                 return { exists: !!data, data: () => data };
             },
             delete: async () => {
-                await deleteFile(this.colName, id);
+                await this.deleteDoc(id);
             },
             update: async (updates: any) => {
-                const existing: any = await loadFile(this.colName, id);
+                const existing: any = await this.loadDoc(id);
                 if (existing) {
-                    await saveFile(this.colName, id, { ...existing, ...updates });
+                    await this.saveDoc(id, { ...existing, ...updates });
                 }
             },
             set: async (data: any) => {
-                await saveFile(this.colName, id, { id, ...data });
+                await this.saveDoc(id, { id, ...data });
             }
         };
     }
+
+    // ── Helpers internos que respetan el userId ──
+    private async loadDoc(id: string) {
+        const key = userNamespacedKey(this.userId, this.colName, id);
+        const raw = await redis.get<string>(key);
+        if (!raw) return null;
+        try {
+            return (typeof raw === "string" ? JSON.parse(raw) : raw) as any;
+        } catch {
+            return null;
+        }
+    }
+
+    private async saveDoc(id: string, data: any) {
+        const key = userNamespacedKey(this.userId, this.colName, id);
+        await redis.set(key, JSON.stringify(data));
+    }
+
+    private async deleteDoc(id: string) {
+        const key = userNamespacedKey(this.userId, this.colName, id);
+        await redis.del(key);
+    }
+
+    private async listFilesInternal(): Promise<string[]> {
+        const pattern = userNamespacedPattern(this.userId, this.colName);
+        const keys = await redis.keys(pattern);
+        const cleanFolder = this.colName.replace(/[^a-zA-Z0-9_\-\.]/g, "_").slice(0, 128);
+        const prefix = this.userId
+            ? `${NS}:u:${this.userId.replace(/[^a-zA-Z0-9_\-\.]/g, "_").slice(0, 128)}:${cleanFolder}:`
+            : `${NS}:${cleanFolder}:`;
+        return keys.map((k) => k.replace(prefix, ""));
+    }
 }
 
+/**
+ * Factory de collections.
+ * Uso: db.collection('knowledge') o db.collection('knowledge', userId)
+ */
 export const db = {
-    collection: (name: string) => new Collection(name)
+    collection: (name: string, userId?: string | null) => new Collection(name, userId)
 };
 
 export const getIsMock = () => false;

@@ -54,7 +54,7 @@ async function triggerCompaction() {
         }
 
         const prompt = `INSTRUCCIÓN CRÍTICA: Debes comprimir y resumir la siguiente conversación. 
-El usuario se llama Edison. Retén CUALQUIER información personal, requerimientos de proyectos cruzados o preferencias.
+Retén CUALQUIER información personal del usuario, requerimientos de proyectos cruzados o preferencias.
 Formato: Devuelve SOLO 2 o 3 párrafos densos enumerando todo el hilo y detalles. Nunca escribas código, solo qué código se produjo.
 
 RESUMEN PREVIO: ${prevSummary ? prevSummary : "Ninguno."}

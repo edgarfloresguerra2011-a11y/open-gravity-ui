@@ -219,3 +219,91 @@ body {
   }
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   ACCESIBILIDAD — OpenGravity (FIX M5)
+   ═══════════════════════════════════════════════════════════════ */
+
+/* 1. Focus visible — reemplaza outline:none global con foco accesible */
+*:focus-visible {
+  outline: 2px solid #39ff14;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* 2. prefers-reduced-motion — respeta usuarios con vestibular disorders */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Desactivar animaciones decorativas específicas */
+  .animate-blob,
+  .animate-marquee,
+  .animate-float-text,
+  .animate-float-3d,
+  .animate-neon-pulse,
+  .animate-scanline {
+    animation: none !important;
+  }
+}
+
+/* 3. Skip link — permite saltar al contenido principal con teclado */
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: 0;
+  background: #39ff14;
+  color: #000;
+  padding: 12px 24px;
+  font-weight: 700;
+  z-index: 1000;
+  text-decoration: none;
+  border-radius: 0 0 8px 0;
+}
+.skip-link:focus {
+  top: 0;
+}
+
+/* 4. Scrollbars accesibles (no se ocultan con scrollbar-width: none) */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(57, 255, 20, 0.3);
+  border-radius: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(57, 255, 20, 0.5);
+}
+
+/* 5. Screen reader only — para texto solo para lectores de pantalla */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* 6. Detener auto-play de audio si el usuario tiene data-save-data */
+@media (prefers-reduced-data: reduce) {
+  audio,
+  video {
+    preload: none;
+  }
+}
+

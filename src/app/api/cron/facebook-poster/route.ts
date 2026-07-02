@@ -2,31 +2,56 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db as storageDb } from '@/lib/storage';
 import { initializeApp, getApps, getApp } from 'firebase/app';
 import { getFirestore, collection, getDocs } from 'firebase/firestore';
+import { requireCronAuth } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
+export const maxDuration = 60;
 
-// Configuración Pública Directa de la tienda del usuario (Dropea-Shop)
-const firebaseConfig = {
-    apiKey: "AIzaSyB5qrb1ACyntWiuNes8965FEAJK2_zyDBk",
-    authDomain: "dropea-shop-2026.firebaseapp.com",
-    projectId: "dropea-shop-2026",
-    storageBucket: "dropea-shop-2026.firebasestorage.app",
-    messagingSenderId: "985767882232",
-    appId: "1:985767882232:web:edccc689236b288b0cfa0d"
-};
+// Configuración Firebase desde variables de entorno (FIX: antes estaba hardcodeada en Git)
+// Vars requeridas en .env:
+//   NEXT_PUBLIC_FB_SHOP_API_KEY, NEXT_PUBLIC_FB_SHOP_AUTH_DOMAIN,
+//   NEXT_PUBLIC_FB_SHOP_PROJECT_ID, NEXT_PUBLIC_FB_SHOP_STORAGE_BUCKET,
+//   NEXT_PUBLIC_FB_SHOP_SENDER_ID, NEXT_PUBLIC_FB_SHOP_APP_ID
+function getShopFirebaseConfig() {
+    const required = [
+        'NEXT_PUBLIC_FB_SHOP_API_KEY',
+        'NEXT_PUBLIC_FB_SHOP_AUTH_DOMAIN',
+        'NEXT_PUBLIC_FB_SHOP_PROJECT_ID',
+        'NEXT_PUBLIC_FB_SHOP_STORAGE_BUCKET',
+        'NEXT_PUBLIC_FB_SHOP_SENDER_ID',
+        'NEXT_PUBLIC_FB_SHOP_APP_ID',
+    ];
+    const missing = required.filter(k => !process.env[k]);
+    if (missing.length) {
+        throw new Error(`Config Firebase incompleta. Faltan: ${missing.join(', ')}`);
+    }
+    return {
+        apiKey: process.env.NEXT_PUBLIC_FB_SHOP_API_KEY!,
+        authDomain: process.env.NEXT_PUBLIC_FB_SHOP_AUTH_DOMAIN!,
+        projectId: process.env.NEXT_PUBLIC_FB_SHOP_PROJECT_ID!,
+        storageBucket: process.env.NEXT_PUBLIC_FB_SHOP_STORAGE_BUCKET!,
+        messagingSenderId: process.env.NEXT_PUBLIC_FB_SHOP_SENDER_ID!,
+        appId: process.env.NEXT_PUBLIC_FB_SHOP_APP_ID!,
+    };
+}
 
-// Singleton para no inicializar Firebase 2 veces en Vercel
-const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
-const fbDb = getFirestore(app);
+// Singleton lazy — solo se inicializa si la ruta realmente se invoca
+let fbDb: ReturnType<typeof getFirestore> | null = null;
+function getFbDb() {
+    if (!fbDb) {
+        const cfg = getShopFirebaseConfig();
+        const app = !getApps().length ? initializeApp(cfg) : getApp();
+        fbDb = getFirestore(app);
+    }
+    return fbDb;
+}
 
 export async function GET(req: NextRequest) {
     try {
-        // 1. (Opcional) Proteger la ruta solo para Vercel Cron
-        const authHeader = req.headers.get('authorization');
-        if (process.env.CRON_SECRET && authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-        }
+        // 1. Auth — denegar por defecto (FIX: antes el if permitía bypass si CRON_SECRET no estaba seteado)
+        const authError = requireCronAuth(req);
+        if (authError) return authError;
 
         // 2. Extraer Credenciales de Facebook desde el .env
         const FB_PAGE_ID = process.env.FB_PAGE_ID;
@@ -36,7 +61,8 @@ export async function GET(req: NextRequest) {
             return NextResponse.json({ error: 'Página o Token de Facebook no configurados en .env' }, { status: 400 });
         }
 
-        // 3. Conectarse DIRECTO a Firebase (ignorando Hostinger) y extraer productos
+        // 3. Conectarse DIRECTO a Firebase y extraer productos
+        const fbDb = getFbDb();
         const productsCol = collection(fbDb, "products");
         const productSnapshot = await getDocs(productsCol);
 

@@ -33,6 +33,8 @@ yarn-error.log*
 # env files
 .env*
 .env*.local
+# Excepción: .env.example SÍ se commitea (es la plantilla para otros devs)
+!.env.example
 
 # vercel
 .vercel

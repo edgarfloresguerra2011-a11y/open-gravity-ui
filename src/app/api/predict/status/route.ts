@@ -46,14 +46,17 @@ export async function GET(req: NextRequest) {
   }
 
   // ── 4. Return job state ───────────────────────────────────────────────────
-  // Only return quantPayload + narrativePayload to keep payload lean.
+  // FIX: antes hacía `job.data?.narrativePayload ?? job.data ?? null`
+  // lo que si narrativePayload faltaba, devolvía TODO el job.data como
+  // narrativePayload — objeto con forma incorrecta para el frontend.
+  // Ahora: si falta el payload, null explícito. El frontend lo maneja.
   return NextResponse.json({
     success: true,
     jobId,
     status: job.status,
     ...(job.status === "completed" && {
       quantPayload: job.data?.quantPayload ?? null,
-      narrativePayload: job.data?.narrativePayload ?? job.data ?? null,
+      narrativePayload: job.data?.narrativePayload ?? null,
     }),
     ...(job.status === "failed" && {
       error: job.error ?? "Simulation failed",

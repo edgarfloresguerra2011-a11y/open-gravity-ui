@@ -96,10 +96,18 @@ async function processJobAsync(
   // Mark as processing
   await setJobState(jobId, { status: "processing" });
 
+  // FIX: flag para prevenir que el timeout dispare setJobState(failed)
+  // DESPUÉS de que el job ya haya completado correctamente.
+  let settled = false;
+
   // ── Timeout race (FIX: 2.5 min, ensures `failed` write before lambda dies) ──
   const timeoutPromise = new Promise<never>((_, reject) =>
     setTimeout(
-      () => reject(new Error(`Job ${jobId} exceeded ${JOB_TIMEOUT_MS / 1000}s timeout`)),
+      () => {
+        if (!settled) {
+          reject(new Error(`Job ${jobId} exceeded ${JOB_TIMEOUT_MS / 1000}s timeout`));
+        }
+      },
       JOB_TIMEOUT_MS
     )
   );
@@ -110,11 +118,18 @@ async function processJobAsync(
       timeoutPromise,
     ]);
 
+    settled = true;
     await setJobState(jobId, {
       status: "completed",
       data: report,
     });
   } catch (err) {
+    if (settled) {
+      // El job completó pero el callback del timeout disparó tarde. Ignorar.
+      console.warn(`[job_queue] Job ${jobId}: timeout disparado post-completion, ignorando`);
+      return;
+    }
+    settled = true;
     const message = err instanceof Error ? err.message : "Unknown pipeline error";
     console.error(`[job_queue] Job ${jobId} failed:`, message);
 

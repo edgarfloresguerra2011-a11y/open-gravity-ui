@@ -23,6 +23,7 @@ export default function PredictPage() {
     const [narrativeData, setNarrativeData] = useState<NarrativePayload | null>(null);
     const [errorData, setErrorData] = useState<string | null>(null);
     const [progressIndex, setProgressIndex] = useState(0);
+    const [currentJobId, setCurrentJobId] = useState<string | null>(null);
 
     // Efecto para simular progreso logico en pantalla basado en el tiempo que suele tomar la API (aprox 35-50s)
     useEffect(() => {
@@ -54,7 +55,8 @@ export default function PredictPage() {
                     setQuantData(res.quantPayload);
                     setNarrativeData(res.narrativePayload);
                     setIsLoading(false);
-                } else if (res.status === 'error') {
+                } else if (res.status === 'failed' || res.status === 'error') {
+                    // FIX A2: backend usa "failed", no "error"
                     setErrorData(res.error || 'El Worker colapsó durante la simulación estocástica.');
                     setIsLoading(false);
                 } else {
@@ -83,6 +85,7 @@ export default function PredictPage() {
         setNarrativeData(null);
         setErrorData(null);
         setProgressIndex(0);
+        setCurrentJobId(null);
 
         try {
             const req = await fetch('/api/predict', {
@@ -99,6 +102,7 @@ export default function PredictPage() {
 
             if (res.jobId) {
                 // Orquestación Asíncrona Iniciada
+                setCurrentJobId(res.jobId);
                 pollJobStatus(res.jobId);
             } else {
                 throw new Error(res.error || 'Fallo de Inicialización. No se recuperó Job ID.');
@@ -136,6 +140,7 @@ export default function PredictPage() {
                             disabled={isLoading}
                             value={proposal}
                             onChange={e => setProposal(e.target.value)}
+                            aria-label="Propuesta de negocio a simular"
                             placeholder="Ej. SaaS B2B de logística para flotillas en Colombia"
                             className="flex-grow bg-transparent text-white px-6 py-4 outline-none border-b sm:border-b-0 sm:border-r border-neutral-800/80 placeholder-neutral-600 font-medium disabled:opacity-50"
                             required
@@ -143,6 +148,7 @@ export default function PredictPage() {
                         <button 
                             type="submit" 
                             disabled={isLoading || !proposal.trim()}
+                            aria-label={isLoading ? "Simulando, espera" : "Lanzar simulación"}
                             className="bg-white text-black px-8 py-4 rounded-xl font-bold uppercase tracking-widest text-[11px] sm:text-xs hover:bg-neutral-200 transition-all active:scale-95 disabled:opacity-50 disabled:active:scale-100 disabled:cursor-not-allowed flex items-center justify-center gap-3 shrink-0"
                         >
                             {isLoading ? (
@@ -193,9 +199,10 @@ export default function PredictPage() {
                 {/* Output Report — New High-Fidelity Component */}
                 {quantData && !isLoading && !errorData && (
                     <div className="pb-24">
-                        <PredictionReport 
-                            quantPayload={quantData} 
+                        <PredictionReport
+                            quantPayload={quantData}
                             narrativePayload={narrativeData || undefined}
+                            jobId={currentJobId ?? undefined}
                         />
                     </div>
                 )}

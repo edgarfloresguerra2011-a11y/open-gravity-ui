@@ -38,6 +38,38 @@ export const statusLimiter = new Ratelimit({
   prefix: "og:rl:status",
 });
 
+/** Generic API limiter — aplicado a TODAS las demás rutas API (FIX A1) */
+export const apiLimiter = new Ratelimit({
+  redis,
+  limiter: Ratelimit.slidingWindow(30, "60 s"),
+  analytics: true,
+  prefix: "og:rl:api",
+});
+
+/** Chat limiter — más estricto porque cada request consume tokens de DeepSeek */
+export const chatLimiter = new Ratelimit({
+  redis,
+  limiter: Ratelimit.slidingWindow(10, "60 s"),
+  analytics: true,
+  prefix: "og:rl:chat",
+});
+
+/** Research limiter — cada request dispara 5 crawlers Tavily en paralelo */
+export const researchLimiter = new Ratelimit({
+  redis,
+  limiter: Ratelimit.slidingWindow(3, "60 s"),
+  analytics: true,
+  prefix: "og:rl:research",
+});
+
+/** TTS limiter — el audio es caro de generar y de transferir */
+export const ttsLimiter = new Ratelimit({
+  redis,
+  limiter: Ratelimit.slidingWindow(10, "60 s"),
+  analytics: true,
+  prefix: "og:rl:tts",
+});
+
 // ─── IP extraction (works behind Vercel's edge proxy) ─────────────────────────
 export function getClientIP(req: NextRequest): string {
   return (

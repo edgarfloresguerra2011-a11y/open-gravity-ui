@@ -1,26 +1,54 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { MsEdgeTTS, OUTPUT_FORMAT } from 'msedge-tts';
+import { checkRateLimit, ttsLimiter } from '@/lib/rate_limiter';
+import { readJsonBody } from '@/lib/auth';
 
 /**
  * Alice_Neural_Studio v3.5
  * Integramos Voces Gratuitas de Microsoft Azure Edge (¡Extrema calidad y sin API Keys!)
  */
 
+const MAX_TTS_TEXT_LENGTH = 1000;
+const ALLOWED_VOICES = new Set([
+    'es-CO-SalomeNeural',
+    'es-ES-ElviraNeural',
+    'es-MX-DaliaNeural',
+    'es-AR-ElenaNeural',
+    'es-CL-CatalinaNeural',
+]);
+
 export async function POST(req: NextRequest) {
     try {
-        const { text, voice = 'es-CO-SalomeNeural' } = await req.json();
-        console.log(`[TTS] Request received for text: "${text.substring(0, 50)}..." with voice: ${voice}`);
+        // 1. Rate limit (FIX A1)
+        const limited = await checkRateLimit(req, ttsLimiter);
+        if (limited) return limited;
+
+        // 2. Body parse con límite
+        const [body, bodyError] = await readJsonBody(req, 16 * 1024);
+        if (bodyError) return bodyError;
+
+        const { text, voice = 'es-CO-SalomeNeural' } = (body ?? {}) as {
+            text?: string;
+            voice?: string;
+        };
+
+        if (!text || typeof text !== 'string' || text.trim().length === 0) {
+            return NextResponse.json({ error: "Texto requerido" }, { status: 400 });
+        }
+        if (text.length > MAX_TTS_TEXT_LENGTH) {
+            return NextResponse.json(
+                { error: `Texto demasiado largo (máx ${MAX_TTS_TEXT_LENGTH} caracteres)` },
+                { status: 413 }
+            );
+        }
+        // Validate voice against allowlist (FIX: prevención de SSRF/parameter injection)
+        const selectedVoice = ALLOWED_VOICES.has(voice) ? voice : 'es-CO-SalomeNeural';
+
+        console.log(`[TTS] Request: "${text.substring(0, 50)}..." voice=${selectedVoice}`);
 
         // 1. Prioridad: Microsoft Edge Neural TTS
         try {
             const tts = new MsEdgeTTS();
-            let selectedVoice = voice;
-
-            // Mapeo selectivo para asegurar voces de alta calidad
-            if (voice.includes('Salome')) selectedVoice = 'es-CO-SalomeNeural';
-            if (voice.includes('Elvira')) selectedVoice = 'es-ES-ElviraNeural';
-            if (voice === 'shimmer') selectedVoice = 'es-CO-SalomeNeural';
-
             await tts.setMetadata(selectedVoice, OUTPUT_FORMAT.AUDIO_24KHZ_48KBITRATE_MONO_MP3);
             const { audioStream } = tts.toStream(text);
 

@@ -32,7 +32,11 @@ export interface PredictionCycleResult {
 
 // ─── ORQUESTADOR V3 ──────────────────────────────────────────────────────────
 
-export async function runPredictionCycle(businessProposal: string, jobId: string = "anon"): Promise<PredictionCycleResult> {
+export async function runPredictionCycle(
+    businessProposal: string,
+    jobId: string = "anon",
+    seed?: string
+): Promise<PredictionCycleResult> {
     console.log(`[Orchestrator V3] Iniciando Predicción para Job: ${jobId}`);
 
     let research: DeepResearchResult;
@@ -59,9 +63,11 @@ export async function runPredictionCycle(businessProposal: string, jobId: string
 
     // 3. SIMULACIÓN MONTE CARLO
     try {
+        // FIX: usar la seed derivada de SHA256(jobId) que pasa job_queue,
+        // no el jobId crudo. Antes: `seed: jobId` ignoraba la seed derivada.
         const simInput = {
             jobId,
-            seed: jobId, // Usamos el ID como semilla
+            seed: seed ?? jobId,
             ...personas.simulationDefaults,
         };
         simulation = runMonteCarlo(simInput);
